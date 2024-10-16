@@ -7,6 +7,8 @@
 - [Computer Systems: A Programmer's Perspective, 3/E (CS:APP3e)](https://csapp.cs.cmu.edu/)
   - [UCLID5: an integrated modeling, verification and synthesis tool](https://github.com/uclid-org/uclid)
   - [中文版](https://fengmuzi2003.gitbook.io/csapp3e)
+- [Computer Architecture: A Quantitative Approach, 6e](https://www.elsevier.com/books-and-journals/book-companion/9780128119051)
+- [Modern Processor Design: Fundamentals of Superscalar Processors](https://www.waveland.com/browse.php?t=624)
 
 ### Classes
 - CMU
