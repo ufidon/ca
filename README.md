@@ -22,15 +22,89 @@
   - [ECE 4750 / CS 4420 / ECE 5740: Computer Architecture](https://www.csl.cornell.edu/courses/ece4750/index.shtml)
 
 # Online resources
-- *references*
-  - [C reference](https://en.cppreference.com/w/c)
-    - [c++ reference](https://en.cppreference.com)
-  - [The GNU C Reference Manual](https://www.gnu.org/software/gnu-c-manual/gnu-c-manual.html)
-    - [The GNU C Programming Tutorial](http://www.crasseux.com/books/ctutorial/)
-  - [Clang: a C language family frontend for LLVM](https://clang.llvm.org/)
-    - [Clang Compiler User’s Manual](https://clang.llvm.org/docs/UsersManual.html)
-    - [Clang's documentation!](https://clang.llvm.org/docs/index.html)
-  - [MSDN: C language documentation](https://learn.microsoft.com/en-us/cpp/c-language)
+- *assembler*
+  - [flat assembler](https://flatassembler.net/)
+  - [NASM](https://github.com/netwide-assembler/nasm)
+  - [yasm](https://github.com/yasm/yasm)
+  - [JWasm](https://jwasm.github.io/)
+  - [Keystone: The Ultimate Assembler](https://www.keystone-engine.org/)
+  - [Capstone: The Ultimate Disassembler](http://www.capstone-engine.org/)
+- *Binary tools*
+  - [The LLVM Compiler Infrastructure](https://llvm.org/)
+    - [LLVM MinGW](https://github.com/mstorsjo/llvm-mingw)
+  - [GNU Binutils](https://www.gnu.org/software/binutils/)
+  - [x64dbg](https://x64dbg.com/)
+- *BIOS*
+  - [CoreBoot](https://www.coreboot.org/)
+  - [Libreboot](https://libreboot.org/)
+  - [SeaBIOS](https://www.seabios.org/)
+  - [TianoCore](https://www.tianocore.org/)
+    - [code](https://github.com/tianocore/edk2)
+  - [U-Boot](https://github.com/u-boot/u-boot)
+  - [open-source firmware](https://opensourcefirmware.foundation/)
+    - [Open Platform Firmware](https://www.opencompute.org/projects/open-system-firmware)
+      - [Open Computer Project](https://www.opencompute.org/)
+- *Bootloader*
+  - [GRUB: GRand Unified Bootloader](https://www.gnu.org/software/grub/)
+  - [SysLinux](https://www.syslinux.org/)
+  - [The rEFInd Boot Manager](https://www.rodsbooks.com/refind/)
+- *OS*
+  - [osdev](https://wiki.osdev.org/)
+  - [Minix 3](https://www.minix3.org/)
+  - [HelenOS](https://www.helenos.org/)
+  - [SerenityOS](https://github.com/SerenityOS/serenity)
+  - [Redox](https://www.redox-os.org/)
+  - [Haihu-OS](https://www.haiku-os.org/)
+  - [ToaruOS](https://www.toaruos.org/)
+  - [KolibriOS](https://kolibrios.org/)
+    - [menuetos](https://menuetos.net/)
+  - [RIOT](https://www.riot-os.org/)
+  - [FreeRTOS](https://www.freertos.org/)
+  - [Contiki-NG](https://github.com/contiki-ng/contiki-ng)
+  - [Operating Systems (OS) Collection](https://github.com/exajobs/os-collection)
+    - [WinWorld](https://winworldpc.com/)
+
+- *emulators*
+  - [Unicorn: The Ultimate CPU emulator](https://www.unicorn-engine.org/)
+    - [Qiling: Cross platform and multi arch ultra lightweight emulator](https://qiling.io)
+    - [ROPgadget](https://github.com/JonathanSalwan/ROPgadget)
+  - [Renode](https://renode.io/)
+  - [Qemu](https://www.qemu.org/)
+    - [How to add a new architecture to QEMU](https://fgoehler.com/blog/adding-a-new-architecture-to-qemu-01/)
+  - [Bochs](https://bochs.sourceforge.io/)
+    - [source](https://github.com/bochs-emu/Bochs/)
+- *archaic*
+  - [MAME: Multiple Arcade Machine Emulator](https://www.mamedev.org/)
+  - [OpenSimH](https://opensimh.org/)
+    - [code](https://github.com/open-simh/simh)
+  - [JPC: The fast x86 PC emulator in pure Java](https://github.com/ianopolous/JPC)
+  - [PCem](https://pcem-emulator.co.uk/)
+  - [DOSBox](https://www.dosbox.com/)
+    - [FreeDOS](https://www.freedos.org/)
+  - [OpenEmu](https://openemu.org/)
+
+- *simulators*
+  - [visual debugger](https://pythontutor.com/)
+
+- *Creators for bootable USB drives*
+  - [Rufus](https://github.com/pbatard/rufus)
+  - [Etcher](https://github.com/balena-io/etcher)
+  - [ventoy](https://github.com/ventoy/Ventoy)
+  - [WoeUSB](https://github.com/WoeUSB)
+  - [UNetbootin](https://github.com/unetbootin/unetbootin)
+  - [YUMI](https://yumiusb.com/)
+  - [MultiBootUSB](https://github.com/mbusb/multibootusb)
+
+---
+## C/C++ references
+- [C reference](https://en.cppreference.com/w/c)
+  - [c++ reference](https://en.cppreference.com)
+- [The GNU C Reference Manual](https://www.gnu.org/software/gnu-c-manual/gnu-c-manual.html)
+  - [The GNU C Programming Tutorial](http://www.crasseux.com/books/ctutorial/)
+- [Clang: a C language family frontend for LLVM](https://clang.llvm.org/)
+  - [Clang Compiler User’s Manual](https://clang.llvm.org/docs/UsersManual.html)
+  - [Clang's documentation!](https://clang.llvm.org/docs/index.html)
+- [MSDN: C language documentation](https://learn.microsoft.com/en-us/cpp/c-language)
   - [MSDN: C++, C, and Assembler documentation](https://learn.microsoft.com/en-us/cpp)
 - *GUI programming*
   - [Programming Windows, 5th Edition](https://www.charlespetzold.com/pw5/index.html)
@@ -40,19 +114,10 @@
   - [luigi](https://github.com/nakst/luigi)
   - [LCUI](https://github.com/lc-soft/LCUI)
   - [horus_ui](https://github.com/7thFACTOR/horus_ui)
-  - ---
   - [GuiLite](https://github.com/idea4good/GuiLite)
   - [SFGUI — Simple and Fast Graphical User Interface](https://github.com/TankOs/SFGUI)
-- *Binary tools*
-  - [The LLVM Compiler Infrastructure](https://llvm.org/)
-    - [LLVM MinGW](https://github.com/mstorsjo/llvm-mingw)
-  - [GNU Binutils](https://www.gnu.org/software/binutils/)
-  - [x64dbg](https://x64dbg.com/)
-  - [Unicorn: The Ultimate CPU emulator](https://www.unicorn-engine.org/)
-    - [Qiling: Cross platform and multi arch ultra lightweight emulator](https://qiling.io)
-    - [ROPgadget](https://github.com/JonathanSalwan/ROPgadget)
-  - [Keystone: The Ultimate Assembler](https://www.keystone-engine.org/)
-  - [Capstone: The Ultimate Disassembler](http://www.capstone-engine.org/)
+
+- ---
 - *package managers*
   - [xrepo](https://github.com/xmake-io/xrepo)
   - [conan](https://conan.io/)
@@ -62,14 +127,6 @@
   - [SCons](https://scons.org/)
   - [Meson](https://mesonbuild.com/)
   - [CMake](https://cmake.org/)
-- *emulators and RTOS*
-  - [Renode](https://renode.io/)
-  - [Qemu](https://www.qemu.org/)
-    - [How to add a new architecture to QEMU](https://fgoehler.com/blog/adding-a-new-architecture-to-qemu-01/)
-  - [RIOT](https://www.riot-os.org/)
-  - [FreeRTOS](https://www.freertos.org/)
-- *simulators*
-  - [visual debugger](https://pythontutor.com/)
 
 # Lists
 - [Awesome C](https://github.com/oz123/awesome-c)
