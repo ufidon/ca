@@ -13,6 +13,8 @@
 ### Classes
 - CMU
   - [18-447 Introduction to Computer Architecture](https://users.ece.cmu.edu/~jhoe/doku/doku.php?id=18-447_introduction_to_computer_architecture)
+- Harvard
+  - [CS 61: Systems Programming and Machine Organization](https://cs61.seas.harvard.edu)
 - Stanford
   - [CS107: Computer Organization & Systems](https://web.stanford.edu/class/archive/cs/cs107/cs107.1252/)
   - [EE282: Computer Systems Architecture](https://web.stanford.edu/class/ee282/)
