@@ -75,6 +75,10 @@
     - [How to add a new architecture to QEMU](https://fgoehler.com/blog/adding-a-new-architecture-to-qemu-01/)
   - [Bochs](https://bochs.sourceforge.io/)
     - [source](https://github.com/bochs-emu/Bochs/)
+  - [gem5: an open-source system-level and processor simulator](https://www.gem5.org/)
+  - [Verilator Open-Source SystemVerilog simulator](https://github.com/verilator/verilator)
+- *RISC-V specific*
+  - [Spike RISC-V ISA Simulator](https://github.com/riscv-software-src/riscv-isa-sim)
 - *archaic*
   - [MAME: Multiple Arcade Machine Emulator](https://www.mamedev.org/)
   - [OpenSimH](https://opensimh.org/)
