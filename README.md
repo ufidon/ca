@@ -77,6 +77,12 @@
     - [source](https://github.com/bochs-emu/Bochs/)
   - [gem5: an open-source system-level and processor simulator](https://www.gem5.org/)
   - [Verilator Open-Source SystemVerilog simulator](https://github.com/verilator/verilator)
+- *Y86-64*
+  - [js-y86-64](https://github.com/boginw/js-y86-64)
+    - [node implementation](https://github.com/vaguilar/js-y86)
+      - [one more](https://github.com/xsznix/js-y86)
+    - [pipeline style](https://dnc1994.github.io/Y86-Simulator/)
+    - [Y86 Emulator](https://y86.js.org/)
 - *RISC-V specific*
   - [Spike RISC-V ISA Simulator](https://github.com/riscv-software-src/riscv-isa-sim)
 - *archaic*
