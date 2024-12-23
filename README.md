@@ -9,6 +9,7 @@
   - [中文版](https://fengmuzi2003.gitbook.io/csapp3e)
 - [Computer Architecture: A Quantitative Approach, 6e](https://www.elsevier.com/books-and-journals/book-companion/9780128119051)
 - [Modern Processor Design: Fundamentals of Superscalar Processors](https://www.waveland.com/browse.php?t=624)
+- [x86-64 Assembly Language Programming with Ubuntu](https://open.umn.edu/opentextbooks/textbooks/733)
 
 ### Classes
 - CMU
@@ -31,6 +32,9 @@
   - [JWasm](https://jwasm.github.io/)
   - [Keystone: The Ultimate Assembler](https://www.keystone-engine.org/)
   - [Capstone: The Ultimate Disassembler](http://www.capstone-engine.org/)
+- *reversing tools*
+  - [radare 2](https://rada.re/)
+  - [Ghidra](https://ghidra-sre.org/)
 - *Binary tools*
   - [The LLVM Compiler Infrastructure](https://llvm.org/)
     - [LLVM MinGW](https://github.com/mstorsjo/llvm-mingw)
@@ -52,6 +56,8 @@
   - [The rEFInd Boot Manager](https://www.rodsbooks.com/refind/)
 - *OS*
   - [osdev](https://wiki.osdev.org/)
+  - [BareMetal OS](https://github.com/ReturnInfinity/BareMetal-OS)
+    - [PiscisOS](https://tishion.github.io/PiscisOS/)
   - [Minix 3](https://www.minix3.org/)
   - [HelenOS](https://www.helenos.org/)
   - [SerenityOS](https://github.com/SerenityOS/serenity)
@@ -85,6 +91,7 @@
     - [Y86 Emulator](https://y86.js.org/)
 - *RISC-V specific*
   - [Spike RISC-V ISA Simulator](https://github.com/riscv-software-src/riscv-isa-sim)
+  - [FireSim](https://fires.im/)
 - *archaic*
   - [MAME: Multiple Arcade Machine Emulator](https://www.mamedev.org/)
   - [OpenSimH](https://opensimh.org/)
