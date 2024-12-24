@@ -134,6 +134,9 @@ double fun(int i) {
 ---
 
 ## Memory Referencing Errors and Solutions
+
+![runtime image](./imgs/rtimage.png)
+
 - **Common Issues**
   - Out-of-bounds access, invalid pointers, malloc/free misuse
 - **Consequences**
@@ -201,7 +204,7 @@ void copyij(int src[2048][2048], int dst[2048][2048]) {
 
 ---
 
-## Tentative Topics
+## Computer Architecture Components
 - Programs and Data
   - Bit operations, assembly, data representation
 - Memory Hierarchy
@@ -212,3 +215,46 @@ void copyij(int src[2048][2048], int dst[2048][2048]) {
   - Address translation, memory allocation
 - Networking and Concurrency
   - Threads, synchronization, web proxy development
+
+---
+
+## Speedup
+- A task can be divided into several subtasks running in sequence.
+  - ![context switch](./imgs/switch.png)
+  - Improving one subtask boosts overall performance based on how critical that subtask is and how much it improves.
+- **Amdahl's Law** explains the improvement:   
+  - If a fraction $a$ of the task's time is improved by a factor $k$, the new execution time is:  
+    $\displaystyle T_{\text{new}} = (1 - a) T_{\text{old}} + \frac{a T_{\text{old}}}{k}$  
+  - The overall speedup $S$ is calculated by:  
+    $\displaystyle S = \frac{T_{\text{new}}}{T_{\text{old}}} = \frac{1}{(1-a) + \frac{a}{k}}$  
+  - In the extreme case where $k = \infty$ (part of the system is infinitely fast), the maximum speedup is:  
+    $\displaystyle S_{\infty} = \frac{1}{1-a}$  
+
+---
+
+## 📝 Exercises
+1. A computer system spends 70% of its execution time on a specific task. You plan to improve this task by a factor of 5.
+  - ➀ Calculate the overall speedup of the system using Amdahl’s Law. 
+  - ➁ If the task is improved by a factor of 10 instead of 5, calculate the new overall speedup.
+  - ➂ If the improvement factor can be extremely large (i.e. k→∞), calculate the maximum possible speedup for the system.
+2. A system experiences an overall speedup of $S = 2.5$ after optimizing 50% of its runtime. 
+  - Calculate the improvement factor $k$ for the optimized portion of the system using Amdahl’s Law.
+
+---
+
+## Concurrency and Parallelism for Speedup
+- **Concurrency** refers to systems with multiple simultaneous activities
+  - **parallelism** uses concurrency to enhance system speed.  
+- **Thread-level concurrency** allows multiple programs or threads to execute at the same time,
+  - supporting multitasking within a single processor or across multiprocessor systems.  
+- **Multi-core processors** integrate multiple CPU cores on one chip, 
+  - enabling parallel execution and shared memory access,
+  - ![multiprocessor](./imgs/processors.png)
+  - while **hyperthreading** lets a single core handle multiple threads by switching at each clock cycle.  
+  - **Multiprocessing** improves performance by running tasks concurrently 
+    - accelerating single programs if they are designed with multiple threads.  
+- **Instruction-level parallelism** lets modern processors execute multiple instructions per clock cycle, 
+  - using `pipelining` and `superscalar` designs to enhance efficiency.  
+  - **Superscalar processors** sustain execution rates faster than one instruction per cycle by `processing numerous instructions concurrently` through clever hardware designs.  
+  - **Single-instruction, multiple-data (SIMD) parallelism** allows `one instruction to perform operations on multiple data points` simultaneously, 
+    - boosting performance in applications like image and video processing.
