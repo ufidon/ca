@@ -1,6 +1,7 @@
 # Computer Architecture
 CS:APP3e.ch01
 
+![displaywrite](./imgs/layers.png)
 ---
 
 ## Overview
@@ -11,6 +12,8 @@ CS:APP3e.ch01
 ---
 
 ## Course Theme: Abstraction Is Good, But Reality Matters
+![abstraction](./imgs/abstractions-os.png)
+
 - CS courses emphasize abstraction e.g., 
   - abstract data types, 
   - asymptotic analysis of algorithms
@@ -49,6 +52,8 @@ CS:APP3e.ch01
 ---
 
 ## Great Reality ❷: You Need to Understand Assembly
+![compilation](./imgs/compilation.png)
+
 - You may not write assembly, but understanding it is essential for:
   - Debugging
   - Understanding compiler optimizations and inefficiencies
@@ -56,10 +61,46 @@ CS:APP3e.ch01
   - Writing system software (OS, compilers)
   - Security (malware analysis, reverse engineering)
 - Assembly is critical for low-level programming and systems understanding
+- 📝 Go through the compilation procedure
+  ```bash
+  # ⓐ By gcc only
+  # 1. Preprocessing: ov.c → ov.i
+  gcc -E ov.c -o ov.i # or cpp 
+  # 2. Compilation: ov.i → ov.s
+  gcc -S ov.i -o ov.s # or gcc -S ov.c -o ov.s
+  # 3. Assembly: ov.s → ov.o
+  gcc -c ov.s -o ov.o # or gcc -c ov.c -o ov.o
+  # 4. Linking: ov.o → ov
+  gcc ov.o -o ov      # or gcc ov.c -o ov
+  # 5. gcc automates all these procedures
+  gcc ov.c -o ov
+
+  # ⓑ Extra work is needed for separate tools
+  # 1. Preprocessing: ov.c -> ov.i
+  cpp ov.c > ov.i
+  # 2. Compilation: ov.i -> ov.s
+  gcc -S -o ov.s ov.i 
+  # 3. Assembly: ov.s -> ov.o
+  as -o ov.o ov.s
+  # 4. Linking: ov.o -> ov
+  # you can find the dynamic linker by: ldd /bin/ls
+  ld -o ov ov.o -lc -dynamic-linker /lib64/ld-linux-x86-64.so.2
+  ```
+- You need to manually add the following code to ov.s for ⓑ 3
+  ```assembly
+  .section .text
+  .globl _start
+  _start:
+      call main
+      movl $0, %edi  # Return 0 (exit code)
+      call exit
+  ```
 
 ---
 
 ## Great Reality ❸: Memory Matters
+![memory](./imgs/memhier.png)
+
 - **Memory Is Limited and Needs Management**
   - Applications often constrained by memory
 - **Bugs Are Difficult to Trace**
@@ -130,11 +171,14 @@ void copyij(int src[2048][2048], int dst[2048][2048]) {
 ```
 - copyij: 4.3ms | copyji: 81.8ms (Intel i7)
 - Cache efficiency explains the performance gap
+  - ![i7cache](./imgs/corei7caches.png)
 - 📝 Practice: find the code performance of [perf.c](./code/perf.c) specific to your system
 
 ---
 
 ## Great Reality ❺: I/O and Networking Matter
+![io](./imgs/nethost.png)
+
 - Performance and reliability depend on data movement
 - Systems must handle:
   - I/O bottlenecks

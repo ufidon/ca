@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// 📝: trigger segmentation fault
+// 📝: trigger segmentation fault from TWO places
 
 typedef struct {
     int a[2];
