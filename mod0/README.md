@@ -24,7 +24,7 @@ CS:APP3e.ch01
 
 ---
 
-## Great Reality #1: Ints Are Not Integers, Floats Are Not Reals
+## Great Reality ❶: Ints Are Not Integers, Floats Are Not Reals
 - **Example 1:** Is x² ≥ 0?
   - Floats: Yes
   - Integers:
@@ -48,7 +48,7 @@ CS:APP3e.ch01
 
 ---
 
-## Great Reality #2: You Need to Understand Assembly
+## Great Reality ❷: You Need to Understand Assembly
 - You may not write assembly, but understanding it is essential for:
   - Debugging
   - Understanding compiler optimizations and inefficiencies
@@ -59,7 +59,7 @@ CS:APP3e.ch01
 
 ---
 
-## Great Reality #3: Memory Matters
+## Great Reality ❸: Memory Matters
 - **Memory Is Limited and Needs Management**
   - Applications often constrained by memory
 - **Bugs Are Difficult to Trace**
@@ -103,7 +103,7 @@ double fun(int i) {
 
 ---
 
-## Great Reality #4: Performance Involves More than Asymptotic Complexity
+## Great Reality ❹: Performance Involves More than Asymptotic Complexity
 - Constant factors and implementation details matter
 - Performance varies significantly (10x differences) based on code structure
 - Optimization requires:
@@ -134,7 +134,7 @@ void copyij(int src[2048][2048], int dst[2048][2048]) {
 
 ---
 
-## Great Reality #5: I/O and Networking Matter
+## Great Reality ❺: I/O and Networking Matter
 - Performance and reliability depend on data movement
 - Systems must handle:
   - I/O bottlenecks
@@ -150,9 +150,10 @@ void copyij(int src[2048][2048], int dst[2048][2048]) {
 
 ---
 
-## Recommended Textbooks
-- [Computer Systems: A Programmer's Perspective, 3e](http://csapp.cs.cmu.edu/) - Bryant & O'Hallaron (Essential)
-- [The C Programming Language, 2e](https://www.cs.sfu.ca/~ashriram/Courses/CS295/assets/books/C_Book_2nd.pdf) - Kernighan & Ritchie (Best C reference)
+## Textbooks
+- [Computer Systems: A Programmer's Perspective, 3e](http://csapp.cs.cmu.edu/)
+- [The C Programming Language, 2e](https://www.cs.sfu.ca/~ashriram/Courses/CS295/assets/books/C_Book_2nd.pdf)
+- [x86-64 Assembly Language Programming with Ubuntu](https://open.umn.edu/opentextbooks/textbooks/733)
 
 ---
 
