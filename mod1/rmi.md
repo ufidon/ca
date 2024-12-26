@@ -190,7 +190,7 @@ CS:APP3e.ch02
 ## Two's Complement and Radix Complement
 - The **two's complement** system is a specific case of **radix complement** for base-2 (binary) numbers.
 - In general:
-  - **Radix complement** for base-$r$ and $n$-digit number $N$ is:  
+  - **Radix complement** for base-$`r`$ and $n$-digit number $N$ is:  
     $r^n - N$
   - **Diminished radix complement** (one less than the full complement):  
     $(r^n - 1) - N$
@@ -209,7 +209,7 @@ CS:APP3e.ch02
 |---|---|---|---|
 | Addition | $S = A + B$ | If $S > 2^n - 1$, an **overflow** occurs, <br>vand the result wraps around (modulo $2^n$) | $S_{\text{result}} = (A + B) \bmod 2^n$ <br>▶️ **Carry out** occurs if: $C = \left\lfloor \dfrac{A + B}{2^n} \right\rfloor$ |
 | Subtraction | $D = A - B$ | If $A < B$, **borrow** occurs | $D_{\text{result}} = (A - B + 2^n) \bmod 2^n$ |
-| Multiplication | $P = A \times B$ | ▶️The product $P$ can be up to $2n$ bits long: $0 \leq P \leq (2^n - 1)^2$ <br>▶️The lower $n$ bits are retained as the result, <br>and the upper $n$ bits represent overflow | $P_{\text{lower}} = P \bmod 2^n$ <br>$P_{\text{upper}} = \left\lfloor \dfrac{P}{2^n} \right\rfloor$ |
+| Multiplication | $P = A \times B$ | ▶️ The product $P$ can be up to $2n$ bits long: $0 \leq P \leq (2^n - 1)^2$ <br>▶️ The lower $n$ bits are retained as the result, <br>and the upper $n$ bits represent overflow | $P_{\text{lower}} = P \bmod 2^n$ <br>$P_{\text{upper}} = \left\lfloor \dfrac{P}{2^n} \right\rfloor$ |
 | Division | $Q = \left\lfloor \dfrac{A}{B} \right\rfloor$ | Division by zero is undefined | The remainder is: $R = A \bmod B$ |
 | Modulo | $R = A \bmod B$ | No overflow | It ensures: $0 \leq R < B$ |
 | Negation | $R = -A$ | $\text{Overflow if:} \quad (A ≠ 0)$ | $R = -A \bmod 2^n$ |
@@ -222,7 +222,7 @@ CS:APP3e.ch02
 
 ---
 
-## Arithmetic Operations on Signed Two’s Complement Numbers
+## Arithmetic Operations on Signed Two's Complement Numbers
 - Two’s complement representation in $n$-bits for $N$: 
   - $-2^{n-1} \leq N \leq 2^{n-1} - 1$
   - same as unsigned for **positive numbers**
@@ -234,8 +234,8 @@ CS:APP3e.ch02
 | Addition | $S = A + B$ | $\text{Overflow if:} \quad (A_{n-1} = B_{n-1}) \land (S_{n-1} \neq A_{n-1})$  | $S_{\text{result}} = S \bmod 2^n$ |
 | Subtraction | $D = A - B = A + (-B)$ | $\text{Overflow if:} \quad (A_{n-1} \neq B_{n-1}) \land (S_{n-1} \neq A_{n-1})$ | $D_{\text{result}} = D \bmod 2^n$ |
 | Multiplication | $P = A \times B$ | $\text{Overflow if:} \quad P \geq 2^{n-1} \text{ or } P < -2^{n-1}$  | $P_{\text{result}} = P \bmod 2^n$ |
-| Division | $Q = \left\lfloor \dfrac{A}{B} \right\rfloor$ | ▶️Division by zero is undefined <br>▶️$\text{Overflow if:} \quad (A = -2^{n-1}) \land (B = -1)$  | $Q = (-2^{n-1}) \bmod 2^n = -2^{n-1}$ |
-| Modulo | $R = A \bmod B$ | No overflow | ▶️It ensures: $0 \leq R < B$ <br>▶️$R$ has sign of $A$ |
+| Division | $Q = \left\lfloor \dfrac{A}{B} \right\rfloor$ | ▶️ Division by zero is undefined <br>▶️ $`\text{Overflow if:} \quad (A = -2^{n-1}) \land (B = -1)`$  | $Q = (-2^{n-1}) \bmod 2^n = -2^{n-1}$ |
+| Modulo | $R = A \bmod B$ | No overflow | ▶️ It ensures: $0 \leq R < B$ <br>▶️ $R$ has sign of $A$ |
 | Negation | $R = -A$ | $\text{Overflow if:} \quad (A = -2^{n-1})$ | $R = (-2^{n-1}) \bmod 2^n = -2^{n-1}$ |
 
 - Overflow leads to wrapping around to the opposite end of the number line.  
