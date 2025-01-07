@@ -1,6 +1,7 @@
 # Representing and Manipulating Information
 CS:APP3e.ch02
 
+Bits, Bytes, and Integers
 ---
 
 ## Information Storage
@@ -454,7 +455,7 @@ CS:APP3e.ch02
 ---
 
 ## Arithmetic: Basic Rules
-- Unsigned ints, 2’s complement ints are isomorphic rings: isomorphism = casting
+- Unsigned ints, 2's complement ints are isomorphic rings: isomorphism = casting
 - Left shift for unsigned/signed ≡ multiplication by 2ᵏ
 - Right shift
   - Unsigned: logical shift ≡ div (division + round to zero) by 2ᵏ
