@@ -7,7 +7,7 @@ int main()
   printf("Size of double: %zu bytes\n", sizeof(double));
 
   // extended precision, 80 bits on x86; 64 or 128 on other architectures
-  // resulting in 16 bytes is due the alignment of memory layout
+  // resulting in 16 bytes is due the alignment of memory layout and ABI requirements
   printf("Size of long double: %zu bytes\n", sizeof(long double));
   // if LDBL_DIG is around 18, the long double is 80-bit extended precision internally.
   // If it’s 33-34, it represents 128-bit (quadruple precision).

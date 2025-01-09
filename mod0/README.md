@@ -130,6 +130,7 @@ double fun(int i) {
   - fun(2) → 3.139...
   - fun(6) → Segmentation fault
 - 📝 Practice: trigger segmentation fault from [fun.c](./code/fun.c)
+  - run the code multiple times with parameters 0-7, do you get the same result every time?
 
 ---
 
@@ -226,7 +227,7 @@ void copyij(int src[2048][2048], int dst[2048][2048]) {
   - If a fraction $a$ of the task's time is improved by a factor $k$, the new execution time is:  
     $\displaystyle T_{\text{new}} = (1 - a) T_{\text{old}} + \frac{a T_{\text{old}}}{k}$  
   - The overall speedup $S$ is calculated by:  
-    $\displaystyle S = \frac{T_{\text{new}}}{T_{\text{old}}} = \frac{1}{(1-a) + \frac{a}{k}}$  
+    $\displaystyle S = \frac{T_{\text{old}}}{T_{\text{new}}} = \frac{1}{(1-a) + \frac{a}{k}}$  
   - In the extreme case where $k = \infty$ (part of the system is infinitely fast), the maximum speedup is:  
     $\displaystyle S_{\infty} = \frac{1}{1-a}$  
 
@@ -258,3 +259,8 @@ void copyij(int src[2048][2048], int dst[2048][2048]) {
   - **Superscalar processors** sustain execution rates faster than one instruction per cycle by `processing numerous instructions concurrently` through clever hardware designs.  
   - **Single-instruction, multiple-data (SIMD) parallelism** allows `one instruction to perform operations on multiple data points` simultaneously, 
     - boosting performance in applications like image and video processing.
+
+---
+
+## 📝 Investigate Your Computer
+- with [cpu-z](https://www.cpuid.com/softwares/cpu-z.html)

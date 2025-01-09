@@ -16,6 +16,7 @@ Bits, Bytes, and Integers
   - while `machine-level code` views all data as `byte sequences`.
 - 📝 View memory and disk storage with [HxD](https://mh-nexus.de/en/hxd/)
 - 📝 Explore processes with [Process Explorer](https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer)
+  - 📝 View process code with [x64dbg](https://x64dbg.com/)
 
 ---
 
@@ -178,7 +179,7 @@ Bits, Bytes, and Integers
     - undefined behavior
   - Model sets with bit vectors and set operations with bitwise operations
     - n-bits vector values ↦  all subsets of n-elements set
-    - `&` ↦ intersection, `\|` ↦ union, `~` ↦ complement, `^` ↦ symmetric difference
+    - `&` ↦ intersection, `|` ↦ union, `~` ↦ complement, `^` ↦ symmetric difference
 
 ---
 
@@ -199,7 +200,9 @@ Bits, Bytes, and Integers
   - provide a simple way to represent negative numbers and perform subtraction with addition
 - **Overflow** occurs if the result falls `outside of range`
 - 📝 Practice: find the ranges of all C/C++ integer types
-  - check your answers against `limits.h`
+  - check your answers against `limits.h`, then with [cput.py](./code/cput.py)
+
+
 
 ---
 
@@ -210,7 +213,7 @@ Bits, Bytes, and Integers
     $r^n - N$
   - **Diminished radix complement** (one less than the full complement):  
     $(r^n - 1) - N$
-- In **binary (base-2)**: $2^n - N$
+- In **binary (base-2)**, the `radix complement is 2's complement`: $2^n - N$
 - **Steps to compute two's complement**:
   1. **Find the one's complement** (diminished radix complement):  $(2^n - 1) - N$  
      - This inverts all bits (flip 1 to 0 and 0 to 1).     
@@ -218,10 +221,16 @@ Bits, Bytes, and Integers
 
 ---
 
-## Conversion and Casting
+## Conversion and Casting in Theory
 - Mappings between unsigned and two's complement numbers `keep bit representations and reinterpret`
   - signed $x$ to unsigned $ux$: $x \stackrel{T2B}{⟶} B \stackrel{B2U}{⟶}ux$
   - unsigned $ux$ to $x$: $ux \stackrel{U2B}{⟶} B \stackrel{B2T}{⟶}x$
+
+| **Conversion**         | **Formula**                                                                 |
+|------------------------|-----------------------------------------------------------------------------|
+| **Unsigned to Signed** | $S = \begin{cases} U & \text{if } U < 2^{w-1} \\ U - 2^w & \text{if } U \geq 2^{w-1} \end{cases}$ |
+| **Signed to Unsigned** | $U = \begin{cases} S & \text{if } S \geq 0 \\ S + 2^w & \text{if } S < 0 \end{cases}$ |
+| **Bit Pattern**        | $\text{Bit Pattern} = \text{Binary representation of } (U \mod 2^w)$   |
 
 | Unsigned (4-bit) | Binary (4-bit) | Signed (4-bit) |
 |------------------|----------------|-----------------|
@@ -242,6 +251,11 @@ Bits, Bytes, and Integers
 | 14               | 1110           | -2              |
 | 15               | 1111           | -1              |
 
+- 📝 Convert between unsigned and signed integer of width $w$ with [uvt.py](./code/uvt.py)
+
+---
+
+## Conversion and Casting in C/C++
 - In C/C++, `constants` by default are considered to be `signed integers`
   - Unsigned if have “U” as suffix: 0U, 314U
   - Explicit casting between signed and unsigned same as U2T and T2U
@@ -249,7 +263,6 @@ Bits, Bytes, and Integers
     - signed values implicitly cast to unsigned in single expression mixed with unsigned and signed
       - including comparison operations `<, >, ==, <=, >=`
   - Can have `unexpected effects: adding or subtracting` $2^n$
-
 - 📝 Watch out [casting surprise](./code/surp.c)
 - 📝 Find the vulnerabilities in the code below
   - [Old FreeBSD’s implementation of getpeername](./code/vul1.c)
