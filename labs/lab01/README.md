@@ -1,7 +1,7 @@
 # Setup Development Tools
 
 ## **Objective**  
-This lab will guide you through setting up and using development tools for C/C++ programming and debugging, including Visual Studio 2022, x64dbg, HxD, Ubuntu 22.04 LTS, and CPU-Z. By the end of the lab, you will have practical experience compiling, running, debugging, and analyzing a C/C++ program and examining your computer's specifications.
+This lab will guide you through setting up and using development tools for C/C++ programming and debugging, including Visual Studio 2022, x64dbg, HxD, Ubuntu 22.04 LTS or any recent Linux distribution, and CPU-Z. By the end of the lab, you will have practical experience compiling, running, debugging, and analyzing a C/C++ program and examining your computer's specifications.
 
 ---
 
@@ -25,7 +25,7 @@ This lab will guide you through setting up and using development tools for C/C++
    - Open Visual Studio 2022.  
    - Create a new project by selecting **File > New > Project > Console App (C/C++).**  
    - You may use one of the code files demonstrated during the class:
-     - [fun.c](../../mod0/code/fun.c), [ov.c](../../mod0/code/ov.c), or [perf.c](../../mod0/code/perf.c)
+     - [fun.c](../../mod0/code/fun.c), or [perf.c](../../mod0/code/perf.c)
      - Remember to add the following line to the end of the code
        ```c++
        getchar();  // Keeps the program running for debugging.
@@ -85,17 +85,16 @@ This lab will guide you through setting up and using development tools for C/C++
    - Install [VSCodium](https://vscodium.com/)
 
 3. **Create and Compile the C/C++ Program:**  
-   - Open the same C program from Step 1 using Codium.  
+   - Open the C program [ov.c](../../mod0/code/ov.c) from using Codium.  
    - Compile the program using:  
      ```bash
-     g++ -o fun fun.cpp
+     g++ -o ov ov.c
      ```
 
 4. **Run the Program:**  
    - Execute the program following lecture demo:  
      ```bash
-     ./fun
-     ...
+     ./ov
      ```
 
 5. 💻**Take a Screenshot** of the terminal showing the compilation and execution.  
