@@ -127,7 +127,7 @@ double fun(int i) {
 ```
 - Different results depending on system and compiler:
   - fun(0) → 3.14
-  - fun(2) → 3.139...
+  - fun(2) → 3.139... // Why no out-of-bound exception happened here?
   - fun(6) → Segmentation fault
 - 📝 Practice: trigger segmentation fault from [fun.c](./code/fun.c)
   - run the code multiple times with parameters 0-7, do you get the same result every time?
