@@ -13,7 +13,7 @@ Floating Point
   - $feed.beef_{16} = 15 \times 16^3 + 14 \times 16^2 + 14 \times 16^1 + 13 \times 16^0 + 11 \times 16^{-1} + 14 \times 16^{-2} + 14 \times 16^{-3} + 15 \times 16^{-4}$
 - 📝 Practice
   - Convert $2025.5205_{10}$ to binary and hexadecimal
-  - Convert $$11011.11011_2$ to decimal and hexadecimal
+  - Convert $11011.11011_2$ to decimal and hexadecimal
   - Convert $feed.beef_{16}$ to binal and decimal
 - 📝 Practice
   - What will happen when we move the point leftward or rightward?
@@ -116,7 +116,7 @@ Floating Point
   - the total number of normalized values (don't miss the sign bit)
     - $2 ⋅ 2^m ⋅ (E_{max} - 1)$
   - the maximum and minimum normalized values in magnitude
-    - $M_{max} ⋅ 2^{E_max}$, $M_{min} ⋅ 2^{E_min}$
+    - $M_{max} ⋅ 2^{E_{max}}$, $M_{min} ⋅ 2^{E_{min}}$
 
 ---
 
