@@ -228,9 +228,9 @@ Bits, Bytes, and Integers
 
 | **Conversion**         | **Formula**                                                                 |
 |------------------------|-----------------------------------------------------------------------------|
-| **Unsigned to Signed** | $S = \begin{cases} U & \text{if } U < 2^{w-1} \\ U - 2^w & \text{if } U \geq 2^{w-1} \end{cases}$ |
-| **Signed to Unsigned** | $U = \begin{cases} S & \text{if } S \geq 0 \\ S + 2^w & \text{if } S < 0 \end{cases}$ |
-| **Bit Pattern**        | $\text{Bit Pattern} = \text{Binary representation of } (U \mod 2^w)$   |
+| **Unsigned to Signed** | $`S = \begin{cases} U & \text{if } U < 2^{w-1} \\ U - 2^w & \text{if } U \geq 2^{w-1} \end{cases}`$ |
+| **Signed to Unsigned** | $`U = \begin{cases} S & \text{if } S \geq 0 \\ S + 2^w & \text{if } S < 0 \end{cases}`$ |
+| **Bit Pattern**        | $`\text{Bit Pattern} = \text{Binary representation of } (U \mod 2^w)`$   |
 
 | Unsigned (4-bit) | Binary (4-bit) | Signed (4-bit) |
 |------------------|----------------|-----------------|
