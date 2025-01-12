@@ -318,7 +318,7 @@ Floating Point
 
 ---
 
-## 🍎 Creating and Normalizing Floating-Point Numbers
+## 🍎 Creating Floating-Point Numbers With Rounding
 Convert rational numbers into an **8-bit floating-point format** with the structure `(S,E,M)=(1,4,3)`.
 
 - **Steps**
@@ -338,9 +338,9 @@ Convert rational numbers into an **8-bit floating-point format** with the struct
 
 | Condition  | Action |
 |-----------|---------|
-| **G = 0**  | Truncate (round toward 0). |
+| **G = 0**  | Truncate (round down). |
 | **G = 1 and R = 0 and S = 0** | Round to even (round down if the least significant bit of the mantissa is 0, otherwise round up). |
-| **G = 1 and (R = 1 or S = 1)**| Round away from 0.   |
+| **G = 1 and (R = 1 or S = 1)**| Round up.   |
 
 ---
 
