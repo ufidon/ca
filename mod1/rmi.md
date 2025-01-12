@@ -78,6 +78,8 @@ Bits, Bytes, and Integers
 | Typical 64-bit| 1| 2 | 4   | 8| 4 | 8  | —   | 8   |
 | x86-64| 1| 2 | 4   | 8| 4 | 8  | 10/16  | 8   |
 
+- 📝 Review C/C++ [types](./code/cct.c)
+
 ---
 
 ## Addressing and Byte Ordering
@@ -184,7 +186,7 @@ Bits, Bytes, and Integers
 ---
 
 ## Integer Binary Representations
-- Given bit pattern $X$ of n-bits, $b_i$ as the bit at position $i$. The two popular integer encodings
+- Given bit pattern $X$ of w-bits, $b_i$ as the bit at position $i$. The two popular integer encodings
   - `B2U`: bit pattern to unsigned integer
   - `B2T`: bit pattern to two's complement integer
   - Both are `one-to-one` functions so they are `invertible`
@@ -192,8 +194,8 @@ Bits, Bytes, and Integers
 
 | | Unsigned Representation | Signed Two's Complement Representation |
 |---|---|---|
-| Formula | $U = B2U(X) = \sum_{i=0}^{n-1} b_i \cdot 2^i$ | $S = B2T(X) = -b_{n-1} \cdot 2^{n-1} + \sum_{i=0}^{n-2} b_i \cdot 2^i$  |
-| Range | 0 to $2^n - 1$ | $-2^{n-1}$ to $2^{n-1} - 1$ |
+| Formula | $U = B2U(X) = \sum_{i=0}^{w-1} b_i \cdot 2^i$ | $S = B2T(X) = -b_{w-1} \cdot 2^{w-1} + \sum_{i=0}^{w-2} b_i \cdot 2^i$  |
+| Range | 0 to $2^w - 1$ | $-2^{w-1}$ to $2^{w-1} - 1$ |
 
 - **Unsigned values** are always non-negative 
 - **Signed two's complement** can represent negative values by utilizing the MSB as a sign bit
@@ -209,15 +211,15 @@ Bits, Bytes, and Integers
 ## Two's Complement and Radix Complement
 - The **two's complement** system is a specific case of **radix complement** for base-2 (binary) numbers.
 - In general:
-  - **Radix complement** for base-$`r`$ and $n$-digit number $N$ is:  
-    $r^n - N$
+  - **Radix complement** for base-$`r`$ and $w$-digit number $N$ is:  
+    $r^w - N$
   - **Diminished radix complement** (one less than the full complement):  
-    $(r^n - 1) - N$
-- In **binary (base-2)**, the `radix complement is 2's complement`: $2^n - N$
+    $(r^w - 1) - N$
+- In **binary (base-2)**, the `radix complement is 2's complement`: $2^w - N$
 - **Steps to compute two's complement**:
-  1. **Find the one's complement** (diminished radix complement):  $(2^n - 1) - N$  
+  1. **Find the one's complement** (diminished radix complement):  $(2^w - 1) - N$  
      - This inverts all bits (flip 1 to 0 and 0 to 1).     
-  2. **Add 1** to get the full radix complement: $2^n - N = (2^n - 1 - N) + 1$
+  2. **Add 1** to get the full radix complement: $2^w - N = (2^w - 1 - N) + 1$
 
 ---
 
@@ -262,7 +264,7 @@ Bits, Bytes, and Integers
   - ⚠️ Implicit casting also occurs via assignments and procedure calls
     - signed values implicitly cast to unsigned in single expression mixed with unsigned and signed
       - including comparison operations `<, >, ==, <=, >=`
-  - Can have `unexpected effects: adding or subtracting` $2^n$
+  - Can have `unexpected effects: adding or subtracting` $2^w$
 - 📝 Watch out [casting surprise](./code/surp.c)
 - 📝 Find the vulnerabilities in the code below
   - [Old FreeBSD’s implementation of getpeername](./code/vul1.c)
@@ -289,16 +291,16 @@ Bits, Bytes, and Integers
 ---
 
 ## Arithmetic Operations on Unsigned Numbers
-- Let $A$ and $B$ be two unsigned $n$-bit integers,
+- Let $A$ and $B$ be two unsigned $w$-bit integers,
 
 | Operation | Formula | Overflow Condition | Overflowed Result |
 |---|---|---|---|
-| Addition | $S = UAdd_n(A,B) = A + B$ | If $S > 2^n - 1$, an **overflow** occurs, <br>and the result wraps around (modulo $2^n$) | $S_{\text{result}} = (A + B) \bmod 2^n$ <br>▶️ **Carry out** occurs if: $C = \left\lfloor \dfrac{A + B}{2^n} \right\rfloor$ |
-| Subtraction | $D = A - B$ | If $A < B$, **borrow** occurs | $D_{\text{result}} = (A - B + 2^n) \bmod 2^n$ |
-| Multiplication | $P = UMult_n(A,B) = A \times B$ | ▶️ The product $P$ can be up to $2n$ bits long: $0 \leq P \leq (2^n - 1)^2$ <br>▶️ The lower $n$ bits are retained as the result, <br>and the upper $n$ bits represent overflow | $P_{\text{lower}} = P \bmod 2^n$ <br>$P_{\text{upper}} = \left\lfloor \dfrac{P}{2^n} \right\rfloor$ |
+| Addition | $S = A +_u B = A + B$ | If $S > 2^w - 1$, an **overflow** occurs, <br>and the result wraps around (modulo $2^w$) | $S_{\text{result}} = (A + B) \bmod 2^w$ <br>▶️ **Carry out** occurs if: $C = \left\lfloor \dfrac{A + B}{2^w} \right\rfloor$ |
+| Subtraction | $D = A - B$ | If $A < B$, **borrow** occurs | $D_{\text{result}} = (A - B + 2^w) \bmod 2^w$ |
+| Multiplication | $P = A ×_u B = A \times B$ | ▶️ The product $P$ can be up to $2n$ bits long: $0 \leq P \leq (2^w - 1)^2$ <br>▶️ The lower $w$ bits are retained as the result, <br>and the upper $w$ bits represent overflow | $P_{\text{lower}} = P \bmod 2^w$ <br>$P_{\text{upper}} = \left\lfloor \dfrac{P}{2^w} \right\rfloor$ |
 | Division | $Q = \left\lfloor \dfrac{A}{B} \right\rfloor$ | Division by zero is undefined | The remainder is: $R = A \bmod B$ |
 | Modulo | $R = A \bmod B$ | No overflow | It ensures: $0 \leq R < B$ |
-| Negation | $R = -A$ | $\text{Overflow if:} \quad (A ≠ 0)$ | $R = -A \bmod 2^n$ |
+| Negation | $R = -A$ | $\text{Overflow if:} \quad (A ≠ 0)$ | $R = -A \bmod 2^w$ |
 
 - Unsigned arithmetic is straightforward but limited by the bit-width.  
 - Overflow and carry detection is crucial in low-level programming.  
@@ -309,23 +311,23 @@ Bits, Bytes, and Integers
 ---
 
 ## Arithmetic Operations on Signed Two's Complement Numbers
-- Two’s complement representation in $n$-bits for $N$: 
-  - $-2^{n-1} \leq N \leq 2^{n-1} - 1$
+- Two’s complement representation in $w$-bits for $N$: 
+  - $-2^{w-1} \leq N \leq 2^{w-1} - 1$
   - same as unsigned for **positive numbers**
-  - $N_{\text{negative}} = 2^n - N$ for **negative numbers**
-- Let $A$ and $B$ be two $n$-bit signed integers:
+  - $N_{\text{negative}} = 2^w - N$ for **negative numbers**
+- Let $A$ and $B$ be two $w$-bit signed integers:
 
 | Operation | Formula | Overflow Condition | Overflowed Result |
 |---|---|---|---|
-| Addition | $S = TAdd_n(A,B) = A + B$ | $\text{Overflow if:} \quad (A_{n-1} = B_{n-1}) \land (S_{n-1} \neq A_{n-1})$  | $S_{\text{result}} = S \bmod 2^n$ |
-| Subtraction | $D = A - B = A + (-B)$ | $\text{Overflow if:} \quad (A_{n-1} \neq B_{n-1}) \land (S_{n-1} \neq A_{n-1})$ | $D_{\text{result}} = D \bmod 2^n$ |
-| Multiplication | $P = TMult_n(A,B) = A \times B$ | $\text{Overflow if:} \quad P \geq 2^{n-1} \text{ or } P < -2^{n-1}$  | $P_{\text{result}} = P \bmod 2^n$ |
-| Division | $Q = \left\lfloor \dfrac{A}{B} \right\rfloor$ | ▶️ Division by zero is undefined <br>▶️ $`\text{Overflow if:} \quad (A = -2^{n-1}) \land (B = -1)`$  | $Q = (-2^{n-1}) \bmod 2^n = -2^{n-1}$ |
+| Addition | $S = A +_t B = A + B$ | $\text{Overflow if:} \quad (A_{w-1} = B_{w-1}) \land (S_{w-1} \neq A_{w-1})$  | $S_{\text{result}} = S \bmod 2^w$ |
+| Subtraction | $D = A - B = A + (-B)$ | $\text{Overflow if:} \quad (A_{w-1} \neq B_{w-1}) \land (S_{w-1} \neq A_{w-1})$ | $D_{\text{result}} = D \bmod 2^w$ |
+| Multiplication | $P = A ×_t B = A \times B$ | $\text{Overflow if:} \quad P \geq 2^{w-1} \text{ or } P < -2^{w-1}$  | $P_{\text{result}} = P \bmod 2^w$ |
+| Division | $Q = \left\lfloor \dfrac{A}{B} \right\rfloor$ | ▶️ Division by zero is undefined <br>▶️ $`\text{Overflow if:} \quad (A = -2^{w-1}) \land (B = -1)`$  | $Q = (-2^{w-1}) \bmod 2^w = -2^{w-1}$ |
 | Modulo | $R = A \bmod B$ | No overflow | ▶️ It ensures: $0 \leq R < B$ <br>▶️ $R$ has sign of $A$ |
-| Negation | $R = -A$ | $\text{Overflow if:} \quad (A = -2^{n-1})$ | $R = (-2^{n-1}) \bmod 2^n = -2^{n-1}$ |
+| Negation | $R = -A$ | $\text{Overflow if:} \quad (A = -2^{w-1})$ | $R = (-2^{w-1}) \bmod 2^w = -2^{w-1}$ |
 
 - Overflow leads to wrapping around to the opposite end of the number line.  
-- For $n$-bit numbers:  
+- For $w$-bit numbers:  
   - Positive overflow results in a large negative value.  
   - Negative overflow results in a large positive value.
 - 📝 [sign.c](./code/sign.c) shows arithmetic operations on `signed char` in C.
@@ -341,14 +343,14 @@ Bits, Bytes, and Integers
  	t = u + v
   // t==s
   ```
-  - Unsigned: addition mod $2^n$
-    - Mathematical addition + possible subtraction of $2^n$
-  - Signed: modified addition mod $2^n$ (result in proper range)
-    - Mathematical addition + possible addition or subtraction of $2^n$
+  - Unsigned: addition mod $2^w$
+    - Mathematical addition + possible subtraction of $2^w$
+  - Signed: modified addition mod $2^w$ (result in proper range)
+    - Mathematical addition + possible addition or subtraction of $2^w$
 - TMult and UMult use normal multiplication followed by truncate
   - same operation on bit level
-  - Unsigned: multiplication mod $2^n$
-  - Signed: modified multiplication mod $2^n$ (result in proper range)
+  - Unsigned: multiplication mod $2^w$
+  - Signed: modified multiplication mod $2^w$ (result in proper range)
 - 📝 Practice
   ```c
   // What is the problem here using unsigned as loop index?
@@ -366,7 +368,7 @@ Bits, Bytes, and Integers
 | **Operation** | **Unsigned Integer** | **Signed Integer (Two's Complement)**| **Equivalent Bit Shift** |
 |---|---|---|---|
 | **Multiplication by $2^k$** | $x \times 2^k$  | $x \times 2^k$ (Arithmetic shift left)| $x \ll k$ |
-| **Overflow (Multiplication)** | Wraps around (mod $2^n$)    | Sign bit may change (overflow if sign changes)|  |
+| **Overflow (Multiplication)** | Wraps around (mod $2^w$)    | Sign bit may change (overflow if sign changes)|  |
 | **Division by $2^k$**  | $\lfloor x / 2^k \rfloor$ | $\lfloor x / 2^k \rfloor$ (Arithmetic shift right)  | $x \gg k$ |
 | **Rounding (Division)**  | Always rounds towards 0  | Rounds towards `negative infinity`    |  |
 | **Sign Extension (Right Shift)**   | Zeros filled in left bits| Sign bit (MSB) extends (preserves sign)  | $x \gg k$ (with sign extension)    |
@@ -443,38 +445,56 @@ Bits, Bytes, and Integers
 
 | Property | Description |
 |---|---|
-| **Closure** | $0 ≤ \text{UAdd}_n(u, v) ≤ 2^n - 1$ |
-| **Commutativity** | $\text{UAdd}_n(u, v) = \text{UAdd}_n(v, u)$ |
-| **Associativity** | $\text{UAdd}_n(w, \text{UAdd}_n(u, v)) = \text{UAdd}_n(\text{UAdd}_n(w, u), v)$ |
-| **Identity** | $\text{UAdd}_n(u, 0) = u$ |
-| **Inverse** | $\text{UComp}_n(u) = 2^n - u$: $\text{UAdd}_n(u, \text{UComp}_n(u)) = 0$ | 
+| **Closure** | $0 ≤ u +_u  v ≤ 2^w - 1$ |
+| **Commutativity** | $u +_u  v = v +_u  u$ |
+| **Associativity** | $w +_u (u +_u  v) = (w +_u  u) +_u v$ |
+| **Identity** | $u +_u  0 = u$ |
+| **Inverse** | $u' = 2^w - u$ and $u +_u u' = 0$ | 
 
 ---
 
 ## Mathematical Properties of TAdd
 - Signed two's complements with TAdd is `isomorphic` group to unsigneds with UAdd
-  - TAddₙ(u,v) = U2T(UAddₙ(T2U(u), T2U(v))) 
+  - $u +_t v = U2T(T2U(u) +_u T2U(v))$
   - since both have identical bit patterns
-- Two’s complement under TAdd forms a group
+- Two’s complement under TAdd forms a `group`
   - Closed, Commutative, Associative, 0 is additive identity
   - Every element has additive inverse
-    - TCompₙ(t) = t if t ≠ TMinₙ else TMinₙ
-  - $`\text{TAdd}_n(u,v) = \begin{cases}
-    u+v+2^n, & u+v < \text{TMin}_n \text{ (underflow)}\\
+    - $t' = -t$ if t ≠ TMinₙ else TMinₙ
+    - $\tilde{t} +_t 1=-t$, where $\tilde{t}$ is $t$'s one's complement
+- TAdd `drops off the MSB` of true sum that needs `w+1 bits`
+  - $`u +_t v = \begin{cases}
+    u+v+2^w, & u+v < \text{TMin}_n \text{ (underflow)}\\
     u+v, & \text{TMin}_n ≤ u+v ≤ \text{TMax}_n \\
-    u+v-2^n, & \text{TMax}_n < u+v \text{ (overflow)}
+    u+v-2^w, & \text{TMax}_n < u+v \text{ (overflow)}
   \end{cases}`$
 
 ---
 
 ## Arithmetic: Basic Rules
-- Unsigned ints, 2's complement ints are isomorphic rings: isomorphism = casting
-- Left shift for unsigned/signed ≡ multiplication by 2ᵏ
-- Right shift
+- Unsigned ints, 2's complement ints are `isomorphic rings`: 
+  - isomorphism = casting
+- `Left shift` for unsigned/signed ≡ multiplication by 2ᵏ
+- `Right shift`
   - Unsigned: logical shift ≡ div (division + round to zero) by 2ᵏ
   - Signed: arithmetic shift
     - Positive numbers: div (division + round to zero) by 2ᵏ
     - Negative numbers: div (division + round away from zero) by 2ᵏ
-      - can be fixed with biasing
-- Both unsigned/two's complement multiplication and addition truncate to n bits
+      - can be fixed with [biasing](./code/bd.c)
+- Both unsigned/two's complement `multiplication and addition` truncate to n bits
   - Both form rings isomorphic to ring of integers mod 2ⁿ
+- Both can `violate ordering` properties due to [overflow or underflow](./code/vo.c)
+  - $u>0 ⇏ u+v>v$
+  - $u>0,v>0 ⇏ u⋅v>0$
+
+---
+
+## Review: Group, Ring, and Field
+- **Group:** `One` binary operation **(∘)** 
+  - satisfies `closure, associativity, identity, and inverses`.
+- **Ring:** `Two` binary operations **(+ and ⋅)**, 
+  - `addition` forms an `Abelian` group, 
+  - `multiplication` satisfies `associativity and distributivity over addition`.
+- **Field:** `Two` binary operations **(+ and ⋅)**, 
+  - `addition` forms an `Abelian` group, 
+  - `multiplication` (excluding zero) also forms an `Abelian` group, and `multiplication distributes over addition`.
