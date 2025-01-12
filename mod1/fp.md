@@ -89,7 +89,7 @@ Floating Point
 |------|------------|----------|----------|-------|
 | Single Precision | 32  | 1 | 8 | 23      |
 | Double Precision | 64  | 1 | 11| 52      |
-| [Extended Precision](https://en.wikipedia.org/wiki/Extended_precision)<br>(x86 architectures) | 80  | 1 | 15| 64|
+| [Extended Precision](https://en.wikipedia.org/wiki/Extended_precision)<br>(x86 architectures) | 80  | 1 | 15| 63/64|
 
 - Categories of single-precision floating-point values
   - [fp categories](./imgs/fp-cases.png)
@@ -115,8 +115,8 @@ Floating Point
 - 📝 For each precision, find
   - the total number of normalized values (don't miss the sign bit)
     - $2 ⋅ 2^m ⋅ (E_{max} - 1)$
-  - the maximum and minimum normalized values in magnitude
-    - $M_{max} ⋅ 2^{E_{max}}$, $M_{min} ⋅ 2^{E_{min}}$
+  - the (maximum, minimum) normalized values in magnitude
+    - ($M_{max} ⋅ 2^{E_{max}}$, $M_{min} ⋅ 2^{E_{min}}$)
 
 ---
 
@@ -162,7 +162,7 @@ Floating Point
 ---
 
 ## Special Values  
-- `Infinity ∞` with `exp = 111…1`, `frac = 000…0`.
+- `∞` with `exp = 111…1`, `frac = 000…0`.
   - Represents overflow or division by zero. 
   - e.g., 1.0/0.0 = −1.0/−0.0 = +∞,  1.0/−0.0 = -1.0/0.0 = −∞
 - `NaN` (Not a Number) with `exp = 111…1`, `frac ≠ 000…0`.  
@@ -176,14 +176,14 @@ Floating Point
 | **Category**    | **Sign Bit** | **Exponent**       | **Mantissa**       | **Description**                                                   |
 |-----------------|--------------|--------------------|--------------------|-------------------------------------------------------------------|
 | **NaN**         | 1            | All 1s             | Non-zero           | Not a Number, represents undefined or unrepresentable results.    |
-| **−∞**          | 1            | All 1s             | All 0s             | Negative infinity, represents the smallest possible value.        |
+| **−∞**          | 1            | All 1s             | All 0s             | -∞, represents the smallest possible value.        |
 | **−Normalized** | 1            | Not all 0s or 1s   | Normalized         | Negative real numbers with full precision.                        |
 | **−Denorm**     | 1            | All 0s             | Non-zero           | Very small negative numbers close to zero, with reduced precision.|
 | **−0**          | 1            | All 0s             | All 0s             | Negative zero, distinct from +0 in some operations.               |
 | **+0**          | 0            | All 0s             | All 0s             | Positive zero, distinct from −0 in some operations.               |
 | **+Denorm**     | 0            | All 0s             | Non-zero           | Very small positive numbers close to zero, with reduced precision.|
 | **+Normalized** | 0            | Not all 0s or 1s   | Normalized         | Positive real numbers with full precision.                        |
-| **+∞**          | 0            | All 1s             | All 0s             | Positive infinity, represents the largest possible value.         |
+| **+∞**          | 0            | All 1s             | All 0s             | + ∞, represents the largest possible value.         |
 | **NaN**         | 0            | All 1s             | Non-zero           | Not a Number, represents undefined or unrepresentable results.    |
 
 
@@ -200,6 +200,22 @@ Floating Point
 - 📝 Find the bit patterns and decimal values of the minimums and maximums of
   - -normalized, -denormalized, +denormalized, and +normalized
   - check you solution with [fv.py](./code/fv.py)
+
+---
+
+## 📝 Find then fix the errors in the table
+
+| Precision Type   | Normalized Minimum<br> (Smallest Positive) | Normalized Maximum<br> (Largest Positive) | Denormalized Minimum<br> (Smallest Positive Subnormal) | Denormalized Maximum<br> (Largest Positive Subnormal) |
+|------------------|---------------------------------------|---------------------------------------|---------------------------------------------------|---------------------------------------------------|
+| **Single (32-bit)** |  
+| Decimal          | $1.175494 \times 10^{-38}$          | $3.402823 \times 10^{38}$           | $1.401298 \times 10^{-45}$                      | $1.175494 \times 10^{-38}$                      |
+| Base 2           | $1.0 \times 2^{-126}$               | $1.\underbrace{1}_{23} \times 2^{127}$ | $1.0 \times 2^{-149}$                     | $1.\underbrace{1}_{23} \times 2^{-126}$     |
+| **Double (64-bit)** |  
+| Decimal          | $2.225074 \times 10^{-308}$         | $1.797693 \times 10^{308}$          | $4.940656 \times 10^{-324}$                     | $2.225074 \times 10^{-308}$                     |
+| Base 2           | $1.0 \times 2^{-1022}$              | $1.\underbrace{1}_{52} \times 2^{1023}$ | $1.0 \times 2^{-1074}$ | $1.\underbrace{1}_{52} \times 2^{-1022}$ |
+| **Long Double (80-bit)**  |  
+| Decimal          | $3.362103 \times 10^{-4932}$        | $1.189731 \times 10^{4932}$         | $3.645199 \times 10^{-4951}$                    | $3.362103 \times 10^{-4932}$                    |
+| Base 2           | $1.0 \times 2^{-16382}$             | $1.\underbrace{1}_{64} \times 2^{16383}$ | $1.0 \times 2^{-16494}$ | $1.\underbrace{1}_{64} \times 2^{-16382}$ |
 
 ---
 
@@ -220,14 +236,17 @@ Floating Point
 
 ---
 
-## Tiny Floating Point Examples
-- 8-bit IEEE-like floating point representation
+## 🍎 Tiny Floating Point
+- 📝 Find all interesting values and their representations for the `three tiny floating points`
+  - normalized, denormalized, ±0, NaN, ±∞
+  - verify your solution with [fv.py](./code/fv.py) and [floatdist.py](./code/floatdist.py)
+- ➊ 8-bit IEEE-like floating point representation
 
 | s | exp | frac |
 |--|--|--|
 | 1 | 4-bits | 3-bits |
 
-- 6-bit IEEE-like floating point representation
+- ➋ 6-bit IEEE-like floating point representation
 
 | s | exp | frac |
 |--|--|--|
@@ -238,15 +257,11 @@ Floating Point
 - 6-bit IEEE-like floating point values between -1.0 and +1.0
   - ![unit distribution](./imgs/fp-values-small.png)
 
-- 5-bit IEEE-like floating point representation
+- ➌ 5-bit IEEE-like floating point representation
 
 | s | exp | frac |
 |--|--|--|
 | 1 | 2-bits | 2-bits |
-
-- 📝 find all interesting values and their representations
-  - normalized, denormalized, ±0, NaN, ±∞
-  - verify your solution with [fv.py](./code/fv.py) and [floatdist.py](./code/floatdist.py)
 
 ---
 
@@ -262,7 +277,7 @@ Floating Point
   - Otherwise, comparisons are generally okay.  
   - Considerations needed for different bit representations:  
     - Denormalized numbers vs. normalized numbers.  
-    - Normalized numbers vs. infinity.
+    - Normalized numbers vs. ∞.
       - ∞ > any finite values
 - 📝 In C/C++, compare all the special values with all relational operators:
   - NaN, ∞, -∞, +0, -0, 1.0, -1.0
@@ -270,52 +285,518 @@ Floating Point
 
 ---
 
-## Floating Point Operations  
-### Basic Idea:  
-- **Addition:** $x +_f y = \text{Round}(x + y)$.  
-- **Multiplication:** $x \times_f y = \text{Round}(x \times y)$.  
+## Rounding Modes
+| Rounding Mode       | 1.4  | 1.6  | 1.5  | 2.5  | -1.5 | Explanation   |
+|---------------------|------|------|------|------|------|-----|
+| **Round-to-even (default)** <br>(**Round-to-nearest ties to even**)  | 1    | 2    | 2    | 2    | -2   | Toward the nearest integer, tied to the nearest even number. |
+| **Round-toward-zero** | 1    | 1    | 1    | 2    | -1   | Toward zero.   |
+| **Round-down**      | 1    | 1    | 1    | 2    | -2   | Toward -∞.                                      |
+| **Round-up**        | 2    | 2    | 2    | 3    | -1   | Toward +∞.                                      |
 
-### Steps:  
-1. Compute exact result.  
-2. Fit into desired precision.  
-3. Handle overflow and rounding.  
+- **Round-to-even** is unbiased and minimizes rounding errors over time.
+  - widely used in financial and scientific computations for its accuracy and reliability.
+- **Other rounding modes** are statistically biased and difficult to use without assembly programming
+  - but guarantee bounds
 
 ---
 
-## Rounding  
-### Rounding Modes:  
-1. **Toward Zero:** Truncate.  
-2. **Round Down (Toward -∞).**  
-3. **Round Up (Toward +∞).**  
-4. **Nearest Even (Default).**  
+## Applicability Beyond Whole Numbers
+- **Round-to-even** works for `decimal places` and `binary fractions`
+  - results in `even least significant digit (or bit)`.
+  - ensuring consistency across number systems.
+
+| **System**  | **Value**  | **Rounded Value** | **Reason** |
+|-----|----|---|----|
+| **Decimal** | 1.2349999  | 1.23 | Less than halfway between 1.23 and 1.24.   |
+| **Decimal** | 1.2350001  | 1.24 | More than halfway between 1.23 and 1.24.   |
+| **Decimal** | 1.2350000  | 1.24 | Exactly halfway; round to even least significant digit (4 is even).|
+| **Decimal** | 1.2450000  | 1.24 | Exactly halfway; round to even least significant digit (4 is even).|
+| **Binary**  | 10.00011₂ (2.09375) | 10.00₂ (2)| Less than halfway between 10.00₂ (2) and 10.01₂ (2.25).    |
+| **Binary**  | 10.00110₂ (2.1875)  | 10.01₂ (2.25)| More than halfway between 10.00₂ (2) and 10.01₂ (2.25).    |
+| **Binary**  | 10.11100₂ (2.875)   | 11.00₂ (3)| Exactly halfway; round to even least significant bit (0 is even).  |
+| **Binary**  | 10.10100₂ (2.625)  | 10.10₂ (2.5) | Exactly halfway; round to even least significant bit (0 is even).  |
+
+---
+
+## 🍎 Creating and Normalizing Floating-Point Numbers
+Convert **8-bit unsigned integers** $(128, 63, 35)$ into an **8-bit floating-point format** with the structure `(S,E,M)=(1,4,3)`.
+
+- **Steps**
+  1. **Convert the number to binary.**
+  2. **Normalize the binary representation to the form `1.xxxxx × 2^exp`.**
+  3. **Determine the sign, exponent, and mantissa.**
+  4. **Apply rounding using the guard, round, and sticky bits.**
+  5. **Postnormalize**: If rounding causes overflow (mantissa becomes `10.xxx`), shift the mantissa right by 1 and increment the exponent.
+  6. **Pack the sign, exponent, and mantissa into the 8-bit format.**
+
+---
+
+- **Rounding using G,R,S Bits: `1.MMMGRS`**
+   - **Guard (G)**: first bit after the retained fraction.  
+   - **Round (R)**: next bit after the guard bit.  
+   - **Sticky (X)**: bit `OR` of all remaining bits.
+
+| Condition  | Action |
+|-----------|---------|
+| **G = 0**  | Truncate (round down). |
+| **G = 1 and R = 0 and S = 0** | Round to even (round down if the least significant bit of the mantissa is 0, otherwise round up). |
+| **G = 1 and (R = 1 or S = 1)**| Round up.   |
+
+---
+
+- ➊: Convert `128` to Tiny Floating-Point
+
+1. **Binary Representation**:
+   $128_{10} = 10000000_2$
+
+2. **Normalize**:
+   $10000000_2 = 1.0000000_2 \times 2^7$
+
+3. **Determine Fields**:
+   - **Sign**: 0 (positive).
+   - **Exponent**: $7 + 7 = 14$ (biased exponent). In 4 bits: $1110_2$.
+   - **Mantissa**: $000_2$ (only 3 bits after the leading 1).
+
+4. **Rounding**:
+   - No rounding needed since there are no extra bits.
+
+5. **Postnormalize**:
+   - No overflow (mantissa is `1.000`).
+
+6. **Final Representation**:
+   $0\ 1110\ 000$
+
+---
+
+- ➋: Convert `63` to Tiny Floating-Point
+
+1. **Binary Representation**:
+   $63_{10} = 00111111_2$
+
+2. **Normalize**:
+   $00111111_2 = 1.1111100_2 \times 2^5$
+
+3. **Determine Fields**:
+   - **Sign**: 0 (positive).
+   - **Exponent**: $5 + 7 = 12$ (biased exponent). In 4 bits: $1100_2$.
+   - **Mantissa**: $111_2$ (first 3 bits after the leading 1).
+
+4. **Rounding**:
+   - Extra bits: $1100$ (guard = 1, round = 1, sticky = 0).
+   - Round up because $G = 1$ and $R = 1$.
+   - Mantissa becomes `10.000` (overflow).
+
+5. **Postnormalize**:
+   - Shift mantissa right by 1: `1.000`.
+   - Increment exponent: $12 + 1 = 13$ (biased exponent). In 4 bits: $1101_2$.
+
+6. **Final Representation**:
+   $0\ 1101\ 000$
+
+---
+
+- ➌: Convert 35 to Tiny Floating-Point
+
+1. **Binary Representation**:
+   $35_{10} = 00100011_2$
+
+2. **Normalize**:
+   $00100011_2 = 1.0001100_2 \times 2^5$
+
+3. **Determine Fields**:
+   - **Sign**: 0 (positive).
+   - **Exponent**: $5 + 7 = 12$ (biased exponent). In 4 bits: $1100_2$.
+   - **Mantissa**: $000_2$ (first 3 bits after the leading 1).
+
+4. **Rounding**:
+   - Extra bits: $1100$ (guard = 1, round = 1, sticky = 0).
+   - Round up because $G = 1$ and $R = 1$.
+   - Mantissa becomes `1.001` (overflow).
+
+5. **Postnormalize**:
+   - No overflow (mantissa is `1.001`).
+
+6. **Final Representation**:
+   $0\ 1100\ 001$
+
+---
+
+- ➍: Convert 0.0618 to Tiny Floating-Point
+
+1. **Binary Representation**:
+   $0.0618_{10} ≈ 0.000011111101001_2$
+
+2. **Normalize**:
+   $0.000011111101001_2 = 1.1111101_2 \times 2^{-5}$
+
+3. **Determine Fields**:
+   - **Sign**: 0 (positive).
+   - **Exponent**: $-5 + 7 = 2$ (biased exponent). In 4 bits: $0010_2$.
+   - **Mantissa**: $111_2$ (first 3 bits after the leading 1).
+
+4. **Rounding**:
+   - Extra bits: $1101$ (guard = 1, round = 1, sticky = 1).
+   - Round up because $G = 1$ and $R = 1$.
+   - Mantissa becomes `10.000` (overflow).
+
+5. **Postnormalize**:
+   - Shift mantissa right by 1: `1.000`.
+   - Increment exponent: $2 + 1 = 3$ (biased exponent). In 4 bits: $0011_2$.
+
+6. **Final Representation**:
+   $0\ 0000\ 011$
+
+---
+
+- ➎: ⚠️Convert 0.015 to Tiny Floating-Point
+  - $0.015 < 0.015625$ (Min normalized), ∴ $0.015$ needs to be encoded as `denormalized`:
+    - denormalized numbers are represented as: 
+      - $\text{Value} = (–1)^S \times 0.M \times 2^{1-\text{bias}} = (–1)^S \times 0.M \times 2^{1-\text{-6}}$
+
+1. **Binary Representation**:
+   $0.015_{10} ≈ 0.00000011110101110000101_2$
+
+2. **Normalize**:
+   $0.00000011110101110000101_2 = 0.1111010_2 \times 2^{-6}$
+
+3. **Determine Fields**:
+   - **Sign**: 0 (positive).
+   - **Exponent** is fixed to be `0` for `denormalized`:
+     - $\text{exp} = 0$ In 4 bits: $0000_2$.
+   - **Mantissa**: $111_2$ (first 3 bits after the leading 0).
+
+4. **Rounding**:
+   - Extra bits: $1010$ (guard = 1, round = 0, sticky = 1).
+   - Round up because $G = 1$ and $S = 1$.
+   - Mantissa becomes `10.00`.
+
+5. **Postnormalize**:
+   - Shift mantissa right by 1: `1.000`.
+   - Increment exponent: $0 + 1 = 1$ (biased exponent). In 4 bits: $0001_2$.
+
+6. **Final Representation**:  $0\ 0001\ 000$
+   - This is the minimal normalized. 
+
+---
+
+- **Final Results with Postnormalization**
+
+| Decimal | Binary Representation | Tiny Floating-Point Format |
+|---------|-----------------------|----------------------------|
+| 128     | $10000000_2$        | $0\ 1110\ 000$           |
+| 63      | $00111111_2$        | $0\ 1101\ 000$           |
+| 35      | $00100011_2$        | $0\ 1100\ 001$           |
+| 0.0618  | $00000011_2$        | $0\ 0000\ 011$           |
+| 0.015   | $00001000_2$        | $0\ 0001\ 000$           |
+
+- 📝 Verify the table results with the Python program [rational number to floating point with rounding and postnormalization](./code/r2fp.py)
+- Then verify reversely with the Python program [floating point bit pattern to rational number](./code/f2v.py). `Discuss the errors`.
+
+---
+
+## Floating Point Operations  
+- **Basic Idea:**  
+  - **Addition:** $x +_f y = \text{Round}(x + y)$.  
+  - **Multiplication:** $x \times_f y = \text{Round}(x \times y)$.  
+
+- **Steps:**  
+  1. Compute exact result.  
+  2. Fit into desired precision.  
+  3. Handle overflow if exponent too large and rounding to fit into frac.
+  4. Define reasonable behavior for special values like $-0$, $+\infty$, and $\text{NaN}$.
+    - e.g., $1/-0 = -\infty$ and $1/+0 = +\infty$.
+
+---
+
+## Floating-Point Multiplication 
+- $(–1)^{s_1} M_1 ⋅ 2^{E_1} \times (–1)^{s_2} M_2 ⋅ 2^{E_2} = (–1)^s M ⋅ 2^E$  
+  - **Sign ($s$):** $s = s_1 \oplus s_2$  
+  - **Significand ($M$):** $M = M_1 \times M_2$  
+  - **Exponent ($E$):** $E = E_1 + E_2$  
+- **Post-Multiplication Fixing:**  
+  - If $M \geq 2$, shift $M$ right and increment $E$.  
+  - Overflow occurs if $E$ exceeds the allowable range.  
+  - Round $M$ to fit `frac` precision.  
+- **Implementation Challenge:**  
+  - $M_1 \times M_2$ is the most computationally intensive step.
+
+---
+
+## 🍎 Find the product of the given inputs
+- ➊: Normalized Multiplication
+
+**Inputs:**
+- $(–1)^{s_1} M_1 ⋅ 2^{E_1} = (–1)^0 \times 1.5 \times 2^3 = 12$
+- $(–1)^{s_2} M_2 ⋅ 2^{E_2} = (–1)^1 \times 1.25 \times 2^2 = -5$
+
+**Step-by-Step:**
+1. **Sign Calculation:**
+   $s = s_1 \oplus s_2 = 0 \oplus 1 = 1$
+
+2. **Multiply Significands:**
+   $M = M_1 \times M_2 = 1.5 \times 1.25 = 1.875$
+
+3. **Add Exponents:**
+   $E = E_1 + E_2 = 3 + 2 = 5$
+
+4. **Post-Multiplication Fixing:**
+   - $M = 1.875 < 2$, so no adjustment is needed.
+
+**Result:**
+$(–1)^s M ⋅ 2^E = (–1)^1 \times 1.875 \times 2^5 = -60$
+
+---
+
+- ➋: Normalization Needed ($M \geq 2$)
+
+**Inputs:**
+- $(–1)^{s_1} M_1 ⋅ 2^{E_1} = (–1)^0 \times 1.6 \times 2^4 = 25.6$
+- $(–1)^{s_2} M_2 ⋅ 2^{E_2} = (–1)^0 \times 1.25 \times 2^3 = 10$
+
+**Step-by-Step:**
+1. **Sign Calculation:**
+   $s = s_1 \oplus s_2 = 0 \oplus 0 = 0$
+
+2. **Multiply Significands:**
+   $M = M_1 \times M_2 = 1.6 \times 1.25 = 2.0$
+
+3. **Add Exponents:**
+   $E = E_1 + E_2 = 4 + 3 = 7$
+
+4. **Post-Multiplication Fixing:**
+   - $M = 2.0 \geq 2$, so normalize:
+     - Shift $M$ right `1 time`: $M = 1.0$
+       - Continue shifting until $1.0≤M<2.0$
+     - Increment $E$: $E = 7 + 1 = 8$
+
+**Result:**
+$(–1)^s M ⋅ 2^E = (–1)^0 \times 1.0 \times 2^8 = 256$
+
+---
+
+- ➌: Overflow
+
+**Inputs:**
+- $(–1)^{s_1} M_1 ⋅ 2^{E_1} = (–1)^0 \times 1.75 \times 2^{127}=2.9774707105582116e+38$
+- $(–1)^{s_2} M_2 ⋅ 2^{E_2} = (–1)^0 \times 1.5 \times 2^1=3$
+
+**Step-by-Step:**
+1. **Sign Calculation:**
+   $s = s_1 \oplus s_2 = 0 \oplus 0 = 0$
+
+2. **Multiply Significands:**
+   $M = M_1 \times M_2 = 1.75 \times 1.5 = 2.625$
+
+3. **Add Exponents:**
+   $E = E_1 + E_2 = 127 + 1 = 128$
+
+4. **Post-Multiplication Fixing:**
+   - $M = 2.625 \geq 2$, so normalize:
+     - Shift $M$ right: $M = 1.3125$
+     - Increment $E$: $E = 128 + 1 = 129$
+   - Overflow: $E = 129$ exceeds the allowable range (e.g., $-127$ to $127$ in IEEE 754 `single` precision).
+
+**Result:**
+Overflow: Result is `Infinity`
+
+---
+
+- ➍: Rounding
+
+**Inputs:**
+- $(–1)^{s_1} M_1 ⋅ 2^{E_1} = (–1)^0 \times 1.75 \times 2^4=28$
+- $(–1)^{s_2} M_2 ⋅ 2^{E_2} = (–1)^0 \times 1.4 \times 2^2=5.6$
+
+**Step-by-Step:**
+1. **Sign Calculation:**
+   $s = s_1 \oplus s_2 = 0 \oplus 0 = 0$
+
+2. **Multiply Significands:**
+   $M = M_1 \times M_2 = 1.75 \times 1.4 = 2.45$
+
+3. **Add Exponents:**
+   $E = E_1 + E_2 = 4 + 2 = 6$
+
+4. **Post-Multiplication Fixing:**
+   - $M = 2.45 \geq 2$, so normalize:
+     - Shift $M$ right: $M = 1.225 = 1.001\dot{1}10\dot{0}_2 = 1.001(1100)_2$
+     - Increment $E$: $E = 6 + 1 = 7$
+   - Round $M$ to fit fractional precision (e.g., 3 bits): $M \approx 1.01_2 = 1.25$.
+
+**Result:** $(–1)^s M ⋅ 2^E = (–1)^0 \times 1.25 \times 2^7 = 160$ (⚠️ $28×5.6=156.8$)
+
+- How to avoid such `big rounding errors`? 
+  - 👉 use [decimal floating-point (DFP)](https://en.wikipedia.org/wiki/Decimal_floating_point) especially for finance and measurement.
+  - refer to [cdf.c](./code/cdf.c) and [cdf.py](./code/cdf.py)
+
+---
+
+## Properties of Floating-Point Multiplication
+1. **Basic Properties**:
+   - **Closed**: $x \cdot_f y = \text{Round}(x \times y)$ (may yield ∞ or NaN).
+   - **Commutative**: $x \cdot_f y = y \cdot_f x$.
+   - **Identity**: $1.0$ is the multiplicative identity ($x \cdot_f 1.0 = x$).
+2. **Non-Associative** due to `overflow` or `rounding`. e.g.,(single-precision):
+   - $(1e20 \cdot_f 1e20) \cdot_f 1e{-20} = +\infty$
+   - $1e20 \cdot_f (1e20 \cdot_f 1e{-20}) = 1e20$
+3. **Non-Distributive** over addition. e.g,(single-precision):
+   - $1e20 \cdot_f (1e20 - 1e20) = 0.0$
+   - $1e20 \cdot_f 1e20 - 1e20 \cdot_f 1e20 = \text{NaN}$
+4. **Monotonicity** for $a, b, c \neq \text{NaN}$:
+   - If $a \geq b$ and $c \geq 0$, then $a \cdot_f c \geq b \cdot_f c$.
+   - If $a \geq b$ and $c \leq 0$, then $a \cdot_f c \leq b \cdot_f c$.
+   - Guaranteed: $a \cdot_f a \geq 0$ (if $a \neq \text{NaN}$).
+   - ⚠️ Monotonicity fails for unsigned and two's-complement multiplication
+     - due to overflow leading to `wrap-around behavior`
+- **Challenges for Programmers**:
+  - Lack of associativity and distributivity complicates scientific computing.
+  - e.g.: Determining if two lines intersect in 3D space becomes non-trivial.
+- **Compiler Concerns**:
+  - Optimizations must account for floating-point behavior to avoid incorrect results.
+
+---
+
+## Floating-Point Addition
+- $(–1)^{s_1} M_1 ⋅ 2^{E_1} + (–1)^{s_2} M_2 ⋅ 2^{E_2} = (–1)^s M ⋅ 2^E$  
+  - **Assumption:** $E_1 > E_2$.  
+  - **Sign ($s$) and Significand ($M$):** signed alignment and addition of $M_1$ and $M_2$.  
+  - **Exponent ($E$):** $E = E_1$ (`align to the larger exponent`).  
+- **Post-Addition Fixing:**  
+  - If $M \geq 2$: Shift $M$ right, increment $E$.  
+  - If $M < 1$: Shift $M$ left by $k$ positions, decrement $E$ by $k$.
+    - $k = \text{smallest integer such that } M \times 2^k \geq 1$
+  - Overflow occurs if $E$ exceeds the allowable range.  
+  - Round $M$ to fit the fractional precision.  
+
+---
+
+## 🍎 Floating-Point Addition 
+- ➊: Simple Addition
+
+**Inputs:**
+- $(–1)^{s_1} M_1 ⋅ 2^{E_1} = (–1)^0 \times 1.5 \times 2^3 =12$
+- $(–1)^{s_2} M_2 ⋅ 2^{E_2} = (–1)^0 \times 1.25 \times 2^2 =5$
+
+**Step-by-Step:**
+1. $E_1 = 3 > E_2 = 2$.
+2. **Align Exponents:**  
+   $M_2 \to M_2 / 2^{E_1 - E_2} = 1.25 / 2 = 0.625$
+   ⇒ $M_2 = 0.625$, with $E_2 = 3$.
+3. **Add Significands:**  
+   $M = M_1 + M_2 = 1.5 + 0.625 = 2.125$
+4. **Exponent $E$:** Use $E_1 = 3$.
+5. **Post-Addition Fixing:**  
+   - $M = 2.125 \geq 2$, so normalize:
+     - Shift $M$ right: $M = 1.0625$.
+     - Increment $E$: $E = 3 + 1 = 4$.
+
+**Result:**
+$(–1)^s M ⋅ 2^E = (–1)^0 \times 1.0625 \times 2^4 = 17$
+
+---
+
+- ➋: Simple Subtraction
+
+**Inputs:**
+- $(–1)^{s_1} M_1 ⋅ 2^{E_1} = (–1)^0 \times 1.25 \times 2^3=10$
+- $(–1)^{s_2} M_2 ⋅ 2^{E_2} = (–1)^0 \times 1.5 \times 2^2=6$
+
+**Step-by-Step:**
+1. $E_1 = 3 > E_2 = 2$.
+2. **Align Exponents:**  
+   $M_2 \to M_2 / 2^{E_1 - E_2} = 1.5 / 2 = 0.75$
+   ⇒ $M_2 = 0.75$, with $E_2 = 3$.
+3. **Subtract Significands:**  
+   $M = M_1 - M_2 = 1.25 - 0.75 = 0.5$
+4. **Exponent $E$:** Use $E_1 = 3$.
+5. **Post-Addition Fixing:**  
+   - $M = 0.5 < 1$, so normalize:
+     - Shift $M$ left by $k = 1$: $M = 1.0$.
+     - Decrement $E$: $E = 3 - 1 = 2$.
+
+**Result:**
+$(–1)^s M ⋅ 2^E = (–1)^0 \times 1.0 \times 2^2 = 4$
+
+---
+
+- ➌: Addition with Opposite Signs
+
+**Inputs:**
+- $(–1)^{s_1} M_1 ⋅ 2^{E_1} = (–1)^0 \times 1.5 \times 2^4=24$
+- $(–1)^{s_2} M_2 ⋅ 2^{E_2} = (–1)^1 \times 1.25 \times 2^3=-10$
+
+**Step-by-Step:**
+1. $E_1 = 4 > E_2 = 3$.
+2. **Align Exponents:**  
+   $M_2 \to M_2 / 2^{E_1 - E_2} = 1.25 / 2 = 0.625$
+   ⇒ $M_2 = 0.625$, with $E_2 = 4$.
+3. **Add Significands:**  
+   $M = M_1 + (-M_2) = 1.5 - 0.625 = 0.875$
+4. **Exponent $E$:** Use $E_1 = 4$.
+5. **Post-Addition Fixing:**  
+   - $M = 0.875 < 1$, so normalize:
+     - Shift $M$ left by $k = 1$: $M = 1.75$.
+     - Decrement $E$: $E = 4 - 1 = 3$.
+
+**Result:**
+$(–1)^s M ⋅ 2^E = (–1)^0 \times 1.75 \times 2^3 = 14$
+
+---
+
+- ➍: Overflow
+
+**Inputs:**
+- $(–1)^{s_1} M_1 ⋅ 2^{E_1} = (–1)^0 \times 1.5 \times 2^{127}$
+- $(–1)^{s_2} M_2 ⋅ 2^{E_2} = (–1)^0 \times 1.25 \times 2^{126}$
+
+**Step-by-Step:**
+1. $E_1 = 127 > E_2 = 126$.
+2. **Align Exponents:**  
+   $M_2 \to M_2 / 2^{E_1 - E_2} = 1.25 / 2 = 0.625$
+   ⇒ $M_2 = 0.625$, with $E_2 = 127$.
+3. **Add Significands:**  
+   $M = M_1 + M_2 = 1.5 + 0.625 = 2.125$
+4. **Exponent $E$:** Use $E_1 = 127$.
+5. **Post-Addition Fixing:**  
+   - $M = 2.125 \geq 2$, so normalize:
+     - Shift $M$ right: $M = 1.0625$.
+     - Increment $E$: $E = 127 + 1 = 128$.
+   - Overflow occurs as $E = 128$ exceeds the allowable range (e.g., $-126$ to $127$ in IEEE 754 single precision).
+
+**Result:** Overflow: Result is Infinity
+
+---
+
+## Properties of Floating-Point Addition
+- **Closed Under Addition** but may produce infinity or NaN.  
+- **Commutative:**  $a +_f b=b +_f a$ 
+- **Non-associative** due to `overflow and rounding inexactness`.  
+  - e.g.:  $(3.14 + 1e10) - 1e10 = 0$  but $3.14 + (1e10 - 1e10) = 3.14$  
+- **Additive Identity 0:**   $a +_f 0=a$
+- **Additive Inverses 0:** $a +_f (-a)=0$ 
+  - except for ∞ ($+\infty - \infty = \text{NaN}$) and NaNs.  
+- **Monotonicity:**  
+  - $a \geq b \Rightarrow a +_f c \geq b +_f c$, except when involving ∞ and NaNs. 
+- 📝 Floating-point addition Properties demonstrated in [C double](./code/adp.c)
 
 ---
 
 ## Floating Point in C  
-### Precision:  
-- **Single Precision:** `float`.  
-- **Double Precision:** `double`.  
-
-### Conversions:  
-- **Casting:**  
-  - `int` to `float` or `double`.  
-  - `float` or `double` to `int` (truncates fractional part).  
-
-### Common Pitfalls:  
-- **Precision Loss:** Not all decimal numbers can be represented exactly.  
-- **Rounding Errors:** Can accumulate in complex calculations.  
-
----
-
-## Summary  
-### Key Takeaways:  
-- **IEEE Floating Point:** Ensures consistency, precision, and portability.  
-- **Form:** $M \times 2^E$.  
-- **Operations:** Computed as if with perfect precision, then rounded.  
-
-### Limitations:  
-- **Not Real Arithmetic:** Violates associativity and distributivity.  
-- **Precision Loss:** Not all decimal numbers can be represented exactly.  
+- C supports `float` and `double` for single- and double-precision IEEE floating-point, 
+  - but the C standard doesn't require IEEE compliance, 
+  - making features like rounding modes or special values (e.g., NaN, ±∞) system-dependent.  
+- Access to IEEE features varies by system; 
+  - e.g., GNU compilers support constants like `INFINITY` and `NaN` via `<math.h>`, but these are not standardized.
+- Casting between `int, float, and double` alters both numeric values and bit representations:
+  - **`int` to `float`**: No overflow, but rounding may occur.  
+  - **`int` or `float` to `double`**: Exact value preserved due to `double`'s greater range and precision.
+    - ∵ $w_{\text{int}}=w_{\text{float}}=32<\text{frac}_{\text{double}}=53$ bits.
+  - **`double` to `float`**: Possible overflow to ±∞ or rounding due to smaller range and precision.  
+  - **`float` or `double` to `int`**: 
+    - Rounded toward zero, possible overflow; 
+    - Intel processors use a specific bit pattern for invalid conversions
+      - e.g., `(int)+1e10` yields `INT_MIN`.
+- 📝 Practice [casting between `int, float, and double` in C](./code/cifd.c)
 
 ---
 

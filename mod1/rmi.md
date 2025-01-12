@@ -293,7 +293,7 @@ Bits, Bytes, and Integers
 
 | Operation | Formula | Overflow Condition | Overflowed Result |
 |---|---|---|---|
-| Addition | $S = UAdd_n(A,B) = A + B$ | If $S > 2^n - 1$, an **overflow** occurs, <br>vand the result wraps around (modulo $2^n$) | $S_{\text{result}} = (A + B) \bmod 2^n$ <br>▶️ **Carry out** occurs if: $C = \left\lfloor \dfrac{A + B}{2^n} \right\rfloor$ |
+| Addition | $S = UAdd_n(A,B) = A + B$ | If $S > 2^n - 1$, an **overflow** occurs, <br>and the result wraps around (modulo $2^n$) | $S_{\text{result}} = (A + B) \bmod 2^n$ <br>▶️ **Carry out** occurs if: $C = \left\lfloor \dfrac{A + B}{2^n} \right\rfloor$ |
 | Subtraction | $D = A - B$ | If $A < B$, **borrow** occurs | $D_{\text{result}} = (A - B + 2^n) \bmod 2^n$ |
 | Multiplication | $P = UMult_n(A,B) = A \times B$ | ▶️ The product $P$ can be up to $2n$ bits long: $0 \leq P \leq (2^n - 1)^2$ <br>▶️ The lower $n$ bits are retained as the result, <br>and the upper $n$ bits represent overflow | $P_{\text{lower}} = P \bmod 2^n$ <br>$P_{\text{upper}} = \left\lfloor \dfrac{P}{2^n} \right\rfloor$ |
 | Division | $Q = \left\lfloor \dfrac{A}{B} \right\rfloor$ | Division by zero is undefined | The remainder is: $R = A \bmod B$ |
