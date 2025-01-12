@@ -319,11 +319,11 @@ Floating Point
 ---
 
 ## 🍎 Creating and Normalizing Floating-Point Numbers
-Convert **8-bit unsigned integers** $(128, 63, 35)$ into an **8-bit floating-point format** with the structure `(S,E,M)=(1,4,3)`.
+Convert rational numbers into an **8-bit floating-point format** with the structure `(S,E,M)=(1,4,3)`.
 
 - **Steps**
   1. **Convert the number to binary.**
-  2. **Normalize the binary representation to the form `1.xxxxx × 2^exp`.**
+  2. **Normalize the binary representation to the form $1.xxxxx × 2^{exp}$.**
   3. **Determine the sign, exponent, and mantissa.**
   4. **Apply rounding using the guard, round, and sticky bits.**
   5. **Postnormalize**: If rounding causes overflow (mantissa becomes `10.xxx`), shift the mantissa right by 1 and increment the exponent.
@@ -338,9 +338,9 @@ Convert **8-bit unsigned integers** $(128, 63, 35)$ into an **8-bit floating-poi
 
 | Condition  | Action |
 |-----------|---------|
-| **G = 0**  | Truncate (round down). |
+| **G = 0**  | Truncate (round toward 0). |
 | **G = 1 and R = 0 and S = 0** | Round to even (round down if the least significant bit of the mantissa is 0, otherwise round up). |
-| **G = 1 and (R = 1 or S = 1)**| Round up.   |
+| **G = 1 and (R = 1 or S = 1)**| Round away from 0.   |
 
 ---
 
