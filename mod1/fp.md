@@ -92,7 +92,7 @@ Floating Point
 | [Extended Precision](https://en.wikipedia.org/wiki/Extended_precision)<br>(x86 architectures) | 80  | 1 | 15| 63/64|
 
 - Categories of single-precision floating-point values
-  - [fp categories](./imgs/fp-cases.png)
+  - ![fp categories](./imgs/fp-cases.png)
 
 ---
 
@@ -331,10 +331,10 @@ Convert **8-bit unsigned integers** $(128, 63, 35)$ into an **8-bit floating-poi
 
 ---
 
-- **Rounding using G,R,S Bits: `1.MMMGRS`**
+- **Rounding using G,R,S Bits: `1[0].MMMGRS`**
    - **Guard (G)**: first bit after the retained fraction.  
    - **Round (R)**: next bit after the guard bit.  
-   - **Sticky (X)**: bit `OR` of all remaining bits.
+   - **Sticky (S)**: bit `OR` of all remaining bits.
 
 | Condition  | Action |
 |-----------|---------|
@@ -451,7 +451,7 @@ Convert **8-bit unsigned integers** $(128, 63, 35)$ into an **8-bit floating-poi
 - ➎: ⚠️Convert 0.015 to Tiny Floating-Point
   - $0.015 < 0.015625$ (Min normalized), ∴ $0.015$ needs to be encoded as `denormalized`:
     - denormalized numbers are represented as: 
-      - $\text{Value} = (–1)^S \times 0.M \times 2^{1-\text{bias}} = (–1)^S \times 0.M \times 2^{1-\text{-6}}$
+      - $\text{Value} = (–1)^S \times 0.M \times 2^{1-\text{bias}} = (–1)^S \times 0.M \times 2^{1-\text{7}}$
 
 1. **Binary Representation**:
    $0.015_{10} ≈ 0.00000011110101110000101_2$
@@ -490,7 +490,8 @@ Convert **8-bit unsigned integers** $(128, 63, 35)$ into an **8-bit floating-poi
 | 0.015   | $00001000_2$        | $0\ 0001\ 000$           |
 
 - 📝 Verify the table results with the Python program [rational number to floating point with rounding and postnormalization](./code/r2fp.py)
-- Then verify reversely with the Python program [floating point bit pattern to rational number](./code/f2v.py). `Discuss the errors`.
+- Then verify reversely with the Python program [floating point bit pattern to rational number](./code/f2v.py). 
+  - `Discuss the discrepancies between the results from the two programs`.
 
 ---
 
