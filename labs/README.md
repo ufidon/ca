@@ -1,6 +1,6 @@
 # List of labs
 - [Lab01: Setup Development Tools](./lab01/README.md)
-
+- [Lab02: Integer Encoding and Arithmetic](./lab02/README.md)
 
 
 
