@@ -239,7 +239,7 @@ Bits, Bytes, and Integers
 |------------------------|-----------|-----|
 | **Unsigned to Signed** | $`s_{\vec{b}} = \begin{cases} u_{\vec{b}} & \text{if } u_{\vec{b}} < 2^{w-1} \\ u_{\vec{b}} - 2^w & \text{if } u_{\vec{b}} \geq 2^{w-1} \end{cases}`$ | ![u2t](./imgs/u2t.png) |
 | **Signed to Unsigned** | $`u_{\vec{b}} = \begin{cases} s_{\vec{b}} & \text{if } s_{\vec{b}} \geq 0 \\ s_{\vec{b}} + 2^w & \text{if } s_{\vec{b}} < 0 \end{cases}`$ | ![t2u](./imgs/t2u.png)|
-| **Bit Pattern**        | $`\text{Bit Pattern} = \text{Binary representation of } (u_{\vec{b}} \mod 2^w)`$   |  |
+
 
 | Unsigned (4-bit) | Binary (4-bit) | Signed (4-bit) |
 |------------------|----------------|-----------------|
@@ -287,7 +287,7 @@ Bits, Bytes, and Integers
     - $B2U_w(\vec{b}) = B2U_{k+w}((\underbrace{0}_{k},\vec{b}))$
   - sign bit padded for signed, called `sign extension`: 
     - `1011` → `1111_1011`, `0101` → `0000_0101`
-    - $B2T_w(\vec{b}) = B2T_{k+w}(\underbrace{b_{k-1}}_{k},\vec{b}))$
+    - $B2T_w(\vec{b}) = B2T_{k+w}(\underbrace{b_{w-1}}_{k},\vec{b}))$
     - automatically performed in C/C++
   - both yield expected result
 - Truncating: `larger` integer type of w-bit → `smaller` integer type of k-bit
@@ -295,7 +295,7 @@ Bits, Bytes, and Integers
     - Unsigned: mod operation 
       - $B2U_k((b_{k-1},b_{k-2}, ⋯, b_0)) = B2U_w((b_{w-1},b_{w-2}, ⋯, b_0)) \bmod 2^k$
     - Signed: mod as unsigned then reinterpret to be signed
-      - $B2T_k((b_{k-1},b_{k-2}, ⋯, b_0)) = B2U_w((b_{w-1},b_{w-2}, ⋯, b_0)) \bmod 2^k → U2T_k$
+      - $B2T_k((b_{k-1},b_{k-2}, ⋯, b_0)) = U2T_k(B2U_w((b_{w-1},b_{w-2}, ⋯, b_0)) \bmod 2^k)$
   - Small numbers yields expected behavior
 - 📝 Watch out [exceptional behavior](./code/extr.c)
   - especially different representation
