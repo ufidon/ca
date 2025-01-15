@@ -304,10 +304,10 @@ Bits, Bytes, and Integers
 
 ## Arithmetic Operations on Unsigned Numbers
 - Let $x$ and $y$ be two unsigned $w$-bit integers,
-- `Addition`: $s ≐ x +_w^u y = \begin{cases} x+y, & x+y<2^w (\text{Normal})\\ x+y-2^w, & 2^w ≤ x+y ≤ 2^{w+1} (\text{Overflow}) \end{cases}$
+- `Addition`: $`s ≐ x +_w^u y = \begin{cases} x+y, & x+y<2^w (\text{Normal})\\ x+y-2^w, & 2^w ≤ x+y ≤ 2^{w+1} (\text{Overflow}) \end{cases}`$
   - ![overflow](./imgs/uadd-ovf.png)
   - Overflow condition: $s < \min(x,y)$
-- `Negation`: $x' ≐ -_w^u x = \begin{cases} 0, & x=0\\ 2^w-x, & x>0 \end{cases}$
+- `Negation`: $`x' ≐ -_w^u x = \begin{cases} 0, & x=0\\ 2^w-x, & x>0 \end{cases}`$
   - prove by $x' +_w^u x = 0$, i.e. $x'$ is the `inverse` of $x$ under $-_w^u$.
 - `Multiplication`: $x ×_w^u y = (x ⋅ y)\bmod 2^w$
 
@@ -324,7 +324,7 @@ Bits, Bytes, and Integers
 - Two’s complement representation in $w$-bits for $N$: 
   - $(2^w+N) \bmod 2^w$
 - Let $x$ and $y$ be two $w$-bit signed integers:
-- `Addition`: $s ≐ x +_w^t y = \begin{cases} x+y-2^w, & 2^{w-1} ≤ x+y (\text{Positive overflow})\\ x+y, & -2^{w-1} ≤ x+y < 2^{w-1} (\text{Normal}) \\ x+y+2^w, & x+y<-2^{w-1} (\text{Negative overflow}) \end{cases}$
+- `Addition`: $`s ≐ x +_w^t y = \begin{cases} x+y-2^w, & 2^{w-1} ≤ x+y (\text{Positive overflow})\\ x+y, & -2^{w-1} ≤ x+y < 2^{w-1} (\text{Normal}) \\ x+y+2^w, & x+y<-2^{w-1} (\text{Negative overflow}) \end{cases}`$
   - $x +_w^t y = U2T_w((x+y)\bmod 2^w)$
   - ![overflow](./imgs/tadd-ovf.png)
   - Positive overflow if $x>0$ and $y>0$ but $s≤0$,
@@ -332,7 +332,7 @@ Bits, Bytes, and Integers
 - Overflow leads to wrapping around to the opposite end of the number line.  For $w$-bit numbers:
   - Positive overflow results in a large negative value.  
   - Negative overflow results in a large positive value.
-- `Negation`: $x' ≐ -_w^t x = \begin{cases} TMin_w, & x=TMin_w\\ -x, & x>TMin_w \end{cases}$
+- `Negation`: $`x' ≐ -_w^t x = \begin{cases} TMin_w, & x=TMin_w\\ -x, & x>TMin_w \end{cases}`$
   - prove by $x' +_w^t x = 0$, i.e. $x'$ is the `inverse` of $x$ under $-_w^t$.
 - `Multiplication`: $x ×_w^t y = U2T_w((x ⋅ y)\bmod 2^w)$
   - backed by $T2B_w(x ×_w^t y) = U2B_w(u_x ×_w^u u_y)$, where
