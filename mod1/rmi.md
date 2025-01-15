@@ -232,13 +232,13 @@ Bits, Bytes, and Integers
 - Mappings between unsigned and two's complement numbers `keep bit representations and reinterpret`
   - signed $s_{\vec{b}}$ to unsigned $u_{\vec{b}}$: $s_{\vec{b}} \stackrel{T2B_w}{⟶} B \stackrel{B2U_w}{⟶}u_{\vec{b}}$
     - $u_{\vec{b}} = T2U_w(s_{\vec{b}})=s_{\vec{b}} + b_{w-1}2^w$
-  - unsigned $u_{\vec{b}}$ to $s_{\vec{b}}$: $u_{\vec{b}} \stackrel{U2B_w}{⟶} B \stackrel{B2T_w}{⟶}s_{\vec{b}}$
+  - unsigned $u_{\vec{b}}$ to signed $s_{\vec{b}}$: $u_{\vec{b}} \stackrel{U2B_w}{⟶} B \stackrel{B2T_w}{⟶}s_{\vec{b}}$
     - $s_{\vec{b}} = U2T_w(u_{\vec{b}})=u_{\vec{b}} - b_{w-1}2^w$
 
 | **Conversion**  | **Formula (Piece-wise Linear Function)** | **Illustration** |
 |------------------------|-----------|-----|
-| **Unsigned to Signed** | $`s_{\vec{b}} = \begin{cases} u_{\vec{b}} & \text{if } u_{\vec{b}} < 2^{w-1} \\ u_{\vec{b}} - 2^w & \text{if } u_{\vec{b}} \geq 2^{w-1} \end{cases}`$ | ![u2t](./imgs/u2t.png) |
-| **Signed to Unsigned** | $`u_{\vec{b}} = \begin{cases} s_{\vec{b}} & \text{if } s_{\vec{b}} \geq 0 \\ s_{\vec{b}} + 2^w & \text{if } s_{\vec{b}} < 0 \end{cases}`$ | ![t2u](./imgs/t2u.png)|
+| **Unsigned to Signed** | $`s_{\vec{b}} = \begin{cases} u_{\vec{b}} & \text{if } u_{\vec{b}} < 2^{w-1},\ (b_{w-1} = 0) \\ u_{\vec{b}} - 2^w & \text{if } u_{\vec{b}} \geq 2^{w-1},\ (b_{w-1} = 1) \end{cases}`$ | ![u2t](./imgs/u2t.png) |
+| **Signed to Unsigned** | $`u_{\vec{b}} = \begin{cases} s_{\vec{b}} & \text{if } s_{\vec{b}} \geq 0,\ (b_{w-1} = 0) \\ s_{\vec{b}} + 2^w & \text{if } s_{\vec{b}} < 0,\ (b_{w-1} = 1) \end{cases}`$ | ![t2u](./imgs/t2u.png)|
 
 
 | Unsigned (4-bit) | Binary (4-bit) | Signed (4-bit) |
@@ -282,29 +282,29 @@ Bits, Bytes, and Integers
 
 ## Expanding and Truncating
 
-- Expanding: `smaller` integer type of w-bit → `larger` integer type of (w+k)-bit
+- Expanding: `smaller` integer type of $w$-bit → `larger` integer type of $(w+k)$-bit
   - zero padded for unsigned: `1011` → `0000_1011`
     - $B2U_w(\vec{b}) = B2U_{k+w}((\underbrace{0}_{k},\vec{b}))$
   - sign bit padded for signed, called `sign extension`: 
     - `1011` → `1111_1011`, `0101` → `0000_0101`
-    - $B2T_w(\vec{b}) = B2T_{k+w}(\underbrace{b_{w-1}}_{k},\vec{b}))$
+    - $B2T_w(\vec{b}) = B2T_{k+w}((\underbrace{b_{w-1}}_{k},\vec{b}))$
     - automatically performed in C/C++
   - both yield expected result
-- Truncating: `larger` integer type of w-bit → `smaller` integer type of k-bit
+- Truncating: `larger` integer type of $w$-bit → `smaller` integer type of $k$-bit
   - High bits are truncated and result is `reinterpreted`
     - Unsigned: mod operation 
       - $B2U_k((b_{k-1},b_{k-2}, ⋯, b_0)) = B2U_w((b_{w-1},b_{w-2}, ⋯, b_0)) \bmod 2^k$
     - Signed: mod as unsigned then reinterpret to be signed
       - $B2T_k((b_{k-1},b_{k-2}, ⋯, b_0)) = U2T_k(B2U_w((b_{w-1},b_{w-2}, ⋯, b_0)) \bmod 2^k)$
   - Small numbers yields expected behavior
+    - How small?
 - 📝 Watch out [exceptional behavior](./code/extr.c)
-  - especially different representation
 
 ---
 
 ## Arithmetic Operations on Unsigned Numbers
 - Let $x$ and $y$ be two unsigned $w$-bit integers,
-- `Addition`: $`s ≐ x +_w^u y = \begin{cases} x+y, & x+y<2^w (\text{Normal})\\ x+y-2^w, & 2^w ≤ x+y ≤ 2^{w+1} (\text{Overflow}) \end{cases}`$
+- `Addition`: $`s ≐ x +_w^u y = \begin{cases} x+y, & x+y<2^w (\text{Normal})\\ x+y-2^w, & x+y ≥ 2^w  (\text{Overflow}) \end{cases}`$
   - ![overflow](./imgs/uadd-ovf.png)
   - Overflow condition: $s < \min(x,y)$
 - `Negation`: $`x' ≐ -_w^u x = \begin{cases} 0, & x=0\\ 2^w-x, & x>0 \end{cases}`$
@@ -321,10 +321,8 @@ Bits, Bytes, and Integers
 ---
 
 ## Arithmetic Operations on Signed Two's Complement Numbers
-- Two’s complement representation in $w$-bits for $N$: 
-  - $(2^w+N) \bmod 2^w$
 - Let $x$ and $y$ be two $w$-bit signed integers:
-- `Addition`: $`s ≐ x +_w^t y = \begin{cases} x+y-2^w, & 2^{w-1} ≤ x+y (\text{Positive overflow})\\ x+y, & -2^{w-1} ≤ x+y < 2^{w-1} (\text{Normal}) \\ x+y+2^w, & x+y<-2^{w-1} (\text{Negative overflow}) \end{cases}`$
+- `Addition`: $`s ≐ x +_w^t y = \begin{cases} x+y-2^w, & x+y ≥ 2^{w-1} (\text{Positive overflow})\\ x+y, & -2^{w-1} ≤ x+y < 2^{w-1} (\text{Normal}) \\ x+y+2^w, & x+y<-2^{w-1} (\text{Negative overflow}) \end{cases}`$
   - $x +_w^t y = U2T_w((x+y)\bmod 2^w)$
   - ![overflow](./imgs/tadd-ovf.png)
   - Positive overflow if $x>0$ and $y>0$ but $s≤0$,
@@ -370,20 +368,19 @@ Bits, Bytes, and Integers
 
 ## Multiplication and Division by Powers of 2 
 - Most machines shift and add faster than multiply
-  - Compiler generates this code automatically
+  - Let $`0 ≤ k < w`$ in the table
 
 | **Operation** | **Unsigned Integer** | **Signed Integer (Two's Complement)**| **Equivalent Bit Shift** |
 |---|---|---|---|
-| **Multiplication by $2^k$** | $x \times 2^k$  | $x \times 2^k$ (Arithmetic shift left)| $x \ll k$ |
+| **Multiplication by $2^k$** | $`x ×_w^u 2^k`$  | $`x ×_w^t 2^k`$ | $`x \ll k`$ |
 | **Overflow (Multiplication)** | Wraps around (mod $2^w$)    | Sign bit may change (overflow if sign changes)|  |
-| **Division by $2^k$**  | $\lfloor x / 2^k \rfloor$ | $\lfloor x / 2^k \rfloor$ (Arithmetic shift right)  | $x \gg k$ |
+| **Division by $2^k$**  | $\lfloor x / 2^k \rfloor$ | $\lfloor x / 2^k \rfloor$  | $x \gg k$ |
 | **Rounding (Division)**  | Always rounds towards 0  | Rounds towards `negative infinity`    |  |
 | **Sign Extension (Right Shift)**   | Zeros filled in left bits| Sign bit (MSB) extends (preserves sign)  | $x \gg k$ (with sign extension)    |
 | **Overflow (Division)**  | No overflow    | No overflow (sign extension prevents it) |  |
-| **Example (8-bit, $k=1$)**  | $1001_{(2)} \rightarrow 0100_{(2)}$ | $-3_{(10)} = 11111101_{(2)} \rightarrow 11111110_{(2)}$ | $x \ll 1$ or $x \gg 1$    |
 
 - ⚠️ Quotient of signed by power of 2
-  - x >> k gives ⌊x / 2ᵏ⌋ using arithmetic shift
+  - x ≫ k gives ⌊x / 2ᵏ⌋ using arithmetic shift
     - Rounds wrong direction when x < 0 as we want ⌈x / 2ᵏ⌉ (round toward 0)
   - Can be fixed with biasing: ⌊(x+2ᵏ-1) / 2ᵏ⌋ based on property ⌈x / y⌉=⌊(x+y-1) / y⌋
 - 📝 Implement multiplication and division by powers of 2 with shift operations
@@ -394,7 +391,7 @@ Bits, Bytes, and Integers
 ## Multiplication and Division by K
 - Multiplication
   - Express $K$ in binary: $K = K_n 2^n + K_{n-1} 2^{n-1} + \dots + K_1 2^1 + K_0 2^0$ 
-  - Generate code using shifts and additions: $x \cdot K = \sum (x \ll i) \text{ for each } K_i = 1$
+  - Generate code using shifts and additions: $`\displaystyle x \cdot K = \sum_{K_i = 1} (x \cdot 2^i) = \sum_{K_i = 1} (x \ll i)`$
 
     ```python
     def multiply_by_constant(x, K):
@@ -408,20 +405,20 @@ Bits, Bytes, and Integers
         return result
     ```
 - Division
-  - Approximate the division using: $x / K \approx (x \cdot M) \gg n$
-    - $M = \lfloor 2^n / K \rfloor$ – Precomputed multiplier 
-    - $n$ – Bit shift amount, typically $n = 32$ or $64$ 
+  - Approximate the division using: $x / K \approx (x \cdot M) \gg w$
+    - $M = \lfloor 2^w / K \rfloor$ – Precomputed multiplier 
+    - $w$ – Bit shift amount, typically $w = 32$ or $64$ 
 
     ```python
     function divide_by_K(x, K):
-        n = 32
-        M = floor(2^n / K)  # Precompute multiplier
-        bias = 2^(n - 1)  # Rounding correction
+        w = 32
+        M = floor(2^w / K)  # Precompute multiplier
+        bias = 2^(w - 1)  # Rounding correction
         
         if x < 0:
-            return (x * M - bias) >> n  # Apply bias for negative values
+            return (x * M - bias) >> w  # Apply bias for negative values
         else:
-            return (x * M + bias) >> n
+            return (x * M + bias) >> w
     ```
 - 📝 Practice: implement the two functions in C
   - [ref solution](./code/md.c)
