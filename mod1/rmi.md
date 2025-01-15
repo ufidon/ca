@@ -186,25 +186,28 @@ Bits, Bytes, and Integers
 ---
 
 ## Integer Binary Representations
-- Given bit pattern $X$ of w-bits, $b_i$ as the bit at position $i$. The two popular integer encodings
-  - `B2U`: bit pattern to unsigned integer
-  - `B2T`: bit pattern to two's complement integer
-  - Both are `one-to-one` functions so they are `invertible`
-    - let $U2B = B2U^{-1}$ and $T2B = B2T^{-1}$ for reference below
+- Given bit pattern $\vec{b}=(b_{w-1},b_{w-2}, ⋯, b_1, b_0)$ of w-bits, $b_i$ as the bit at position $i$. The two popular integer encodings
+  - $B2U_w: [0,1]^w → [0, UMax_w]$: bit pattern to unsigned integer
+  - $B2T_w: [0,1]^w → [TMin_w, TMax_w]$: bit pattern to two's complement integer
+  - Both are `one-to-one` or `bijection` functions so they are `invertible`
+    - let $U2B_w = B2U_w^{-1}$ and $T2B_w = B2T_w^{-1}$ for reference below
 
 | | Unsigned Representation | Signed Two's Complement Representation |
 |---|---|---|
-| Formula | $U = B2U(X) = \sum_{i=0}^{w-1} b_i \cdot 2^i$ | $S = B2T(X) = -b_{w-1} \cdot 2^{w-1} + \sum_{i=0}^{w-2} b_i \cdot 2^i$  |
-| Range | 0 to $2^w - 1$ | $-2^{w-1}$ to $2^{w-1} - 1$ |
+| Formula | $u_{\vec{b}} = B2U_w(\vec{b}) = b_{w-1} \cdot 2^{w-1} + \sum_{i=0}^{w-2} b_i \cdot 2^i$ | $s_{\vec{b}} = B2T_w(\vec{b}) = -b_{w-1} \cdot 2^{w-1} + \sum_{i=0}^{w-2} b_i \cdot 2^i$  |
+| Range | $UMin_w=0$ to $UMax_w=2^w - 1$ | $TMin_w=-2^{w-1}$ to $TMax_w=2^{w-1} - 1$ |
+| Illustration | ![b2u](./imgs/unsigned-values.png) | ![b2t](./imgs/twocomp-values.png) |
 
-- **Unsigned values** are always non-negative 
+- $B2U_w(\vec{b}) = B2T_w(\vec{b}) + b_{w-1}⋅2^w$
+  - $u_{\vec{b}} = s_{\vec{b}} + b_{w-1} ⋅ 2^w$
+- **Unsigned values** are always non-negative
+  - $UMax = 2TMax + 1$
 - **Signed two's complement** can represent negative values by utilizing the MSB as a sign bit
   - provide a simple way to represent negative numbers and perform subtraction with addition
+  - $|TMin|=TMax + 1$
 - **Overflow** occurs if the result falls `outside of range`
 - 📝 Practice: find the ranges of all C/C++ integer types
   - check your answers against `limits.h`, then with [cput.py](./code/cput.py)
-
-
 
 ---
 
@@ -215,8 +218,10 @@ Bits, Bytes, and Integers
     $r^w - N$
   - **Diminished radix complement** (one less than the full complement):  
     $(r^w - 1) - N$
-- In **binary (base-2)**, the `radix complement is 2's complement`: $2^w - N$
-- **Steps to compute two's complement**:
+- In **binary (base-2)**, the `radix complement is 2's complement`
+  - $2^w - N$ is the `2's complement encoding` of $-N$, i.e. the **negation** of $N$
+  - ∴ $N$'s 2's complement encoding is $(2^w+N) \bmod 2^w$
+- **Steps to compute two's complement of N**:
   1. **Find the one's complement** (diminished radix complement):  $(2^w - 1) - N$  
      - This inverts all bits (flip 1 to 0 and 0 to 1).     
   2. **Add 1** to get the full radix complement: $2^w - N = (2^w - 1 - N) + 1$
@@ -225,14 +230,16 @@ Bits, Bytes, and Integers
 
 ## Conversion and Casting in Theory
 - Mappings between unsigned and two's complement numbers `keep bit representations and reinterpret`
-  - signed $x$ to unsigned $ux$: $x \stackrel{T2B}{⟶} B \stackrel{B2U}{⟶}ux$
-  - unsigned $ux$ to $x$: $ux \stackrel{U2B}{⟶} B \stackrel{B2T}{⟶}x$
+  - signed $s_{\vec{b}}$ to unsigned $u_{\vec{b}}$: $s_{\vec{b}} \stackrel{T2B_w}{⟶} B \stackrel{B2U_w}{⟶}u_{\vec{b}}$
+    - $u_{\vec{b}} = T2U_w(s_{\vec{b}})=s_{\vec{b}} + b_{w-1}2^w$
+  - unsigned $u_{\vec{b}}$ to $s_{\vec{b}}$: $u_{\vec{b}} \stackrel{U2B_w}{⟶} B \stackrel{B2T_w}{⟶}s_{\vec{b}}$
+    - $s_{\vec{b}} = U2T_w(u_{\vec{b}})=u_{\vec{b}} - b_{w-1}2^w$
 
-| **Conversion**         | **Formula**                                                                 |
-|------------------------|-----------------------------------------------------------------------------|
-| **Unsigned to Signed** | $`S = \begin{cases} U & \text{if } U < 2^{w-1} \\ U - 2^w & \text{if } U \geq 2^{w-1} \end{cases}`$ |
-| **Signed to Unsigned** | $`U = \begin{cases} S & \text{if } S \geq 0 \\ S + 2^w & \text{if } S < 0 \end{cases}`$ |
-| **Bit Pattern**        | $`\text{Bit Pattern} = \text{Binary representation of } (U \mod 2^w)`$   |
+| **Conversion**  | **Formula (Piece-wise Linear Function)** | **Illustration** |
+|------------------------|-----------|-----|
+| **Unsigned to Signed** | $`s_{\vec{b}} = \begin{cases} u_{\vec{b}} & \text{if } u_{\vec{b}} < 2^{w-1} \\ u_{\vec{b}} - 2^w & \text{if } u_{\vec{b}} \geq 2^{w-1} \end{cases}`$ | ![u2t](./imgs/u2t.png) |
+| **Signed to Unsigned** | $`u_{\vec{b}} = \begin{cases} s_{\vec{b}} & \text{if } s_{\vec{b}} \geq 0 \\ s_{\vec{b}} + 2^w & \text{if } s_{\vec{b}} < 0 \end{cases}`$ | ![t2u](./imgs/t2u.png)|
+| **Bit Pattern**        | $`\text{Bit Pattern} = \text{Binary representation of } (u_{\vec{b}} \mod 2^w)`$   |  |
 
 | Unsigned (4-bit) | Binary (4-bit) | Signed (4-bit) |
 |------------------|----------------|-----------------|
@@ -253,6 +260,7 @@ Bits, Bytes, and Integers
 | 14               | 1110           | -2              |
 | 15               | 1111           | -1              |
 
+- ![unsigned ↔ signed](./imgs/unsigned-twocomp-values.png)
 - 📝 Convert between unsigned and signed integer of width $w$ with [uvt.py](./code/uvt.py)
 
 ---
@@ -274,37 +282,39 @@ Bits, Bytes, and Integers
 
 ## Expanding and Truncating
 
-- Expanding: `smaller` integer type → `larger` integer type
+- Expanding: `smaller` integer type of w-bit → `larger` integer type of (w+k)-bit
   - zero padded for unsigned: `1011` → `0000_1011`
+    - $B2U_w(\vec{b}) = B2U_{k+w}((\underbrace{0}_{k},\vec{b}))$
   - sign bit padded for signed, called `sign extension`: 
     - `1011` → `1111_1011`, `0101` → `0000_0101`
+    - $B2T_w(\vec{b}) = B2T_{k+w}(\underbrace{b_{k-1}}_{k},\vec{b}))$
     - automatically performed in C/C++
   - both yield expected result
-- Truncating: `larger` integer type → `smaller` integer type
-  - High bits are truncated and result is reinterpreted
-    - Unsigned: mod operation
-    - Signed: similar to mod
-  - For small numbers yields expected behavior
+- Truncating: `larger` integer type of w-bit → `smaller` integer type of k-bit
+  - High bits are truncated and result is `reinterpreted`
+    - Unsigned: mod operation 
+      - $B2U_k((b_{k-1},b_{k-2}, ⋯, b_0)) = B2U_w((b_{w-1},b_{w-2}, ⋯, b_0)) \bmod 2^k$
+    - Signed: mod as unsigned then reinterpret to be signed
+      - $B2T_k((b_{k-1},b_{k-2}, ⋯, b_0)) = B2U_w((b_{w-1},b_{w-2}, ⋯, b_0)) \bmod 2^k → U2T_k$
+  - Small numbers yields expected behavior
 - 📝 Watch out [exceptional behavior](./code/extr.c)
-  - especially to different representation
+  - especially different representation
 
 ---
 
 ## Arithmetic Operations on Unsigned Numbers
-- Let $A$ and $B$ be two unsigned $w$-bit integers,
+- Let $x$ and $y$ be two unsigned $w$-bit integers,
+- `Addition`: $s ≐ x +_w^u y = \begin{cases} x+y, & x+y<2^w (\text{Normal})\\ x+y-2^w, & 2^w ≤ x+y ≤ 2^{w+1} (\text{Overflow}) \end{cases}$
+  - ![overflow](./imgs/uadd-ovf.png)
+  - Overflow condition: $s < \min(x,y)$
+- `Negation`: $x' ≐ -_w^u x = \begin{cases} 0, & x=0\\ 2^w-x, & x>0 \end{cases}$
+  - prove by $x' +_w^u x = 0$, i.e. $x'$ is the `inverse` of $x$ under $-_w^u$.
+- `Multiplication`: $x ×_w^u y = (x ⋅ y)\bmod 2^w$
 
-| Operation | Formula | Overflow Condition | Overflowed Result |
-|---|---|---|---|
-| Addition | $S = A +_u B = A + B$ | If $S > 2^w - 1$, an **overflow** occurs, <br>and the result wraps around (modulo $2^w$) | $S_{\text{result}} = (A + B) \bmod 2^w$ <br>▶️ **Carry out** occurs if: $C = \left\lfloor \dfrac{A + B}{2^w} \right\rfloor$ |
-| Subtraction | $D = A - B$ | If $A < B$, **borrow** occurs | $D_{\text{result}} = (A - B + 2^w) \bmod 2^w$ |
-| Multiplication | $P = A ×_u B = A \times B$ | ▶️ The product $P$ can be up to $2n$ bits long: $0 \leq P \leq (2^w - 1)^2$ <br>▶️ The lower $w$ bits are retained as the result, <br>and the upper $w$ bits represent overflow | $P_{\text{lower}} = P \bmod 2^w$ <br>$P_{\text{upper}} = \left\lfloor \dfrac{P}{2^w} \right\rfloor$ |
-| Division | $Q = \left\lfloor \dfrac{A}{B} \right\rfloor$ | Division by zero is undefined | The remainder is: $R = A \bmod B$ |
-| Modulo | $R = A \bmod B$ | No overflow | It ensures: $0 \leq R < B$ |
-| Negation | $R = -A$ | $\text{Overflow if:} \quad (A ≠ 0)$ | $R = -A \bmod 2^w$ |
 
 - Unsigned arithmetic is straightforward but limited by the bit-width.  
-- Overflow and carry detection is crucial in low-level programming.  
-- Wrap-around behavior simplifies modular arithmetic.
+  - Overflow and carry detection is crucial in low-level programming.  
+  - Wrap-around behavior simplifies modular arithmetic.
 - 📝 [un.c](./code/un.c) shows arithmetic operations on `unsigned char` in C.
   - Extend it to other C unsigned integer types.
 
@@ -312,24 +322,21 @@ Bits, Bytes, and Integers
 
 ## Arithmetic Operations on Signed Two's Complement Numbers
 - Two’s complement representation in $w$-bits for $N$: 
-  - $-2^{w-1} \leq N \leq 2^{w-1} - 1$
-  - same as unsigned for **positive numbers**
-  - $N_{\text{negative}} = 2^w - N$ for **negative numbers**
-- Let $A$ and $B$ be two $w$-bit signed integers:
-
-| Operation | Formula | Overflow Condition | Overflowed Result |
-|---|---|---|---|
-| Addition | $S = A +_t B = A + B$ | $\text{Overflow if:} \quad (A_{w-1} = B_{w-1}) \land (S_{w-1} \neq A_{w-1})$  | $S_{\text{result}} = S \bmod 2^w$ |
-| Subtraction | $D = A - B = A + (-B)$ | $\text{Overflow if:} \quad (A_{w-1} \neq B_{w-1}) \land (S_{w-1} \neq A_{w-1})$ | $D_{\text{result}} = D \bmod 2^w$ |
-| Multiplication | $P = A ×_t B = A \times B$ | $\text{Overflow if:} \quad P \geq 2^{w-1} \text{ or } P < -2^{w-1}$  | $P_{\text{result}} = P \bmod 2^w$ |
-| Division | $Q = \left\lfloor \dfrac{A}{B} \right\rfloor$ | ▶️ Division by zero is undefined <br>▶️ $`\text{Overflow if:} \quad (A = -2^{w-1}) \land (B = -1)`$  | $Q = (-2^{w-1}) \bmod 2^w = -2^{w-1}$ |
-| Modulo | $R = A \bmod B$ | No overflow | ▶️ It ensures: $0 \leq R < B$ <br>▶️ $R$ has sign of $A$ |
-| Negation | $R = -A$ | $\text{Overflow if:} \quad (A = -2^{w-1})$ | $R = (-2^{w-1}) \bmod 2^w = -2^{w-1}$ |
-
-- Overflow leads to wrapping around to the opposite end of the number line.  
-- For $w$-bit numbers:  
+  - $(2^w+N) \bmod 2^w$
+- Let $x$ and $y$ be two $w$-bit signed integers:
+- `Addition`: $s ≐ x +_w^t y = \begin{cases} x+y-2^w, & 2^{w-1} ≤ x+y (\text{Positive overflow})\\ x+y, & -2^{w-1} ≤ x+y < 2^{w-1} (\text{Normal}) \\ x+y+2^w, & x+y<-2^{w-1} (\text{Negative overflow}) \end{cases}$
+  - $x +_w^t y = U2T_w((x+y)\bmod 2^w)$
+  - ![overflow](./imgs/tadd-ovf.png)
+  - Positive overflow if $x>0$ and $y>0$ but $s≤0$,
+  - Negative overflow if $x<0$ and $y<0$ but $s≥0$.
+- Overflow leads to wrapping around to the opposite end of the number line.  For $w$-bit numbers:
   - Positive overflow results in a large negative value.  
   - Negative overflow results in a large positive value.
+- `Negation`: $x' ≐ -_w^t x = \begin{cases} TMin_w, & x=TMin_w\\ -x, & x>TMin_w \end{cases}$
+  - prove by $x' +_w^t x = 0$, i.e. $x'$ is the `inverse` of $x$ under $-_w^t$.
+- `Multiplication`: $x ×_w^t y = U2T_w((x ⋅ y)\bmod 2^w)$
+  - backed by $T2B_w(x ×_w^t y) = U2B_w(u_x ×_w^u u_y)$, where
+  - $x=B2T_w(\vec{x}),\ y=B2T_w(\vec{y}),\ u_x=B2U_w(\vec{x}),\ u_y=B2U_w(\vec{y})$
 - 📝 [sign.c](./code/sign.c) shows arithmetic operations on `signed char` in C.
   - Extend it to other C signed integer types.
 
@@ -386,8 +393,8 @@ Bits, Bytes, and Integers
 
 ## Multiplication and Division by K
 - Multiplication
-  - Express $K$ in binary: $K = b_n 2^n + b_{n-1} 2^{n-1} + \dots + b_1 2^1 + b_0 2^0$ 
-  - Generate code using shifts and additions: $x \cdot K = \sum (x \ll i) \text{ for each } b_i = 1$
+  - Express $K$ in binary: $K = K_n 2^n + K_{n-1} 2^{n-1} + \dots + K_1 2^1 + K_0 2^0$ 
+  - Generate code using shifts and additions: $x \cdot K = \sum (x \ll i) \text{ for each } K_i = 1$
 
     ```python
     def multiply_by_constant(x, K):
