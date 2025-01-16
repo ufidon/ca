@@ -68,7 +68,7 @@ Floating Point
 ## Floating Point Representation  
 - Uses $V = (-1)^s \cdot M \cdot 2^E$ to represent a `wide range` of rational numbers
   - **Sign bit (s):** Determines if the number is negative or positive.  
-  - **Significand (M):** Fractional value in the range [1.0, 2.0).  
+  - **Significand (M):** Fractional value in the range [0,1) ∪ [1.0, 2.0).  
   - **Exponent (E):** Weights the value by a power of 2. 
 - Encoding:  
   - **Sign bit (s):** 1 bit (1 negative, 0 positive)
@@ -81,6 +81,7 @@ Floating Point
     - `denormalized` values (including `+0` and `-0`)
   - two infinities: `+∞` and `-∞`
   - two kinds of NaN: a quiet NaN (`qNaN`) and signaling NaN (`sNaN`)
+    - Quiet bit is the MSB of the mantissa. Set for qNaN, cleared for sNaN.
 
 ---
 
