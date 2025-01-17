@@ -799,6 +799,7 @@ $(–1)^s M ⋅ 2^E = (–1)^0 \times 1.75 \times 2^3 = 14$
     - Intel processors use a specific bit pattern for invalid conversions
       - e.g., `(int)+1e10` yields `INT_MIN`.
 - 📝 Practice [casting between `int, float, and double` in C](./code/cifd.c)
+- 📝 Floating point [puzzles](./code/cidfe.c)
 
 ---
 

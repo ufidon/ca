@@ -466,7 +466,7 @@ Bits, Bytes, and Integers
   - Every element has additive inverse
     - $t' = -t$ if t ≠ TMinₙ else TMinₙ
     - $\tilde{t} +_t 1=-t$, where $\tilde{t}$ is $t$'s one's complement
-- TAdd `drops off the MSB` of true sum that needs `w+1 bits`
+- TAdd `drops off the MSB` of mathematical sum that needs `w+1 bits`
   - $`u +_t v = \begin{cases}
     u+v+2^w, & u+v < \text{TMin}_n \text{ (underflow)}\\
     u+v, & \text{TMin}_n ≤ u+v ≤ \text{TMax}_n \\
