@@ -84,16 +84,16 @@ mov [ebp + 8], eax  ; Store eax into memory at ebp+8
 ---
 
 ## 💡 Generate assembly code in AT&T and Intel formats
-- Generate assembly code from [C](./code/mlrp/intro.c)
+- Generate assembly code from [C](./code/mlrp/mam.c)
   ```bash
   # 1. AT&T
-  gcc -S -o intro.s intro.c # in AT&T syntax by default.
+  gcc -S -o mam.s mam.c # in AT&T syntax by default.
 
   # 2. Intel
-  gcc -S -masm=intel -o intro.si intro.c
+  gcc -S -masm=intel -o mam.si mam.c
 
   # 3. Assemble and Run (Optional)
-  gcc -o intro intro.s
+  gcc -o mam mam.s
   ```
 
 ---
@@ -254,6 +254,8 @@ Here’s a summary of **x86-64 instructions** for **arithmetic**, **logical**, a
 | Ice Lake             | 2019             | ~2,000                 | ~250                 | ~180               | ~1,200              | ~200             | ~170                    |
 | Alder Lake           | 2021             | ~2,500                 | ~300                 | ~200               | ~1,500              | ~250             | ~250                    |
 
+- High-level languages and modern compilers `abstract` low-level details and produce highly `optimized` code, making development faster and more efficient.  
+- Manual assembly is now limited to niche areas like embedded systems, `performance-critical` tasks, and `reverse engineering`.  
 
 ## References
 - [RISC V Resources](https://github.com/suryakantamangaraj/AwesomeRISC-VResources)

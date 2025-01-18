@@ -42,6 +42,9 @@ int main(int argc, char *argv[])
     printf("%c", arr1[i]);
   }
   printf("\n");
+
+  arr1[6] = '|';
+  printf("%s\n", arr1);
   
   short arr2[] = {0x11,0x22,0x33,0x44,0x55};
   for (int i = 0; i < 5; i++)
