@@ -29,7 +29,7 @@ Basics
 
 ---
 
-## Examples and Types of ISA**
+## Examples and Types of ISA
 - **Examples**:
   - **x86**: CISC, used in desktops/servers.
     - IA32 → **x86-64**
@@ -81,6 +81,47 @@ mov [ebp + 8], eax  ; Store eax into memory at ebp+8
 | **Segmentation**         | `movw %gs:offset, %ax`                                | `mov ax, gs:offset`                                 |
 | **Index Scaling**        | `offset(base, index, scale)` (e.g., `4(%ebx, %esi, 2)`) | `[base + index*scale + offset]` (e.g., `[ebx + esi*2 + 4]`) |
 
+- 📝 Assemble instructions with [rz-asm](https://rizin.re/)
+  ```bash
+  # AT&T syntax specifed by -s att
+  rz-asm -a x86 -b 64 -s att 'movq $1, %rax'
+
+  # The default syntax is Intel, -s intel can be omitted
+  rz-asm -a x86 -b 64 'mov rax, 1'
+  ```
+- 📝 Assemble [assembly code](./code/mlrp/hello.s) in AT&T syntax with [as](https://sourceware.org/binutils/docs/as/)
+  ```bash
+  # assemble
+  as -o hello.o hello.s
+
+  # disassemble
+  objdump -d hello.o
+
+  # link
+  ld -o hello hello.o
+
+  # using gcc/clang built-in assembler
+  gcc -o hello hello.s -nostdlib
+  ```
+- 📝 Assemble [assembly code](./code/mlrp/intel.s) in Intel syntax with `as`
+  ```bash
+  # assemble
+  as -o intel.o intel.s
+
+  # link
+  ld -o intel intel.o
+  # or
+  gcc -o intel intel.o -nostartfiles
+  # or
+  gcc -o intel intel.o -nostdlib
+  ```
+- 📝 Different assembler has different syntax.
+  - Assemble [hwi.s](./code/mlrp/hwi.s) with `yasm`
+  ```bash
+  yasm -f elf64 -o hwi.o  hwi.s
+  ld -o hwi hwi.o
+  ```
+
 ---
 
 ## 💡 Generate assembly code in AT&T and Intel formats
@@ -124,6 +165,8 @@ mov [ebp + 8], eax  ; Store eax into memory at ebp+8
 | RIP          | Instruction pointer                         | `rip`      | -          | -          | -           |
 | FLAGS        | Status flags                                | `rflags`   | `eflags`   | `flags`    | -           |
 
+- 💡 Explore [x86-64 integer registers](./code/mlrp/mam.c) 
+
 ---
 
 ## **Assembly Data Types**
@@ -143,16 +186,48 @@ mov [ebp + 8], eax  ; Store eax into memory at ebp+8
 
 ---
 
-## Moving Data
-- `movq Dest, Source` operand Types: Register(`R`), Immediate(`I`), Memory (`M`)
+## [x86-64 Data Movement Instructions](https://linasm.sourceforge.net/docs/instructions/cpu.php#data)
+
+| **Instruction** | **Syntax**                     | **Description**                                                                 |
+|------------------|--------------------------------|---------------------------------------------------------------------------------|
+| **`mov`**        | `mov dest, src`                | Moves data from `src` to `dest`.                                               |
+| **`movzx`**      | `movzx dest, src`              | Moves `src` to `dest` with zero extension (for unsigned values).               |
+| **`movsx`**      | `movsx dest, src`              | Moves `src` to `dest` with sign extension (for signed values).                 |
+| **`lea`**        | `lea dest, [src]`              | Loads the effective address of `src` into `dest`.                              |
+| **`xchg`**       | `xchg dest, src`               | Exchanges the contents of `dest` and `src`.                                    |
+| **`cmovcc`**     | `cmovcc dest, src`             | Conditionally moves `src` to `dest` based on flags (e.g., `cmove`, `cmovne`).  |
+| **`movaps`**     | `movaps dest, src`             | Moves aligned packed single-precision floating-point values.                   |
+| **`movups`**     | `movups dest, src`             | Moves unaligned packed single-precision floating-point values.                 |
+| **`movdqa`**     | `movdqa dest, src`             | Moves aligned packed integer values (128-bit).                                 |
+| **`movdqu`**     | `movdqu dest, src`             | Moves unaligned packed integer values (128-bit).                               |
+| **`movq`**       | `movq dest, src`               | Moves 64-bit data between registers or memory.                                 |
+| **`movd`**       | `movd dest, src`               | Moves 32-bit data between registers or memory.                                 |
+| **`movnti`**     | `movnti dest, src`             | Moves data to memory without caching (non-temporal move).                      |
+| **`push`**       | `push src`                     | Pushes `src` onto the stack.                                                   |
+| **`pop`**        | `pop dest`                     | Pops data from the stack into `dest`.                                          |
+| **`pusha`**      | `pusha`                        | Pushes all general-purpose registers onto the stack.                           |
+| **`popa`**       | `popa`                         | Pops all general-purpose registers from the stack.                             |
+| **`pushf`**      | `pushf`                        | Pushes the EFLAGS register onto the stack.                                     |
+| **`popf`**       | `popf`                         | Pops the EFLAGS register from the stack.                                       |
+| **`lds`**        | `lds dest, src`                | Loads `dest` and the DS segment register from `src`.                           |
+| **`les`**        | `les dest, src`                | Loads `dest` and the ES segment register from `src`.                           |
+| **`lfs`**        | `lfs dest, src`                | Loads `dest` and the FS segment register from `src`.                           |
+| **`lgs`**        | `lgs dest, src`                | Loads `dest` and the GS segment register from `src`.                           |
+| **`lss`**        | `lss dest, src`                | Loads `dest` and the SS segment register from `src`.                           |
+| **`xlat`**       | `xlat`                         | Translates a byte in `al` using a table pointed to by `bx` or `ebx`.           |
+
+---
+
+## `mov` — Moving Data
+- `mov Dest, Source` operand Types: Register(`R`), Immediate(`I`), Memory (`M`)
 
 | **Operand Type**           | **Example**              | **C Analog**                              | **Description**                                                                 |
 |----------------------------|------------------------------------------|-------------------------------------------|---------------------------------------------------------------------------------|
-| **R ← R**   | `movq rax, rbx`                         | `long rax = rbx;`                         | Moves data between two registers.                                              |
-| **R ← M**     | `movq rax, QWORD PTR [rbp+8]`           | `long rax = *(long*)(rbp + 8);`           | Loads a 64-bit value from memory into a register.                              |
-| **M ← R**     | `movq QWORD PTR [rsp+16], rax`          | `*(long*)(rsp + 16) = rax;`               | Stores a 64-bit value from a register into memory.                             |
-| **R ← I**  | `movq rax, 10`                          | `long rax = 10;`                          | Moves a constant value into a register.                                        |
-| **M ← I**    | `movq QWORD PTR [rbp-8], 42`            | `*(long*)(rbp - 8) = 42;`                 | Stores a constant value directly into memory.                                  |
+| **R ← R**   | `mov rax, rbx`                         | `long rax = rbx;`                         | Moves data between two registers.                                              |
+| **R ← M**     | `mov rax, QWORD PTR [rbp+8]`           | `long rax = *(long*)(rbp + 8);`           | Loads a 64-bit value from memory into a register.                              |
+| **M ← R**     | `mov QWORD PTR [rsp+16], rax`          | `*(long*)(rsp + 16) = rax;`               | Stores a 64-bit value from a register into memory.                             |
+| **R ← I**  | `mov rax, 10`                          | `long rax = 10;`                          | Moves a constant value into a register.                                        |
+| **M ← I**    | `mov QWORD PTR [rbp-8], 42`            | `*(long*)(rbp - 8) = 42;`                 | Stores a constant value directly into memory.                                  |
 | **M ← M**       | N/A (Not Allowed)                      | N/A                                       | Direct memory-to-memory moves are not supported in x86-64 assembly.            |
 
 ---
@@ -167,7 +242,7 @@ mov [ebp + 8], eax  ; Store eax into memory at ebp+8
 | **Register Indirect**     | `mov ebx, [rax]`                  | `int y = *ptr;`                        | ➤Use a memory address stored in a register. <br>➤`rax=ptx;` |
 | **Base + Displacement**   | `mov eax, [rbp + 8]`              | `int x = arr[2];`                      | ➤Use a base register with a constant offset. <br>➤`rbp=arr;` |
 | **Indexed**               | `mov ecx, [rax + rbx]`            | `int x = arr[i];`                      | ➤Use a base register and an index register.  <br>➤`rax=arr, rbx=i;` |
-| **Scaled Indexed**        | `mov ecx, [rax + rbx*4]`          | `int x = arr[i];` (if `int` is 4 bytes)| ➤Use a base register, an index register, and a `scale factor` (or `array element size`:1, 2, 4, or 8). <br>➤`rax=arr, rbx=i;`  |
+| **Scaled Indexed**        | `mov ecx, [rax + rbx*4]`          | `int x = arr[i];` (if `int` is 4 bytes)| ➤Use a base register, an index register, and a `scale factor` (1, 2, 4, or 8). <br>➤`rax=arr, rbx=i;`  |
 | **RIP-Relative**          | `mov eax, [rip + 0x2000]`         | `int x = global_var;`                  | Use an offset relative to the instruction pointer (common for global variables).|
 | **Base + Index + Displacement** | `mov ecx, [rax + rbx*4 + 8]` | `int x = arr[i + 2];`                  | ➤Combine base, index, scale, and displacement. <br>➤`rax=arr, rbx=i;` |
 
@@ -192,10 +267,16 @@ mov [ebp + 8], eax  ; Store eax into memory at ebp+8
 
 - 📝 Explore x86-64 [memory mode addressing](./code/mlrp/mam.c)
   - Investigate the `swap` function and array iteration
+- 📝 (Optional) Use [memory addressing modes in assembly](./code/mlrp/addr.s)
+  ```bash
+  # assemble
+  yasm -f elf64 addr.s -o addr.o
 
----
-
-Here’s a summary of **x86-64 instructions** for **arithmetic**, **logical**, and **bitwise** operations, organized into a table for clarity:
+  # link
+  ld addr.o -o addr -lc -dynamic-linker /lib64/ld-linux-x86-64.so.2
+  # or
+  gcc -nostartfiles -no-pie  -o addr addr.o
+  ```
 
 ---
 
@@ -231,6 +312,8 @@ Here’s a summary of **x86-64 instructions** for **arithmetic**, **logical**, a
 |                | `btc`           | `btc dest, bit`                | Toggles the specified bit in `dest` (e.g., `btc eax, 7` flips bit 7 of `eax`). |
 
 - 📝 Investigate x86-84 [basic instructions](./code/mlrp/balc.c).
+- 📝 Inline assembly in C for gcc [emgcc.c](./code/mlrp/emgcc.c)
+  - Visual C++ supports [32-bit inline assembly](./code/mlrp/vc32.c) but NOT 64-bit.
 
 ---
 
@@ -258,6 +341,8 @@ Here’s a summary of **x86-64 instructions** for **arithmetic**, **logical**, a
 - Manual assembly is now limited to niche areas like embedded systems, `performance-critical` tasks, and `reverse engineering`.  
 
 ## References
+- [x86-64 Instructions Set](https://linasm.sourceforge.net/docs/instructions/index.php)
+  - [x86 and amd64 instruction reference](https://www.felixcloutier.com/x86/)
 - [RISC V Resources](https://github.com/suryakantamangaraj/AwesomeRISC-VResources)
 - [ARM documentation](https://developer.arm.com/documentation)
 - [RISC-V Instruction Set Manual](https://github.com/riscv/riscv-isa-manual)
