@@ -121,6 +121,16 @@ mov [ebp + 8], eax  ; Store eax into memory at ebp+8
   yasm -f elf64 -o hwi.o  hwi.s
   ld -o hwi hwi.o
   ```
+- 📝 Assembly on win64 [hello.asm](./code/mlrp/hello.asm)
+  ```bash
+  # assemble
+  yasm -f win64 hello.asm -o hello.obj
+
+  # link
+  link /subsystem:windows /entry:Start /LARGEADDRESSAWARE:NO hello.obj kernel32.lib user32.lib
+  # or
+  cl /nologo /Fe:hello.exe hello.obj kernel32.lib user32.lib /link /entry:Start /subsystem:windows  /LARGEADDRESSAWARE:NO
+  ```
 
 ---
 
@@ -341,6 +351,9 @@ mov [ebp + 8], eax  ; Store eax into memory at ebp+8
 - Manual assembly is now limited to niche areas like embedded systems, `performance-critical` tasks, and `reverse engineering`.  
 
 ## References
+- [The MASM32 SDK	](https://masm32.com/)
+- [flat assembler](https://flatassembler.net/)
+- [The Go tools for Windows + Assembler](http://www.godevtool.com/)
 - [x86-64 Instructions Set](https://linasm.sourceforge.net/docs/instructions/index.php)
   - [x86 and amd64 instruction reference](https://www.felixcloutier.com/x86/)
 - [RISC V Resources](https://github.com/suryakantamangaraj/AwesomeRISC-VResources)
