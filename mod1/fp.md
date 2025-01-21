@@ -445,7 +445,7 @@ Convert rational numbers into an **8-bit floating-point format** with the struct
    - Increment exponent: $2 + 1 = 3$ (biased exponent). In 4 bits: $0011_2$.
 
 6. **Final Representation**:
-   $0\ 0000\ 011$
+   $0\ 0011\ 000$
 
 ---
 
@@ -487,7 +487,7 @@ Convert rational numbers into an **8-bit floating-point format** with the struct
 | 128     | $10000000_2$        | $0\ 1110\ 000$           |
 | 63      | $00111111_2$        | $0\ 1101\ 000$           |
 | 35      | $00100011_2$        | $0\ 1100\ 001$           |
-| 0.0618  | $00000011_2$        | $0\ 0000\ 011$           |
+| 0.0618  | $00011000_2$        | $0\ 0011\ 000$           |
 | 0.015   | $00001000_2$        | $0\ 0001\ 000$           |
 
 - 📝 Verify the table results with the Python program [rational number to floating point with rounding and postnormalization](./code/r2fp.py)
