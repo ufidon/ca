@@ -115,7 +115,7 @@ Floating Point
   - Maximum when frac=111⋯1 ($M_{max} = 2.0 – ε$)
 - 📝 For each precision, find
   - the total number of normalized values (don't miss the sign bit)
-    - $2 ⋅ 2^m ⋅ (E_{max} - 1)$
+    - $`2 ⋅ 2^m ⋅ (2^k - 2)`$
   - the (maximum, minimum) normalized values in magnitude
     - ($M_{max} ⋅ 2^{E_{max}}$, $M_{min} ⋅ 2^{E_{min}}$)
 
