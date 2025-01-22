@@ -8,6 +8,7 @@ def parse_rational_number(input_str):
     - Integer: "3"
     - Fraction: "1/3"
     - Decimal: "3.14"
+    - Scientific: "1.66e-27"
     Returns a Fraction object.
     """
     # Match integers (e.g., "3")
@@ -114,7 +115,7 @@ def rational_to_binary(numerator, denominator, DIGITS=500):
 def main():
     # Set up argument parser
     parser = argparse.ArgumentParser(description="Convert a rational number to its fractional binary representation.")
-    parser.add_argument("number", type=str, help="Rational number in formats like 3, 1/3, or 3.14.")
+    parser.add_argument("number", type=str, help="Rational number in formats like 3, 1/3, 3.14, or 1.66e-27.")
     
     # Parse arguments
     args = parser.parse_args()
