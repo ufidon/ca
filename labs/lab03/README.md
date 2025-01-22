@@ -26,6 +26,7 @@ Consider a simplified 5-bit floating-point representation with:
 - **1 sign bit**
 - **2 exponent bits**
 - **2 mantissa bits**
+- 💡 [hint](./hint.md)
 
 #### Tasks:
 1. **Categorize all possible numbers** into the following groups:
