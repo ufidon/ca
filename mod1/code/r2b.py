@@ -32,7 +32,7 @@ def parse_rational_number(input_str):
     
     raise ValueError(f"Invalid input format: {input_str}")
 
-def rational_to_binary(numerator, denominator):
+def rational_to_binary(numerator, denominator, DIGITS=500):
     """
     Convert a rational number (numerator/denominator) to its fractional binary representation.
     Handles both terminating and repeating binary fractions.
@@ -56,7 +56,14 @@ def rational_to_binary(numerator, denominator):
     remainders_seen = {}  # Track remainders to detect repeating sequences
     repeating_start = None
     
+    digits = 0
     while remainder != 0:
+        digits = digits + 1
+        if digits > DIGITS:
+            print("The number fractional digits is more than 500...")
+            print("so the result is just an approximation.")
+            break
+
         if remainder in remainders_seen:
             # Repeating sequence detected
             repeating_start = remainders_seen[remainder]
