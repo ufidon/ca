@@ -29,7 +29,26 @@ def parse_rational_number(input_str):
         numerator = int(integer_part + fractional_part)
         denominator = 10 ** len(fractional_part)
         return Fraction(numerator, denominator)
-    
+
+    # Match scientific notation (e.g., "1.23e-4" or "-6.22e23")
+    sci_match = re.match(r"^(-?\d+)(?:\.(\d+))?e([+-]?\d+)$", input_str, re.IGNORECASE)
+    if sci_match:
+        integer_part = sci_match.group(1)
+        fractional_part = sci_match.group(2) or ""  # Fractional part may not exist
+        exponent = int(sci_match.group(3))
+
+        # Combine integer and fractional parts to form the numerator
+        numerator = int(integer_part + fractional_part)
+        denominator = 10 ** len(fractional_part)
+
+        # Apply the exponent
+        if exponent > 0:
+            numerator *= 10 ** exponent
+        else:
+            denominator *= 10 ** abs(exponent)
+
+        return Fraction(numerator, denominator)
+
     raise ValueError(f"Invalid input format: {input_str}")
 
 def rational_to_binary(numerator, denominator, DIGITS=500):
