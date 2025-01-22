@@ -5,6 +5,7 @@ Floating Point
 ---
 
 ## Decimal notation of rational numbers
+- Review [number systems](https://github.com/ufidon/cd/blob/main/mod1/src/num.ipynb)
 - Base 10: *decimal point*
   - $2025.5205_{10} = 2 \times 10^3 + 0 \times 10^2 + 2 \times 10^1 + 5 \times 10^0 + 5 \times 10^{-1} + 2 \times 10^{-2} + 0 \times 10^{-3} + 5 \times 10^{-4}$
 - Base 2: *binary point*
