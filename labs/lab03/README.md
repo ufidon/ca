@@ -69,7 +69,7 @@ Write a C program to verify your solutions for **Part I**. Your program should:
 2. **Simulate the 5-bit floating-point representation** and print all possible values, categorized as in **Part I, Question 2**.
 3. **Test the statements** in **Part I, Question 3** using specific values for `x`, `y`, and `z`. Include test cases for:
    - Normal values.
-   - Special values (e.g., ±NaNs, ±∞, ±0).
+   - Special values (e.g., TMax, TMin, 1, 0).
 
 ### **Requirements:**
 - Use **bitwise operations** to extract and manipulate the IEEE 754 representation.
