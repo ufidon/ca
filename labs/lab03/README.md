@@ -50,7 +50,7 @@ Given integers `x`, `y`, and `z` in 32-bit two's complement representation, let 
 - If the statement is **always true**, provide an explanation.
 - If the statement is **not always true**, provide a counterexample.
 
-Consider **normal values** as well as **special values** such as **±NaNs**, **±∞**, and **±0**.
+Consider **normal values** as well as **special values** such as **TMin**, **TMax**, and **0**.
 
 #### Statements:
 1. `(float) x == (float) dx`
