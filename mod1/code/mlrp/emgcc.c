@@ -9,6 +9,21 @@ int main()
   printf("=== Arithmetic Operations ===\n");
   printf("a = %d, b = %d\n", a, b);
 
+/**
+GCC's inline assembly syntax:
+`asm("assembly code" : output operands : input operands : clobbered registers);`
+```c
+asm("addl %1, %0" : "=r"(result) : "r"(a), "0"(b));
+```
+- **Assembly Instruction**: `addl %1, %0`
+  - `addl` is the x86 assembly instruction for addition.
+  - `%1` refers to the first input operand (`a`).
+  - `%0` refers to the output operand (`result`), which is also initialized with the value of `b` (due to `"0"(b)`).
+- **Operands**:
+  - `"=r"(result)`: The result of the addition is stored in `result`. The `=r` means the result is stored in a general-purpose register.
+  - `"r"(a)`: The value of `a` is passed as an input operand in a register.
+  - `"0"(b)`: The value of `b` is passed as an input operand and is also used to initialize the output operand (`result`).
+ */
   // Addition
   asm("addl %1, %0" : "=r"(result) : "r"(a), "0"(b));
   printf("a + b = %d\n", result);
