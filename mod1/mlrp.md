@@ -285,13 +285,13 @@ mov [ebp + 8], eax  ; Store eax into memory at ebp+8
 ---
 
 ## `MOV` data `without extension` 
-| Intel Syntax | AT&T Syntax | Effect       | Description               | Intel Syntax Example       | AT&T Syntax Example        |
-|--------------|-------------|--------------|---------------------------|----------------------------|----------------------------|
-| MOV          | movb        | D ← S        | Move byte                 | `MOV al, bl`               | `movb %bl, %al`            |
-| MOV          | movw        | D ← S        | Move word                 | `MOV ax, bx`               | `movw %bx, %ax`            |
-| MOV          | movl        | D ← S        | Move double word          | `MOV eax, ebx`             | `movl %ebx, %eax`          |
-| MOV          | movq        | D ← S        | Move quad word            | `MOV rax, rbx`             | `movq %rbx, %rax`          |
-| MOV          | movabsq     | R ← I        | Move absolute quad word   | `MOV rax, 0x123456789ABCD` | `movabsq $0x123456789ABCD, %rax` |
+| Intel <br> Syntax | AT&T <br> Syntax | Effect | Description   | Intel Syntax Example    | AT&T Syntax Example  |
+|--------|---------|--------|---------------------------|----------------------------|----------------------------|
+| MOV    | movb    | D ← S  | Move byte                 | `MOV al, bl`               | `movb %bl, %al`            |
+| MOV    | movw    | D ← S  | Move word                 | `MOV ax, bx`               | `movw %bx, %ax`            |
+| MOV    | movl    | D ← S  | Move double word          | `MOV eax, ebx`             | `movl %ebx, %eax`          |
+| MOV    | movq    | D ← S  | Move quad word            | `MOV rax, rbx`             | `movq %rbx, %rax`          |
+| MOV    | movabsq | R ← I  | Move absolute quad word   | `MOV rax, 0x123456789ABCD` | `movabsq $0x123456789ABCD, %rax` |
 
 - 💡 Move data without extension
 
