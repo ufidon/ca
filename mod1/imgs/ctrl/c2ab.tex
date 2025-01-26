@@ -1,0 +1,50 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usepackage{minted}
+\usetikzlibrary{positioning, arrows.meta}
+
+% convert -density 200 -resize 800x c2ab.pdf c2ab.png
+
+\begin{document}
+
+\begin{tikzpicture}[
+    node distance=1.5cm,
+    arrow/.style={-Stealth, thick}
+]
+
+    % Left code block (C code)
+    \node[inner sep=0] (left) {
+        \begin{tcolorbox}[title=C Code, colback=blue!5!white, colframe=blue!75!black, width=6cm]
+            \begin{minted}{c}
+if (cond-expr) {
+    true-statement;
+} else {
+    false-statement;
+}
+            \end{minted}
+        \end{tcolorbox}
+    };
+
+    % Right code block (Assembly translation)
+    \node[inner sep=0, right=of left] (right) {
+        \begin{tcolorbox}[title=Assembly Translation, colback=red!5!white, colframe=red!75!black, width=6cm]
+            \begin{minted}[escapeinside=||]{asm}
+t |=| cond-expr;
+if (!t)
+    goto false;
+true-statement;
+goto done;
+false:
+    false-statement;
+done:
+            \end{minted}
+        \end{tcolorbox}
+    };
+
+    % Arrow with label below and left-aligned
+    \draw[arrow] (left.east) -- ++(0.5, 0) -- node[above, align=left] {C to Asm} ++(0.5, 0) -- (right.west);
+
+\end{tikzpicture}
+
+\end{document}

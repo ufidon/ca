@@ -1,0 +1,44 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usepackage{minted}
+\usetikzlibrary{positioning, shapes.geometric, arrows.meta}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    node distance=1.5cm,
+    codeblock/.style={rectangle, draw=black, thick, text width=4cm, minimum height=2.5cm, align=left},
+    arrow/.style={-Stealth, thick}
+]
+
+    % Left code block (C code)
+    \node[codeblock] (left) {
+        \begin{minted}{c}
+if (cond-expr) {
+    true-statement;
+} else {
+    false-statement;
+}
+        \end{minted}
+    };
+
+    % Right code block (Assembly translation)
+    \node[codeblock, right=of left] (right) {
+        \begin{minted}[escapeinside=||]{asm}
+t |=| cond-expr;
+if (!t)
+    goto false;
+true-statement;
+goto done;
+false:
+    false-statement;
+done:
+        \end{minted}
+    };
+
+    % Arrows and labels
+    \draw[arrow] (left.east) -- ++(0.5, 0) -- node[above, align=left] {C to Asm} ++(0.5, 0) -- (right.west);
+
+\end{tikzpicture}
+
+\end{document}
