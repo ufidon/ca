@@ -1,0 +1,51 @@
+\documentclass[tikz, border=10pt]{standalone}
+\usepackage{tcolorbox}
+\usepackage{minted}
+\usepackage{tikz}
+\usetikzlibrary{positioning} % Include the positioning library for relative placement
+
+% Configure tcolorbox to use minted
+\tcbuselibrary{minted}
+\tcbset{
+    colback=blue!5!white, 
+    colframe=blue!75!black, 
+    coltitle=white, 
+    fonttitle=\bfseries, 
+    listing engine=minted, 
+    minted style=vs, 
+    minted language=c
+}
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=1.5cm and 1.5cm]
+
+% Define the nodes for each code block
+\node (c_do_while) {
+    \begin{tcolorbox}[title=do...while, text width=7cm]
+    \begin{minted}{c}
+do {
+    body-statement;
+} while (test-expr);
+    \end{minted}
+    \end{tcolorbox}
+};
+
+\node (goto_equivalent) [right=of c_do_while] {
+    \begin{tcolorbox}[title=Goto Equivalent, text width=7cm]
+    \begin{minted}{c}
+loop:
+    body-statement;
+    t = test-expr;
+    if (t)
+        goto loop;
+    \end{minted}
+    \end{tcolorbox}
+};
+
+% Draw arrows to connect the boxes
+\draw[->, thick] (c_do_while.east) -- (goto_equivalent.west);
+
+\end{tikzpicture}
+
+\end{document}

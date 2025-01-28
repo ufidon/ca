@@ -1,0 +1,86 @@
+\documentclass[tikz, border=10pt]{standalone}
+\usepackage{tcolorbox}
+\usepackage{minted}
+\usepackage{tikz}
+\usetikzlibrary{positioning} % Include the positioning library for relative placement
+
+% Configure tcolorbox to use minted
+\tcbuselibrary{minted}
+\tcbset{
+    colback=blue!5!white, 
+    colframe=blue!75!black, 
+    coltitle=white, 
+    fonttitle=\bfseries, 
+    listing engine=minted, 
+    minted style=vs, 
+    minted language=c
+}
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=1.5cm and 1.5cm]
+
+% Define the nodes for each code block
+\node (for_loop) {
+    \begin{tcolorbox}[title=for loop, text width=7cm]
+    \begin{minted}{c}
+for (init-expr; test-expr; update-expr)
+    body-statement;
+    \end{minted}
+    \end{tcolorbox}
+};
+
+\node (while_equivalent) [right=of for_loop] {
+    \begin{tcolorbox}[title=Equivalent while loop, text width=7cm]
+    \begin{minted}{c}
+init-expr;
+while (test-expr) {
+    body-statement;
+    update-expr;
+}
+    \end{minted}
+    \end{tcolorbox}
+};
+
+\node (jump_to_middle) [below=of for_loop] {
+    \begin{tcolorbox}[title=Jump-to-middle, text width=7cm]
+    \begin{minted}{c}
+init-expr;
+goto test;
+loop:
+    body-statement;
+    update-expr;
+test:
+    t = test-expr;
+    if (t)
+        goto loop;
+    \end{minted}
+    \end{tcolorbox}
+};
+
+\node (guarded_do) [right=of jump_to_middle] {
+    \begin{tcolorbox}[title=Guarded do, text width=7cm]
+    \begin{minted}{c}
+init-expr;
+t = test-expr;
+if (!t)
+    goto done;
+loop:
+    body-statement;
+    update-expr;
+    t = test-expr;
+    if (t)
+        goto loop;
+done:
+    \end{minted}
+    \end{tcolorbox}
+};
+
+% Draw arrows to connect the boxes
+\draw[->, thick] (for_loop.east) -- (while_equivalent.west);
+\draw[->, thick] (while_equivalent.south west) -- (jump_to_middle.north east);
+\draw[->, thick] (jump_to_middle.east) -- (guarded_do.west);
+
+\end{tikzpicture}
+
+\end{document}

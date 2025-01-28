@@ -1,0 +1,64 @@
+\documentclass[tikz, border=10pt]{standalone}
+\usepackage{tcolorbox}
+\usepackage{minted}
+\usepackage{tikz}
+\usetikzlibrary{positioning} % Include the positioning library for relative placement
+
+% Configure tcolorbox to use minted
+\tcbuselibrary{minted}
+\tcbset{
+    colback=blue!5!white, 
+    colframe=blue!75!black, 
+    coltitle=white, 
+    fonttitle=\bfseries, 
+    listing engine=minted, 
+    minted style=vs, 
+    minted language=c
+}
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=1.5cm and 1.5cm]
+
+% Define the nodes for each code block
+\node (c_conditional) {
+    \begin{tcolorbox}[title=C Conditional Statement, text width=7cm]
+    \begin{minted}{c}
+v = test-expr ? true-expr : false-expr;
+    \end{minted}
+    \end{tcolorbox}
+};
+
+\node (goto_equivalent) [right=of c_conditional] {
+    \begin{tcolorbox}[title=Goto Equivalent, text width=4cm]
+    \begin{minted}{c}
+if (!test-expr)
+    goto false;
+v = true-expr;
+goto done;
+false:
+v = else-expr;
+done:
+    \end{minted}
+    \end{tcolorbox}
+};
+
+\node (conditional_move) [right=of goto_equivalent] {
+    \begin{tcolorbox}[title=Conditional Move, text width=4cm]
+    \begin{minted}{c}
+v_t = true-expr;
+v_f = else-expr;
+t = test-expr;
+if (!t)
+    v = v_f;
+    \end{minted}
+    \end{tcolorbox}
+};
+
+% Draw arrows to connect the boxes
+\draw[->, thick] (c_conditional.east) -- (goto_equivalent.west);
+\draw[->, thick] (goto_equivalent.east) -- (conditional_move.west);
+
+\end{tikzpicture}
+
+\end{document}

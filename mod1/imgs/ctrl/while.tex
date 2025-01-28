@@ -1,0 +1,84 @@
+\documentclass[tikz, border=10pt]{standalone}
+\usepackage{tcolorbox}
+\usepackage{minted}
+\usepackage{tikz}
+\usetikzlibrary{positioning} % Include the positioning library for relative placement
+
+% Configure tcolorbox to use minted
+\tcbuselibrary{minted}
+\tcbset{
+    colback=blue!5!white, 
+    colframe=blue!75!black, 
+    coltitle=white, 
+    fonttitle=\bfseries, 
+    listing engine=minted, 
+    minted style=vs, 
+    minted language=c
+}
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=1.5cm and 1.5cm]
+
+% Define the nodes for each code block
+\node (c_while) {
+    \begin{tcolorbox}[title=While Statement, text width=7cm]
+    \begin{minted}{c}
+while (test-expr)
+    body-statement;
+    \end{minted}
+    \end{tcolorbox}
+};
+
+\node (jump_to_middle) [right=of c_while] {
+    \begin{tcolorbox}[title=Jump to Middle, text width=7cm]
+    \begin{minted}{c}
+goto test;
+loop:
+    body-statement;
+test:
+    t = test-expr;
+    if (t)
+        goto loop;
+    \end{minted}
+    \end{tcolorbox}
+};
+
+\node (c_do_while) [below=of c_while] {
+    \begin{tcolorbox}[title=Do While, text width=7cm]
+    \begin{minted}{c}
+t = test-expr;
+if ( !t)
+    goto done;
+do {
+    body-statement;
+} while (test-expr);
+done:
+    \end{minted}
+    \end{tcolorbox}
+};
+
+\node (guarded_do) [right=of c_do_while] {
+    \begin{tcolorbox}[title=Guarded Do, text width=7cm]
+    \begin{minted}{c}
+t = test-expr;
+if ( !t)
+    goto done;
+loop:
+    body-statement;
+    t = test-expr;
+    if (t)
+        goto loop;
+done:
+    \end{minted}
+    \end{tcolorbox}
+};
+
+% Draw arrows to connect the boxes
+\draw[->, thick] (c_while.east) -- (jump_to_middle.west);
+\draw[->, thick] (jump_to_middle.south west) -- (c_do_while.north east);
+\draw[->, thick] (c_do_while.east) -- (guarded_do.west);
+
+\end{tikzpicture}
+
+\end{document}
