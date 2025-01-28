@@ -339,5 +339,6 @@ generates object codes, analyze the jump encoding ➊ and ➋
 
 - 📝 Convert [`switch` to `goto`](./code/ctrl/switch.c)
   - Disassemble [switch.s](./code/ctrl/switch.s) and [inswitch.s](./code/ctrl/inswitch.s)
+- ☠️ GNU c extension: [pointer to label](./code/ctrl/dlabel.c)
 
 ---
