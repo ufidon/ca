@@ -541,6 +541,23 @@ mov [ebp + 8], eax  ; Store eax into memory at ebp+8
 
 ---
 
+## 🍎 Simple arithmetic by `lea`
+- ⚠️ `Rearrangement` of instructions by the CPU for `t3`
+
+| C Code   | AT&T Syntax     | Intel Syntax    | Explanation  |
+|-----------|---------------|-------------|----------|
+| `long arith(long x, long y, long z)`  | `arith:`| `arith:`   |  x = rdi, y = rsi, z = rdx. Return value in %rax |
+| `long t1 = x + y;` | `leaq  (%rdi,%rsi), %rax`    | `lea rax, [rdi+rsi]` | t1 = x + y; rax=t1; |
+| `long t2 = z + t1;` | `addq  %rdx, %rax` | `add rax, rdx`  | t2 = z + t1; `rax=t2`; |
+| ⚠️`long t3 = x + 4;` | `leaq  (%rsi,%rsi,2), %rdx` | `lea rdx, [rsi+rsi*2]`     | rsi=y; rdx = y * 3; no more z, reuse rdx.     |
+| `long t4 = y * 48;` | `salq  $4, %rdx`  | `shl rdx, 4`    | rdx ≪ 4 = rdx * 16 = y*48; t4 = rdx   |
+|    | `leaq  4(%rdi,%rdx), %rcx`    | `lea rcx, [rdi+rdx+4]`| rcx = `x` + t4 + `4`=`t3`+t4; rcx=t5 |
+| `long t5 = t3 + t4;` |  || t3 + t4 is calculated as part of the previous instruction. |
+| `long rval = t2 * t5;`   | `imulq %rcx, %rax` | `imul rax, rcx`| rval = t2 * t5 |
+| `return rval;`| `ret`  | `ret`| Return from function.  The return value is already in %rax. |
+
+---
+
 ## Shift operations
 - **Shift Operations**: `SH D, k`
   - `Operand D` can be register or memory
