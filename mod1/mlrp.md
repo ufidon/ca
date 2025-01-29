@@ -84,6 +84,21 @@ Basics
 
 ---
 
+## 🍎 C → Assembly
+
+| **C Code**  | **Assembly Code <br> (AT&T Syntax)**  | **Assembly Code <br> (Intel Syntax)**  |
+|--|-----|------|
+| `long plus(long x, long y);`  | |  |
+| | `sumstore:`  | `sumstore:`  |
+| `void sumstore(long x, long y, long *dest)`  | `pushq   %rbx` | `push rbx`|
+| `{`| `movq    %rdx, %rbx` | `mov rbx, rdx`  |
+| `    long t = plus(x, y);` | `call    plus` | `call plus`  |
+| `    *dest = t;`  | `movq    %rax, (%rbx)`  | `mov [rbx], rax`|
+| `}`| `popq    %rbx` | `pop rbx` |
+| | `ret` | `ret`  |
+
+---
+
 ## **x86-64 Integer Registers**
 
 | **Register** | **Purpose**                                   | **64-bit** | **32-bit** | **16-bit** | **8-bit**   |
@@ -190,6 +205,20 @@ Basics
 | **Scaled Indexed**        | `mov ecx, [rax + rbx*4]`          | `int x = arr[i];` (if `int` is 4 bytes)| ➤Use a base register, an index register, and a `scale factor` (1, 2, 4, or 8). <br>➤`rax=arr, rbx=i;`  |
 | **RIP-Relative**          | `mov eax, [rip + 0x2000]`         | `int x = global_var;`                  | Use an offset relative to the instruction pointer (common for global variables).|
 | **Base + Index + Displacement** | `mov ecx, [rax + rbx*4 + 8]` | `int x = arr[i + 2];`                  | ➤Combine base, index, scale, and displacement. <br>➤`rax=arr, rbx=i;` |
+
+---
+
+## 🍎 Simple address modes
+
+| **C Code**  | **Assembly Code <br> (AT&T Syntax)**  | **Assembly Code <br> (Intel Syntax)**  |
+|---|------|-------|
+| `void swap(long *xp, long *yp)`  | rdi=xp; rsi=yp; |  |
+| `{`| `swap:`| `swap:`|
+| `    long t0 = *xp;` | `movq    (%rdi), %rax`  | `mov rax, [rdi]`|
+| `    long t1 = *yp;` | `movq    (%rsi), %rdx`  | `mov rdx, [rsi]`|
+| `    *xp = t1;`| `movq    %rdx, (%rdi)`  | `mov [rdi], rdx`|
+| `    *yp = t0;`| `movq    %rax, (%rsi)`  | `mov [rsi], rax`|
+| `}`| `ret`  | `ret`  |
 
 ---
 
@@ -598,6 +627,17 @@ mov [ebp + 8], eax  ; Store eax into memory at ebp+8
   - `rdx` is set to `all zeros (unsigned)` or `sign-extended` from `%rax` (signed) using the `cqto` instruction.  
 - 📝 Expore 64-bit division in C
   - [div64.c](./code/mlrp/div64.c) and [udiv64.c](./code/mlrp/udiv64.c)
+
+---
+
+## 🍎 Simple arithmetic
+
+| **C Code**| AT&T Syntax**   | **Intel Syntax**   |
+|---|------|-------|
+| `long m12(long x)`      | x in rdi; retval in rax; | |
+| `{`| `leaq    (%rdi,%rdi,2), %rax`     | `lea rax, [rdi + rdi*2]`    |
+| `    return x * 12;`    | `salq    $2, %rax`  | `shl rax, 2`  |
+| `}`|| |
 
 ---
 
