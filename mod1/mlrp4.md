@@ -164,7 +164,7 @@ Data and Beyond
 
 ---
 
-# F!oating-Point Code
+# Floating-Point Code
 
 - **Floating-Point Architecture**: Defines how floating-point values are stored, accessed, and manipulated using registers and instructions.
 - **SIMD Extensions**: Intel/AMD processors use SIMD (MMX, SSE, AVX) for parallel processing of multiple data values.

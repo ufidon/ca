@@ -291,7 +291,7 @@ CS:APP3e.ch07
 
 ---
 
-## Executable·Object Files
+## Executable Object Files
 
 - **ELF executable structure**: Merges object files into a single binary for execution.
 - **ELF header**: Describes the file format, including the entry point and section details.
@@ -339,7 +339,7 @@ CS:APP3e.ch07
 
 ---
 
-## Lpading and Linking Shai:ed Libraries from Applications
+## Loading and Linking Shared Libraries from Applications
 
 - **Dynamic Linking** allows applications to load and link shared libraries at runtime, enabling software updates without relinking.
 - **Benefits**:
