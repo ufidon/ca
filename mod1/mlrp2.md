@@ -278,15 +278,15 @@ generates object codes, analyze the jump encoding ➊ and ➋
 | if⋯else → | goto |
 |-------------------|----------------|
 | `long dist(long x, long y)`<br>`{` | `long dist_j(long x, long y)`<br>`{` |
-| &nbsp;&nbsp;&nbsp;&nbsp;`long result;` | &nbsp;&nbsp;&nbsp;&nbsp;`long result;` |
-| &nbsp;&nbsp;&nbsp;&nbsp;`if (x > y)` | &nbsp;&nbsp;&nbsp;&nbsp;`int ntest = x <= y;` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`result = x-y;` | &nbsp;&nbsp;&nbsp;&nbsp;`if (ntest) goto Else;` |
-| &nbsp;&nbsp;&nbsp;&nbsp;`else` | &nbsp;&nbsp;&nbsp;&nbsp;`result = x-y;` |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`result = y-x;` | &nbsp;&nbsp;&nbsp;&nbsp;`goto Done;` |
-| &nbsp;&nbsp;&nbsp;&nbsp;`return result;` | `Else:` |
-| `}` | &nbsp;&nbsp;&nbsp;&nbsp;`result = y-x;` |
+| `long result;` | `long result;` |
+| `if (x > y)` | `int ntest = x <= y;` |
+| `result = x-y;` | `if (ntest) goto Else;` |
+| `else` | `result = x-y;` |
+| `result = y-x;` | `goto Done;` |
+| `return result;` | `Else:` |
+| `}` | `result = y-x;` |
 | | `Done:` |
-| | &nbsp;&nbsp;&nbsp;&nbsp;`return result;` |
+| | `return result;` |
 | | `}` |
 
 - `exp ? true_expr : false_expr` → `goto`

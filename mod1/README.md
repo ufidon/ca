@@ -7,7 +7,7 @@
   - [Control](./mlrp2.md)
   - [Procedures](./mlrp3.md)
   - [Data and Beyond](./mlrp4.md)
-
+- [Building executables](./link.md)
 
 ## References
 - [Easy Code Visual assembly IDE](https://easycode.cat/)
