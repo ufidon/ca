@@ -96,6 +96,23 @@ Procedures
 
 ---
 
+## System V AMD64 ABI vs. Windows x64 calling convention
+
+| Feature| System V AMD64 ABI  | Windows x64 Calling Convention|
+|------|------|---------------|
+| **Argument Passing** | First six integer or pointer arguments in registers (`rdi`, `rsi`, `rdx`, `rcx`, `r8`, `r9`).  Remaining arguments on the stack.  Floating-point arguments in XMM registers (`xmm0`-`xmm7`). | First four integer or pointer arguments in registers (`rcx`, `rdx`, `r8`, `r9`). Remaining arguments on the stack. Floating-point arguments in XMM registers (`xmm0`-`xmm3`). |
+| **Stack Cleanup**   | Caller cleans up the stack.| Caller cleans up the stack.|
+| **Return Value**| Integer/pointer: `rax`. Floating-point: `xmm0`.| Integer/pointer: `rax`. Floating-point: `xmm0`.|
+| **Register Preservation** | Callee-saved registers: `rbp`, `rbx`, `r12`-`r15`. Caller-saved registers: others. | Callee-saved registers: `rbp`, `rdi`, `rsi`, `rsp`, `rbx`, `r10`-`r15`. Caller-saved registers: others. |
+| **Red Zone**| 128 bytes below `rsp` are a red zone (not to be used by the function). | No red zone specified. However, stack probes are used for large stack allocations. |
+| **Shadow Space**| 32 bytes of shadow space on the stack below the return address for storing register arguments if needed. | 32 bytes of shadow space on the stack below the return address for storing register arguments if needed. |
+| **Frame Pointer (RBP)** | Usage is optional (often omitted for optimization).  If used, it follows standard conventions. | Usage is optional (often omitted for optimization). If used, it follows standard conventions. |
+| **Name Mangling**   | Name mangling is implementation-defined but typically follows a standard scheme (e.g., for C++). | Name mangling is used, especially for C++ (decorated names). |
+| **Exception Handling** | Defined by the Itanium C++ ABI.   | Structured Exception Handling (SEH).|
+| **Calling Convention Name** | Often referred to as the System V ABI or just the x64 ABI. | Sometimes called the Microsoft x64 calling convention.|
+
+---
+
 
 ## References
 - [Applied Reverse Engineering: The Stack](https://revers.engineering/applied-re-the-stack/)
