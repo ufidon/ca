@@ -416,4 +416,7 @@ CS:APP3e.ch07
 
 # Reference
 - [Linux Foundation: Referenced Specifications](https://refspecs.linuxfoundation.org/)
+- [Linux inside](https://0xax.gitbooks.io/linux-insides/content/)
+  - [中文版](https://github.com/hust-open-atom-club/linux-insides-zh)
+- [ELF64 hello world](https://tuket.github.io/notes/asm/elf64_hello_world/)
 - [SEED labs](https://www.handsonsecurity.net)
