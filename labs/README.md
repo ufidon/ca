@@ -2,6 +2,7 @@
 - [Lab01: Setup Development Tools](./lab01/README.md)
 - [Lab02: Integer Encoding and Arithmetic](./lab02/README.md)
 - [Lab03: IEEE 754 Floating-Point Number Representation and Operations](./lab03/README.md)
+- [Lab04: C/C++ control structures](./lab04/README.md)
 
 
 

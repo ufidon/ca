@@ -39,7 +39,7 @@ CS:APP3e.ch07
 | **strip**| Deletes symbol table information from an object file. |
 | **nm**   | Lists symbols defined in the symbol table of an object file.    |
 | **size** | Lists names and sizes of the sections in an object file.   |
-| **redelf**    | Displays the complete structure of an object file, including ELF header info.  |
+| **readelf**    | Displays the complete structure of an object file, including ELF header info.  |
 | **objdump**   | Displays all information in an object file, including disassembling binary instructions in `.text`. |
 | **ldd**   | Lists shared libraries that an executable needs at run time.    |
 
