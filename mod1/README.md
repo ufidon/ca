@@ -1,4 +1,4 @@
-# Program Structure and Execution
+# Program Structure and Construction
 - Representing and Manipulating Information
   - [Bits, Bytes,	and	Integers](./rmi.md)
   - [Floating Point](./fp.md)
