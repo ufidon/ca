@@ -126,6 +126,19 @@ Basics
 | FLAGS        | Status flags                                | `rflags`   | `eflags`   | `flags`    | -           |
 
 - 💡 Explore [x86-64 integer registers](./code/mlrp/mam.c) 
+- By commandline
+  ```bash
+  # 1. generate mixed C and assembly output 
+  gcc -g -Wa,-adhln -fverbose-asm mam.c -o mam.o > mam.lst
+  # or
+  gcc -g -S -fverbose-asm mam.c -o mam.s
+
+  # 2. generate separate assembly only
+  gcc -g -S  mam.c -o mam.s
+
+  # 3. disassemble
+  objdump -dS mam
+  ```
 
 ---
 
