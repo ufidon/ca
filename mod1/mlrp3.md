@@ -28,7 +28,7 @@ Procedures
 ## Runtime stack
 - x86-64 procedures allocate only necessary stack frame portions, often omitting them when arguments fit in registers.  
 - Functions without local stack variables or function calls (leaf procedures) may not use a stack frame at all.
-- Live Stack Viewing in WinDbg & GDB**
+- Live Stack Viewing in WinDbg & GDB
 
 | **Action** | **Windows (WinDbg)**        | **Linux (GDB)**|
 |------|-------|----|

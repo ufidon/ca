@@ -269,6 +269,11 @@ Data and Beyond
 ---
 
 ## [GDB commands](https://ftp.gnu.org/old-gnu/Manuals/gdb/html_chapter/gdb_toc.html)
+- set assembly syntax flavor
+  ```bash
+  set disassembly-flavor at # at&t
+  set disassembly-flavor intel #intel
+  ```
 
 | **Command**   | **Effect**  |
 |------|-----|
