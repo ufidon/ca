@@ -85,7 +85,7 @@ Write a C program to
 
 ---
 
-## (Optional) Part III: Assembly Code Analysis
+## (Extra credits) Part III: Assembly Code Analysis
 Disassemble the compiled program of Part II and highlight instructions related to real address calculations.
 
 ### Steps
