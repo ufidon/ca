@@ -106,6 +106,7 @@ Data and Beyond
 - **Alignment Rule**: Primitive objects of `K` bytes must have addresses that are multiples of `K`.
   - This applies to types like `char`, `short`, `int`, `float`, `long`, `double`, and `char *`.
 - **Padding**: Compilers `add gaps` in structures and arrays to meet alignment requirements, sometimes wasting memory.
+  - Structure size is `rounded up to the largest` field's alignment requirement.
 
 - 📝 Investigate [data alignment](./code/ds/align.c)
   - kill [gaps](./code/ds/pack.c)

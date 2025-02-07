@@ -55,8 +55,8 @@ struct Data {
 
 2. Field Reordering Experiment:
    - Find the `two` orderings of the fields in `struct Data`
-     - ascending order of field sizes
-     - descending order of field sizes
+     - ascending order of primitive data type sizes
+     - descending order of primitive data type sizes
    - Compute the structure size for each ordering
    - Are the sizes of all structures with other field orderings in the range formed the ordered two? 
 3. Draw the `memory layout` of the original structure, the ascending layout, and the descending layout.
@@ -85,13 +85,13 @@ Write a C program to
 
 ---
 
-## Part III: Assembly Code Analysis
+## (Optional) Part III: Assembly Code Analysis
 Disassemble the compiled program of Part II and highlight instructions related to real address calculations.
 
 ### Steps
 1. Compile with Debug Symbols:
    ```sh
-   gcc -g -O0 lab05.c -o lab05
+   gcc -g -fno-stack-protector -fcf-protection=none  -o lab05 lab05.c 
    ```
 2. Disassemble the Executable:
    ```sh

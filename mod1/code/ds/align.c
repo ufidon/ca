@@ -38,18 +38,29 @@ int main()
 
   // Show the memory layout of the structures
   printf("\nMemory layout of S1:\n");
-  printf("Offset of s1.i: %p\n", (void *)&s1.i);
-  printf("Offset of s1.c: %p\n", (void *)&s1.c);
-  printf("Offset of s1.j: %p\n", (void *)&s1.j);
+  printf("Address of s1.i: %p\n", (void *)&s1.i);
+  printf("Address of s1.c: %p\n", (void *)&s1.c);
+  printf("Address of s1.j: %p\n", (void *)&s1.j);
+
+  printf("Offset of s1.i: %lu\n", (unsigned long)&s1.i - (unsigned long)&s1);
+  printf("Offset of s1.c: %lu\n", (unsigned long)&s1.c - (unsigned long)&s1);
+  printf("Offset of s1.j: %lu\n", (unsigned long)&s1.j - (unsigned long)&s1);
 
   printf("\nMemory layout of S2:\n");
-  printf("Offset of s2.i: %p\n", (void *)&s2.i);
-  printf("Offset of s2.j: %p\n", (void *)&s2.j);
-  printf("Offset of s2.c: %p\n", (void *)&s2.c);
+  printf("Address of s2.i: %p\n", (void *)&s2.i);
+  printf("Address of s2.j: %p\n", (void *)&s2.j);
+  printf("Address of s2.c: %p\n", (void *)&s2.c);
+
+  printf("Offset of s2.i: %p\n", (unsigned long)&s2.i - (unsigned long)&s2);
+  printf("Offset of s2.j: %p\n", (unsigned long)&s2.j - (unsigned long)&s2);
+  printf("Offset of s2.c: %p\n", (unsigned long)&s2.c - (unsigned long)&s2);
 
   printf("\nMemory layout of S3:\n");
-  printf("Offset of s3.c: %p\n", (void *)&s3.c);
-  printf("Offset of s3.i: %p\n", (void *)&s3.i);
+  printf("Address of s3.c: %p\n", (void *)&s3.c);
+  printf("Address of s3.i: %p\n", (void *)&s3.i);
+
+  printf("Offset of s3.c: %p\n", (unsigned long)&s3.c - (unsigned long)&s3);
+  printf("Offset of s3.i: %p\n", (unsigned long)&s3.i - (unsigned long)&s3);
 
   return 0;
 }
