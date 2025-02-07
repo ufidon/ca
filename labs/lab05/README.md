@@ -15,7 +15,7 @@ Calculate memory addresses of elements/fields given a base address.
 ```c
 int arr[5] = {10, 20, 30, 40, 50};
 ```
-- If `arr` starts at `0x1000`, compute `arr[2]`, `arr[4]`.
+- If `arr` starts at `0x1000`, compute the address of `arr[2]`, `arr[4]`.
 
 ### Task 2: Two-Dimensional Fixed-Size Array
 ```c
