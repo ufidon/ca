@@ -1,4 +1,4 @@
-# **Control Structures in C/C++**
+# **Machine Code Implementation of Control Structures in C/C++**
 ### **Objective:**
 - Understand and implement fundamental control structures in C.
 - Rewrite control structures using `goto` to simulate their machine-level implementation.
