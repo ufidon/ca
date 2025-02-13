@@ -63,7 +63,8 @@ CS:APP3e.ch04
 ---
 
 # The Y86-64 instruction set architecture
-- 🛠️ [Y86-64 simulator](https://boginw.github.io/js-y86-64/)
+- 🛠️ [Build local Y86-64 simulator](https://github.com/gyunseo/sim)
+- 🛠️ [Y86-64 simulator online](https://boginw.github.io/js-y86-64/)
 
 ---
 
@@ -244,3 +245,4 @@ Ox500: 6362a0f0
 - [Intel® 64 and IA-32 Architectures Software Developer's Manual Combined Volumes](https://www.intel.com/content/www/us/en/content-details/782158/intel-64-and-ia-32-architectures-software-developer-s-manual-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4.html)
   - [x86-64 Instructions Set](https://linasm.sourceforge.net/docs/instructions/index.php)
   - [x86 and amd64 instruction reference](https://www.felixcloutier.com/x86/)
+- [Y86-64 simulator](https://github.com/gyunseo/sim)
