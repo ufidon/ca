@@ -1,0 +1,6 @@
+                            | # Simple example of pipelining
+0x000: 30f00100000000000000 |   irmovq  $1,%rax  # I1
+0x00a: 30f10200000000000000 |   irmovq  $2,%rcx  # I2
+0x014: 30f20300000000000000 |   irmovq  $3,%rdx  # I3
+0x01e: 30f30400000000000000 |   irmovq  $4,%rbx  # I4
+0x028: 00                   |   halt             # I5

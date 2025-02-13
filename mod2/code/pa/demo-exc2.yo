@@ -1,0 +1,9 @@
+                            | # Difficult case for exception handling
+0x000: 6300                 |    xorq %rax,%rax   # Set condition codes
+0x002: 742000000000000000   |    jne t            # Not taken
+0x00b: 30f00100000000000000 |    irmovq $1,%rax
+0x015: 30f20200000000000000 |    irmovq $2,%rdx
+0x01f: 00                   |    halt
+0x020: ff                   | t: .byte 0xFF       # Target
+                            | 
+                            | 

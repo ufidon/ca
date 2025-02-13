@@ -1,0 +1,7 @@
+# Difficult case for exception handling
+  irmovq $100,%rax
+  rmmovq %rax,0x10000(%rax) # invalid address
+  addq %rax,%rax            # Sets condition codes
+
+
+

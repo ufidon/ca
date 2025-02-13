@@ -1,0 +1,19 @@
+                            | # Demonstration of return
+0x000: 30f40001000000000000 |    irmovq Stack,%rsp  # Intialize stack pointer
+0x00a: 10                   |    nop		      # Avoid hazard on %rsp
+0x00b: 10                   |    nop
+0x00c: 10                   |    nop
+0x00d: 803000000000000000   |    call p             # Procedure call
+0x016: 30f60500000000000000 |    irmovq $5,%rsi    # Return point
+0x020: 00                   |    halt
+0x030:                      | .pos 0x30
+0x030: 10                   | p: nop			# procedure
+0x031: 10                   |    nop
+0x032: 10                   |    nop
+0x033: 90                   |    ret
+0x034: 30f00100000000000000 |    irmovq $1,%rax  	# Should not be executed
+0x03e: 30f10200000000000000 |    irmovq $2,%rcx  	# Should not be executed
+0x048: 30f20300000000000000 |    irmovq $3,%rdx  	# Should not be executed
+0x052: 30f30400000000000000 |    irmovq $4,%rbx       # Should not be executed
+0x100:                      | .pos 0x100
+0x100:                      | Stack:                # Stack: Stack pointer

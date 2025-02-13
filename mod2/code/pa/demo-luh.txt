@@ -1,0 +1,7 @@
+0x000:   irmovq $128,%rdx
+0x00a:   irmovq  $3,%rcx
+0x014:   rmmovq %rcx, 0(%rdx)
+0x01e:   irmovq  $10,%rbx
+0x028:   mrmovq 0(%rdx), %rax  # Load %rax
+0x032:   addq %rbx,%rax        # Use %rax
+0x034:   halt

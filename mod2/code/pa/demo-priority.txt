@@ -1,0 +1,5 @@
+0x000:   irmovq $1, %rax
+0x00a:   irmovq $2, %rax
+0x014:   irmovq $3, %rax
+0x01e:   rrmovq %rax, %rdx  # Should be 3
+0x020:   halt

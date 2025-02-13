@@ -1,0 +1,9 @@
+# Difficult case for exception handling
+   xorq %rax,%rax   # Set condition codes
+   jne t            # Not taken
+   irmovq $1,%rax
+   irmovq $2,%rdx
+   halt
+t: .byte 0xFF       # Target
+
+

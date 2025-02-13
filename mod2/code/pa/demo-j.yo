@@ -1,0 +1,10 @@
+0x000: 6300                 |    xorq %rax,%rax 
+0x002: 741900000000000000   |    jne  t             # Not taken
+0x00b: 30f00100000000000000 |    irmovq $1, %rax    # Fall through
+0x015: 10                   |    nop
+0x016: 10                   |    nop
+0x017: 10                   |    nop
+0x018: 00                   |    halt
+0x019: 30f20300000000000000 | t: irmovq $3, %rdx    # Target
+0x023: 30f10400000000000000 |    irmovq $4, %rcx    # Should not execute
+0x02d: 30f20500000000000000 |    irmovq $5, %rdx    # Should not execute

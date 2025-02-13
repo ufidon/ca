@@ -238,3 +238,9 @@ Ox500: 6362a0f0
 | **Procedure Linkage** | Stack-based (arguments & return addresses) | Register-based, reducing memory use |
 
 ---
+
+
+# References
+- [Intel® 64 and IA-32 Architectures Software Developer's Manual Combined Volumes](https://www.intel.com/content/www/us/en/content-details/782158/intel-64-and-ia-32-architectures-software-developer-s-manual-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4.html)
+  - [x86-64 Instructions Set](https://linasm.sourceforge.net/docs/instructions/index.php)
+  - [x86 and amd64 instruction reference](https://www.felixcloutier.com/x86/)

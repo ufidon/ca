@@ -1,0 +1,10 @@
+   xorq %rax,%rax 
+   jne  t             # Not taken
+   irmovq $1, %rax    # Fall through
+   nop
+   nop
+   nop
+   halt
+t: irmovq $3, %rdx    # Target
+   irmovq $4, %rcx    # Should not execute
+   irmovq $5, %rdx    # Should not execute

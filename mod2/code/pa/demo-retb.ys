@@ -1,0 +1,14 @@
+# Demonstration of return
+   irmovq Stack,%rsp  # Intialize stack pointer
+   call p             # Procedure call
+   irmovq $5,%rsi     # Return point
+   halt
+.pos 0x20
+p: irmovq $-1,%rdi    # procedure
+   ret
+   irmovq $1,%rax     # Should not be executed
+   irmovq $2,%rcx     # Should not be executed
+   irmovq $3,%rdx     # Should not be executed
+   irmovq $4,%rbx     # Should not be executed
+.pos 0x100
+Stack:                # Stack: Stack pointer

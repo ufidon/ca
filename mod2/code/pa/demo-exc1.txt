@@ -1,0 +1,4 @@
+0x000:   irmovq $100,%rax
+0x00a:   rmmovq %rax,0x10000(%rax) # invalid address
+0x014:   nop
+0x015:   .byte 0xFF                # Invalid instruction code  

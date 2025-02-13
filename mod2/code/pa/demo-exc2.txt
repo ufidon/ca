@@ -1,0 +1,6 @@
+0x000:    xorq %rax,%rax   # Set condition codes
+0x002:    jne t            # Not taken
+0x00b:    irmovq $1,%rax
+0x015:    irmovq $2,%rdx
+0x01f:    halt
+0x020: t: .byte 0xFF       # Target

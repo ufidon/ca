@@ -1,0 +1,7 @@
+                            | # Difficult case for exception handling
+0x000: 30f06400000000000000 |   irmovq $100,%rax
+0x00a: 40000000010000000000 |   rmmovq %rax,0x10000(%rax) # invalid address
+0x014: 10                   |   nop
+0x015: ff                   |   .byte 0xFF                # Invalid instruction code  
+                            | 
+                            | 

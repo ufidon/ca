@@ -1,0 +1,6 @@
+# Demonstration of forwarding priority
+  irmovq $1, %rax
+  irmovq $2, %rax
+  irmovq $3, %rax
+  rrmovq %rax, %rdx  # Should be 3
+  halt
