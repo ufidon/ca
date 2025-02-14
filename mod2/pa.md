@@ -2,6 +2,8 @@
 CS:APP3e.ch04
 
 
+# The Y86-64 Instruction Set Architecture
+
 ---
 
 ## 🔭 Explore the most advanced processors
@@ -143,7 +145,9 @@ Y86-64 is a simplified x86-64 subset with only 8-byte integer operations and few
 - **Function Calls:** 
   - `call` pushes the return address and jumps, while `ret` restores it.  
 - **Stack Operations:** 
-  - `pushq` and `popq` work the same as in x86-64.  
+  - `pushq` and `popq` work the same as in x86-64.
+  - `pushq %rsp` saves the old stack pointer 
+    - while updating `%rsp` to reflect the new stack position.
 - **Halt Instruction:** 
   - `halt` stops execution with a status code of `HLT`, similar to x86-64's `hlt`.
 
@@ -196,10 +200,23 @@ Y86-64 is a simplified x86-64 subset with only 8-byte integer operations and few
 - Instructions may require additional register specifiers (rA, rB) for operands, 
   - depending on the instruction type, 
   - with specific values for single or no register operand instructions.
-- Some instructions include an 8-byte constant word for immediate data, displacement, or branch/call destinations, 
+- Some instructions include an `8-byte constant word` for immediate data, displacement, or branch/call destinations, 
   - with absolute addressing used for simplicity instead of PC-relative addressing.
 - The byte encoding for each instruction must have a unique interpretation, ensuring unambiguous execution. 
   - Disassemblers may face issues if the starting position of the instruction sequence is unknown.
+
+---
+
+## Instruction Encoding: Y86-64 vs. x86-64
+
+| Feature               | x86-64                            | Y86-64                        |
+|-----------------------|----------------------------------|--------------------------------|
+| **Encoding Complexity** | More complex                    | Simpler                        |
+| **Compactness**       | More compact                     | Less compact                   |
+| **Register Fields**   | Packed into various positions   | Fixed positions in all instructions |
+| **Constant Value Encoding** | 1, 2, 4, or 8 bytes         | Always requires 8 bytes |
+
+
 - 🔭 Explore [X86-64 Instruction Encoding](https://wiki.osdev.org/X86-64_Instruction_Encoding)
 
 ---
@@ -258,6 +275,287 @@ Ox500: 6362a0f0
 | **Abstraction**      | Hides implementation details | Exposes some hardware constraints |
 | **Condition Codes**  | Uses flags for branching | Explicit test instructions store results in registers |
 | **Procedure Linkage** | Stack-based (arguments & return addresses) | Register-based, reducing memory use |
+
+---
+
+## Y86-64 Exceptions
+
+- **Program Status Codes**: 
+  - Y86-64 tracks execution state using a `Stat` code with `four` possible values.  
+- **Processor Response**: 
+  - The processor halts on any exception, 
+  - though a full design could include exception handlers.
+
+| Value | Name | Meaning |
+|-------|------|------------------------------------|
+| 1     | AOK  | `Normal` operation                 |
+| 2     | HLT  | Halt instruction encountered     |
+| 3     | ADR  | Invalid address encountered      |
+| 4     | INS  | Invalid instruction encountered  |
+
+---
+
+## Function implementation in Y86-64 Instructions
+
+- 🍎 Compute the sum of an array of integers
+
+```c
+long sum(long *start, long count) {
+    long sum = 0;
+    while (count) {
+        sum += *start;
+        start++;
+        count--;
+    }
+    return sum;
+}
+```
+- 📝 implement in x86-64 instructions
+  ```bash
+  gcc -c -fno-stack-protector -fcf-protection=none -o sum.o sum.c
+  objdump -d sum.o
+  ```
+
+  ```python
+  # long sum(long *start, long count)
+  # start in %rdi, count in %rsi
+  sum:
+      movq    $0, %rax       # sum = 0
+      jmp     test           # Goto test
+
+  loop:
+      addq    (%rdi), %rax   # Add *start to sum
+      addq    $8, %rdi       # start++
+      subq    $1, %rsi       # count--
+
+  test:
+      testq   %rsi, %rsi     # Test sum
+      jne     loop           # If != 0, goto loop
+
+      ret                    # Return
+  ```
+
+- 📝 implement in Y86-64 instructions
+  ```python
+  # long sum(long *start, long count)
+  # start in %rdi, count in %rsi
+  sum:
+      irmovq  $8, %r8        # Constant 8
+      irmovq  $1, %r9        # Constant 1
+      xorq    %rax, %rax     # sum = 0
+      andq    %rsi, %rsi     # Set CC
+      jmp     test           # Goto test
+
+  loop:
+      mrmovq  (%rdi), %r10   # Get *start
+      addq    %r10, %rax     # Add to sum
+      addq    %r8, %rdi      # start++
+      subq    %r9, %rsi      # count--, Set CC
+
+  test:
+      jne     loop           # Stop when 0
+
+      ret                    # Return
+  ```
+
+- **x86-64 vs. Y86-64 Differences:**  
+  - Y86-64 requires explicit constant loading into registers since it lacks immediate operands in arithmetic instructions.  
+  - Y86-64 needs separate instructions for memory loading and arithmetic, whereas x86-64 can combine these operations.  
+  - Y86-64 eliminates a redundant `testq` instruction by relying on the condition codes set by `subq`.
+
+---
+
+## Y86-64 Programs
+
+- 🍎 Function sum [demo](https://boginw.github.io/js-y86-64/)
+  - 📝 assemble the code
+
+- **Program Structure in Y86-64:**  
+  - Uses assembler directives (`.pos`, `.align`) to set `memory layout` and `stack initialization`.  
+  - Defines a `four-element array`, aligns it on an 8-byte boundary, and calls `sum` from `main`.  
+  - Stack starts at `0x200` and grows downward 
+    - We must avoid growing the stack so large that it overwrites program code or data.
+- **Assembly and Execution:**  
+  - The Y86-64 assembler (`YAS`) translates source code into object code, 
+    - showing addresses and instruction bytes.  
+  - The Y86-64 simulator (`YIS`) executes machine code, 
+    - tracking register and memory changes.  
+  - Final output confirms `%rax` holds the correct sum, 
+    - and stack operations occurred safely without corrupting executable code.
+
+---
+
+# Logic Design and the [Hardware Control Language HCL](./y86sim/hcl.pdf)
+
+- Digital systems use **combinational logic**, **memory elements**, and **clock signals** for operation.  
+- Hardware design now uses **HDLs** like Verilog and VHDL, replacing schematic diagrams.  
+- **Logic synthesis tools** generate efficient circuits from HDL descriptions, similar to compilers.  
+- **HCL** is used to describe control logic, which can be translated into Verilog.  
+- Separating **control logic design and testing** simplifies microprocessor development and synthesis.
+
+---
+
+## Combinational Circuits in HCL
+
+- **Logic gates** (AND, OR, NOT) compute Boolean functions on `bit-level` inputs, with HCL using `&&`, `||`, and `!` for `AND, OR, and NOT`, respectively.  
+- **Logic gates** can have multiple inputs (n-way), and their outputs change `immediately` when inputs are updated.
+- **Combinational circuits** connect logic gates with strict rules: 
+  - inputs come from system inputs, memory, or other gates, 
+  - no shared outputs, 
+  - and no loops in the network.
+- **HCL expressions** define outputs as functions of inputs, 
+  - using C-like syntax without computation.
+- 🍎**Equality and multiplexer**  
+  1. EQ: `eq = (a && b) || (!a && !b)`  
+  2. MUX: `out = (s && a) || (!s && b)`
+
+---
+
+## Word-level Combinational Circuits in HCL
+
+- **Word-level combinational circuits** operate on bit groups like 64-bit integers for processor tasks.
+- **Equality check** compares two words bit by bit: `bool Eq = (A == B)` in HCL.
+- **Multiplexors** select input words based on control signals, expressed using HCL case expressions.
+  ```python
+  # 2-way multiplexor
+  word Out = [
+    s : A; # s=1 chooses A else B
+    1 : B; # default case
+  ]
+  ```
+  - **4-way multiplexor** selects from four inputs using two control signals in HCL.
+  ```python
+  word Out = [
+    !s1 && !s0 : A; #00
+    !s1        : B; #01
+    !s0        : C; #10
+    1          : D; #11, default case
+  ]
+  ```
+  - **General multiplexer**
+  ```python
+  [
+    select1 : expr1;
+    select2 : expr2;
+    ⋯
+    selectn : exprn;
+  ]
+  ```
+- **Min3**
+  ```python
+  word Min3 = [
+    A <= B && A <= C: A;
+    B <= A && B <= C: B;
+    1               : C;
+  ]
+  ```
+- **ALU** performs `arithmetic/logical` operations on word-level data, controlled by input signals.
+  ```python
+  word result = [
+    f==0: X+Y;
+    f==1: X-Y;
+    f==2: X⋅Y;
+    f==3: X÷Y;
+  ]
+  ```
+---
+
+## Set membership
+
+- Processor designs often involve comparing a signal against several possible matches, such as testing instruction codes.
+- Example: A 2-bit signal `code` selects high- and low-order bits for a 4-way multiplexor.
+- Signals `s1` and `s0` are generated using equality tests based on `code` values:
+  - `s1` is 1 when `code` is 2 or 3.
+  - `s0` is 1 when `code` is 1 or 3.
+- A more concise expression for the conditions:
+  - `s1` is 1 when `code` is in {2, 3}.
+  - `s0` is 1 when `code` is in {1, 3}.
+- General set membership test format:
+  - `iexpr in {iexpr1, iexpr2, ..., iexprk}` where `iexpr` and the values in the set are integer expressions.
+
+---
+
+## Memory and clocking
+
+- **Combinational Circuits**: React to inputs, generate outputs based on functions of inputs, no state storage.
+- **Sequential Circuits**: Require storage devices that hold bits and use a clock to control when values are loaded.
+- **Memory Devices**:
+  - **Clocked Registers**: 
+    - Store individual bits or words, controlled by a clock to load values.
+    - Output remains fixed until clock rises, new input values are captured on rising edge.
+  - **Random Access Memories (RAM)**: Store multiple words, use an address to select which word to read/write.
+    - Example: virtual memory system in processors or register files in Y86-64.
+- **Register File**: 
+  - Multi-ported RAM with read and write ports, allowing simultaneous operations.
+  - Has address inputs for register selection and data inputs/outputs.
+  - Writing is clock-controlled; 
+    - read/write conflicts result in immediate data transition.
+- **Random Access Memory**:
+  - Memory with address input, data input/output, and error signal.
+  - Read: Address input provides data from the corresponding memory location.
+  - Write: Address input, data input, and clock control memory update.
+  - Error signal indicates invalid address.
+- **Read-Only Memory**: 
+  - Used for reading instructions, 
+  - often integrated with regular memory in real systems.
+
+---
+
+# Sequential Y86-64 Implementations — SEQ Processor
+
+- A simple processor where each clock cycle processes a complete instruction, 
+  - but cycle time is long, limiting the clock rate.
+- SEQ serves as a starting point for designing an efficient pipelined processor.
+
+**Instruction Processing Stages**:
+1. **Fetch**: 
+   - Read instruction from memory using the program counter (PC).
+   - Extract `icode` (instruction code) and `ifun` (instruction function).
+   - Optionally fetch register specifiers (rA, rB) and an 8-byte constant.
+   - Compute `valP`, the address of the next instruction.
+2. **Decode**:
+   - Read operands from the register file (`valA` and/or `valB`).
+   - Typically read registers `rA` and `rB`, or `%rsp` for some instructions.
+3. **Execute**:
+   - ALU performs the operation specified by `ifun`.
+   - Calculate effective address for memory access or modify stack pointer.
+   - Set condition codes and evaluate conditions for conditional moves or jumps.
+4. **Memory**:
+   - Read or write data to memory.
+   - Read value is referred to as `valM`.
+5. **Write Back**:
+   - Write results to the register file.
+6. **PC Update**:
+   - Set the PC to the address of the next instruction.
+
+- **Processor Loop**: 
+  - The processor repeatedly performs these stages until an `exception` occurs
+    - e.g., halt, invalid instruction, or memory access error.
+  - In a more complete design, the processor enters an `exception-handling mode`.
+
+---
+
+## SEQ Processor outsides
+
+- **Instruction Processing**: 
+  - Requires multiple operations, including address computation, stack pointer updates, and next instruction determination.
+- **Hardware Efficiency**: 
+  - Minimize complexity by sharing components like the ALU across different instructions.
+- **Instruction Processing Framework**: 
+  - The general flow for all instructions follows a consistent sequence with minor variations for specific operations.
+
+---
+
+## 
+
+---
+---
+
+# General Principles of Pipelining
+
+---
+
+# Pipelined Y86-64 Implementations
 
 ---
 
