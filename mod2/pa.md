@@ -64,6 +64,26 @@ CS:APP3e.ch04
 
 # The Y86-64 instruction set architecture
 - 🛠️ [Build local Y86-64 simulator](https://github.com/gyunseo/sim)
+  ```bash
+  # 1. install build tools
+  sudo apt update
+  sudo apt upgrade -y
+  sudo apt install build-essential gdb flex bison tcl tk tcl-dev tk-dev git
+
+  # 2. download and build Y86-64 simulator source code
+  git clone https://github.com/gyunseo/sim.git
+  cd sim
+  chmod +x ./pipe/gen-driver.pl
+  make
+
+  # 3. use ssim
+  cd seq/
+  ./ssim -g ../y86-code/prog8.yo
+
+  # use psim
+  cd pipe
+  ./psim -g ../y86-code/prog8.yo
+  ```
 - 🛠️ [Y86-64 simulator online](https://boginw.github.io/js-y86-64/)
 
 ---
@@ -125,7 +145,7 @@ Y86-64 is a simplified x86-64 subset with only 8-byte integer operations and few
 - **Stack Operations:** 
   - `pushq` and `popq` work the same as in x86-64.  
 - **Halt Instruction:** 
-  - `halt` stops execution with a status code of `HLT`, similar to x86-64’s `hlt`.
+  - `halt` stops execution with a status code of `HLT`, similar to x86-64's `hlt`.
 
 ---
 
@@ -180,6 +200,7 @@ Y86-64 is a simplified x86-64 subset with only 8-byte integer operations and few
   - with absolute addressing used for simplicity instead of PC-relative addressing.
 - The byte encoding for each instruction must have a unique interpretation, ensuring unambiguous execution. 
   - Disassemblers may face issues if the starting position of the instruction sequence is unknown.
+- 🔭 Explore [X86-64 Instruction Encoding](https://wiki.osdev.org/X86-64_Instruction_Encoding)
 
 ---
 
@@ -218,10 +239,10 @@ Ox500: 6362a0f0
 
 - **CISC Evolution:** x86-64 grew from increasingly complex instruction sets.  
 - **RISC Philosophy:** RISC prioritized simplicity, pipelining, and compiler efficiency.  
-- **Hybrid Approach:** Y86-64 blends CISC’s complexity with RISC’s efficiency.  
+- **Hybrid Approach:** Y86-64 blends CISC's complexity with RISC's efficiency.  
 - **RISC vs. CISC Debate:** RISC optimized execution, while CISC minimized instructions per task.  
 - **Market Trends:** RISC dominates embedded systems; x86-64 leads mainstream computing.  
-- **Modern Convergence:** Both architectures now integrate each other’s best features.
+- **Modern Convergence:** Both architectures now integrate each other's best features.
 
 ---
 
