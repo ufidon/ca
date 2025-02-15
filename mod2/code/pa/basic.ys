@@ -1,0 +1,14 @@
+.pos 0
+  irmovq $9, %rdx        # Move immediate 9 into %rdx
+  irmovq $21, %rbx       # Move immediate 21 into %rbx
+  subq %rdx, %rbx        # Subtract %rdx from %rbx
+  irmovq $128, %rsp      # Move immediate 128 into %rsp
+  rmmovq %rsp, 100(%rbx) # Store %rsp at memory location 100
+  pushq %rdx             # Push %rdx onto stack
+  popq %rax              # Pop value from stack into %rax
+  je done                # Jump to 'done' if zero flag is set 
+  call proc              # Call procedure 'proc'
+done:
+  halt                   # Halt execution
+proc:
+  ret                    # Return from procedure

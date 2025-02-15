@@ -2,7 +2,7 @@
 CS:APP3e.ch04
 
 
-# The Y86-64 Instruction Set Architecture
+# The Y86-64 Instruction Set Architecture (ISA) and SEQ Implementation
 
 ---
 
@@ -505,7 +505,7 @@ long sum(long *start, long count) {
 
 - A simple processor where each clock cycle processes a complete instruction, 
   - but cycle time is long, limiting the clock rate.
-- SEQ serves as a starting point for designing an efficient pipelined processor.
+- SEQ (sequential processor) serves as a starting point for designing an efficient pipelined processor.
 
 **Instruction Processing Stages**:
 1. **Fetch**: 
@@ -535,7 +535,7 @@ long sum(long *start, long count) {
 
 ---
 
-## SEQ Processor outsides
+## SEQ Processor processing flow
 
 - **Instruction Processing**: 
   - Requires multiple operations, including address computation, stack pointer updates, and next instruction determination.
@@ -543,25 +543,229 @@ long sum(long *start, long count) {
   - Minimize complexity by sharing components like the ALU across different instructions.
 - **Instruction Processing Framework**: 
   - The general flow for all instructions follows a consistent sequence with minor variations for specific operations.
+  - `Conceptually sequential` but can be parallelized in hardware implementation.
+- 📝 Execute each instruction in [basic.ys](./code/pa/basic.ys) through the six stages in GUI `ssim`
+  - integer and logic operation, rr/ir movement
+
+| Stage      | OPq rA, rB           | rrmovq rA, rB        | irmovq V, rB         |
+|------------|----------------------|----------------------|----------------------|
+| **Fetch**  | icode:ifun ← M₁[PC]  | icode:ifun ← M₁[PC]  | icode:ifun ← M₁[PC]  |
+|            | rA:rB ← M₁[PC + 1]   | rA:rB ← M₁[PC + 1]   | rA:rB ← M₁[PC + 1]   |
+|            |                      |                      | valC ← M₈[PC+8]
+|            | valP ← PC + 2        | valP ← PC + 2        | valP ← PC + 10       |
+| **Decode** | valA ← R[rA]         | valA ← R[rA]         |                      |
+|            | valB ← R[rB]         |                      |                      |
+| **Execute**| valE ← valB OP valA  | valE ← 0 + valA      | valE ← 0 + valC      |
+|            | Set CC               |                      |                      |
+| **Memory** |                      |                      |                      |
+| **Write Back** | R[rB] ← valE     | R[rB] ← valE         | R[rB] ← valE         |
+| **PC Update** | PC ← valP         | PC ← valP            | PC ← valP            |
+
+- `OPq`: integer and logic operation: `addq, subq, andq, xorq`
+- `M₁[x]/M₈[x]` → Reads/Writes `1 byte/8 bytes` at memory location `x`. 
+
+- Memory read/write
+
+| **Stage**      | **rmmovq rA, D(rB)**   | **mrmovq D(rB), rA**  |
+|----------------|------------------------|-----------------------|
+| **Fetch**      | `icode:ifun ← M₁[PC]`  | `icode:ifun ← M₁[PC]` |
+|                | `rA:rB ← M₁[PC + 1]`   | `rA:rB ← M₁[PC + 1]`  |
+|                | `valC ← M₈[PC + 2]`    | `valC ← M₈[PC + 2]`   |
+|                | `valP ← PC + 10`       | `valP ← PC + 10`      |
+| **Decode**     | `valA ← R[rA]`         |                       |
+|                | `valB ← R[rB]`         | `valB ← R[rB]`        |
+| **Execute**    | `valE ← valB + valC`   | `valE ← valB + valC`  |
+| **Memory**     | `M₈[valE] ← valA`      | `valM ← M₈[valE]`     |
+| **Write Back** |                        | `R[rA] ← valM`        |
+| **PC Update**  | `PC ← valP`            | `PC ← valP`           |
+
+- `pushq/popq` 
+  - according to the Y86-64 (and x86-64) convention
+    - `pushq` should `decrement` the stack pointer `before writing`
+    - `popq` should `read` memory `before increment` the stack pointer
+
+| **Stage**      | **pushq rA**           | **popq rA**            |
+|----------------|------------------------|------------------------|
+| **Fetch**      | `icode:ifun ← M₁[PC]`  | `icode:ifun ← M₁[PC]`  |
+|                | `rA:rB ← M₁[PC + 1]`   | `rA:rB ← M₁[PC + 1]`   |
+|                | `valP ← PC + 2`        | `valP ← PC + 2`        |
+| **Decode**     | `valA ← R[rA]`         | `valA ← R[%rsp]`       |
+|                | `valB ← R[%rsp]`       | `valB ← R[%rsp]`       |
+| **Execute**    | `valE ← valB + (-8)`   | `valE ← valB + 8`      |
+| **Memory**     | `M₈[valE] ← valA`      | `valM ← M₈[valA]`      |
+| **Write Back** | `R[%rsp] ← valE`       | `R[%rsp] ← valE` <br> `R[rA] ← valM` |
+| **PC Update**  | `PC ← valP`            | `PC ← valP`            |
+
+- `jumps, call and ret`
+
+| **Stage**     | **jXX Dest**             | **call Dest**          | **ret**               |
+|---------------|--------------------------|------------------------|-----------------------|
+| **Fetch**     | `icode:ifun ← M₁[PC]`    | `icode:ifun ← M₁[PC]`  | `icode:ifun ← M₁[PC]` |
+|               | `valC ← M₈[PC + 1]`      | `valC ← M₈[PC + 1]`    |                       |
+|               | `valP ← PC + 9`          | `valP ← PC + 9`        | `valP ← PC + 1`       |
+| **Decode**    |                          |                        | `valA ← R[%rsp]`      |
+|               |                          | `valB ← R[%rsp]`       | `valB ← R[%rsp]`      |
+| **Execute**   | `Cnd ← Cond(CC, ifun)`   | `valE ← valB + (-8)`   | `valE ← valB + 8`     |
+| **Memory**    |                          | `M₈[valE] ← valP`      | `valM ← M₈[valA]`     |
+| **Write Back**|                          | `R[%rsp] ← valE`       | `R[%rsp] ← valE`      |
+| **PC Update** | `PC ← Cnd ? valC : valP` | `PC ← valC`            | `PC ← valM`           |
+
 
 ---
 
-## 
+## Computations in each SEQ stage
+
+| Stage     | Computation | OPq rA, rB         | mrmovq D(rB), rA   |
+|-----------|-------------|--------------------|--------------------|
+| Fetch     | icode, ifun | icode:ifun ← M₁[PC]| icode:ifun ← M₁[PC]|
+|           | rA, rB      | rA:rB ← M₁[PC+1]   | rA:rB ← M₁[PC+1]   |
+|           | valC        |                    | valC ← M₈[PC+2]    |
+|           | valP        | valP ← PC + 2      | valP ← PC + 10     |
+| Decode    | valA, srcA  | valA ← R[rA]       |                    |
+|           | valB, srcB  | valB ← R[rB]       | valB ← R[rB]       |
+| Execute   | valE        | valE ← valB OP valA| valE ← valB + valC |
+|           | Cond. codes | Set CC             |                    |
+| Memory    | Read/write  |                    | valM ← M₈[valE]    |
+| Write back| E port, dstE| R[rB] ← valE       |                    |
+|           | M port, dstM|                    | R[rA] ← valM       |
+| PC update | PC          | PC ← valP          | PC ← valP          |
 
 ---
+
+## SEQ Timing
+
+- SEQ uses `combinational` logic and `two types of memory` devices: 
+  - clocked registers and random access memories.
+- The processor is controlled by `a single clock signal` that triggers updates to registers and memory writes.
+- Four hardware units require explicit sequencing: 
+  - program counter, condition code register, data memory, and register file.
+- SEQ follows the `No reading back principle`: 
+  - it never needs to read back state updated by an instruction to complete processing.
+- Each clock cycle triggers the execution of a new instruction:
+  1. At cycle start, state elements hold values from previous instruction.
+  2. Combinational logic processes current instruction.
+  3. By cycle end, new values are generated but not yet stored in state elements.
+  4. As clock rises to start next cycle, state elements are updated with new values.
+- This process allows SEQ to achieve the same effect as sequential execution, 
+  - even though all state `updates occur simultaneously at the start of each cycle`.
+- 📝 time the code
+  ```python
+  OxOOO:     irmovq $0x100, %rbx     # %rbx <-- 0x100
+  OxOOa:     irmovq $0x200, %rdx     # %rdx <-- 0x200
+  Ox014:     addq %rdx, %rbx         # %rbx <-- 0x300, CC <-- 000
+  Ox016:     je dest                 # Not taken
+  Ox01f:     rmmovq %rbx, 0(%rdx)    # M[0x200] <-- 0x300
+  Ox029:     dest: halt              # Halt
+  ```
+- The `halt` instruction sets the processor status to HLT, 
+  - halting operation.
+- The `nop` instruction passes through stages without much processing, 
+  - only incrementing the PC by 1. 
+
 ---
 
-# General Principles of Pipelining
+## SEQ Stage Implementation: `Fetch`
+
+- Instruction memory reads `10 bytes` starting at the address specified by the PC.
+- The first `byte (byte 0)` is split into two 4-bit quantities: `icode and ifun`.
+- If the instruction address is `invalid (imem_error)`, 
+  - icode and ifun are set to `nop` values.
+- Three 1-bit signals are computed based on icode:
+  - `instr_valid`: Indicates if the byte is a `legal` Y86-64 instruction.
+  - `need_regids`: Indicates if the instruction includes a `register specifier byte`.
+  - `need_valC`: Indicates if the instruction includes a `constant word`.
+- The remaining 9 bytes are processed by the "Align" unit:
+  - `Byte 1` is split into `rA and rB` if `need_regids is 1`.
+  - If `need_regids is 0`, both rA and rB are set to `0xF (RNONE)`.
+  - `valC` is generated from either `bytes 1-8 or 2-9`, depending on need_regids.
+- The PC incrementer generates valP based on `the current PC, need_regids, and need_valC`.
+- The formula for valP is: $`p + 1 + r + 8i`$, 
+  - where p is the PC value, r is need_regids, and i is need_valC.
 
 ---
 
-# Pipelined Y86-64 Implementations
+## SEQ Stage Implementation: `Decode and Write-Back`
+
+-  The decode and write-back stages in SEQ are `combined` 
+   -  due to `shared register file access`.
+-  The register file has four ports: 
+   -  two for simultaneous `reads (A and B)` 
+   -  two for simultaneous `writes (E and M)`.
+   -  Each port has an `address` connection (register ID) and a `data` connection (64 wires for input/output).
+   -  `Read` ports use `srcA and srcB` as address inputs, 
+   -  `write` ports use `dstE and dstM`.
+-  `OxF (RNONE)` indicates `no register` should be accessed.
+-  Four blocks generate register IDs based on `icode, rA, rB, and Cnd`.
+-  srcA determines which register to read for valA, depending on instruction type.
+-  dstE indicates the destination register for write port E, where valE is stored.
 
 ---
 
+## SEQ Stage Implementation: `Execute`
+
+- **Execute Stage** involves the ALU, 
+  - which performs operations (ADD, SUB, AND, XOR) on inputs `aluA` and `aluB`, 
+  - based on the `alufun` signal.
+- **ALU output** becomes `valE`, used in the subsequent stages.
+- **Control Blocks** generate data and control signals for the ALU.
+- **ALU Operand Values**: 
+  - `aluA` can be `valA`, `valC`, or -8/+8 depending on the instruction.
+- **ALU Behavior** for various instructions:
+  - For `OPq`, ALU performs operations specified in the `ifun` field.
+  - For others, ALU mostly acts as an adder.
+- **Condition Codes**: 
+  - Set when an `OPq` instruction is executed, 
+  - based on ALU output `(zero, sign, overflow)`.
+  - **Branch/Transfer Control**: 
+    - A "cond" unit uses condition codes and `ifun` to decide on conditional branches or data transfers.
+  - **Set_CC**: A control signal that updates condition codes for `OPq` instructions.
+  - **Other Instructions**: Don't require ALU computations but use `cond` to control actions.
+
+---
+
+## SEQ Stage Implementation: `Memory`
+
+- Performs the following tasks:
+  - Reads or writes program data to/from memory
+  - Generates memory address and input data for write operations
+  - Controls read/write operations with specific signals
+  - Produces valM signal for read operations
+  - Uses valE or valA as the memory address for reads and writes
+  - Sets mem_read control signal for instructions that read from memory
+  - Computes the status code (Stat) based on icode, imem_error, instr_valid, and dmem_error
+- The memory address (mem_addr) is determined as follows:
+  - valE for IRMMDVQ, IPUSHQ, ICALL, and IMRMDVQ instructions
+  - valA for IPDPQ and IRET instructions
+  - Not needed for other instructions
+- The mem_read signal is set for IMRMOVQ, IPDPQ, and IRET instructions
+
+---
+
+## SEQ Stage Implementation: `PC Update`
+
+- **PC Update Stage** selects the new program counter value based on `instruction type and branch condition`: 
+  - `valC` for calls or taken branches, 
+  - `valM` for RET completion, 
+  - and `valP` for the default incremented PC.
+- **HCL Description**: The next PC is determined by the instruction and branch condition, either from `valC`, `valM`, or `valP`.
+
+## SEQ Summary
+
+- **SEQ Design**: 
+  - Y86-64 processor uses a single clock and minimal hardware units, 
+  - with control logic routing signals based on instruction types and conditions.
+- **SEQ Limitation**: 
+  - Slow performance due to signal propagation delays and underutilized units. 
+  - `Pipelining` will improve efficiency.
+- 📝 Explore SEQ [implementation](./y86sim/sim.xz)
+  - in [hcl](./y86sim/hcl.pdf) 
+  - in [verilog](./y86sim/verilog.pdf)
+
+---
 
 # References
 - [Intel® 64 and IA-32 Architectures Software Developer's Manual Combined Volumes](https://www.intel.com/content/www/us/en/content-details/782158/intel-64-and-ia-32-architectures-software-developer-s-manual-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4.html)
   - [x86-64 Instructions Set](https://linasm.sourceforge.net/docs/instructions/index.php)
   - [x86 and amd64 instruction reference](https://www.felixcloutier.com/x86/)
 - [Y86-64 simulator](https://github.com/gyunseo/sim)
+- [RISC-V Instruction Set Manual](https://github.com/riscv/riscv-isa-manual)
