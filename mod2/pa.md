@@ -176,6 +176,7 @@ Y86-64 is a simplified x86-64 subset with only 8-byte integer operations and few
 - **F**: 0xF, No register field.
 - **V**: 8-byte immediate value.
 - **Dest**: Destination address for jump and call instructions.
+- ⚠️ D, V, and Dest are stored in `little-endian`.
 
 ---
 
