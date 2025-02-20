@@ -58,7 +58,7 @@ struct Data {
      - ascending order of primitive data type sizes
      - descending order of primitive data type sizes
    - Compute the structure size for each ordering
-   - Are the sizes of all structures with other field orderings in the range formed the ordered two? 
+   - Are the sizes of all structures with other field orderings in the range formed by the ordered two (these ordered two might be equal)? 
 3. Draw the `memory layout` of the original structure, the ascending layout, and the descending layout.
    - label each field and the paddings
 
