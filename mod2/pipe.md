@@ -67,7 +67,23 @@ CS:APP3e.ch04
 
 # Pipelined Y86-64 Implementations
 
+- Starting with SEQ adaptation and pipeline registers.
+- Fixing initial dependency issues to get an efficient Y86-64 pipelined processor.
+
 ---
+
+## SEQ+: Rearranging the Computation Stages
+
+- SEQ+ updates the PC at the start of the clock cycle for better pipelining. 
+- Uses state registers to hold prior cycle signals for smooth execution. 
+  - SEQ+ computes the PC from stored state, not a dedicated register. 
+- Retains SEQ’s hardware but shifts PC logic to the cycle’s start. 
+  - Enables pipelining and out-of-order execution without strict state encoding.
+- Redistributes state elements without altering logic, balancing delays.  
+  - Prepares for efficient pipelined instruction execution.
+
+---
+
 
 
 # References
