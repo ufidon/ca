@@ -3,6 +3,7 @@ CS:APP3e.ch04
 
 
 # The Y86-64 ISA Pipeline Implementation
+- SEQ → SEQ+ → PIPE- → PIPE
 
 ---
 
@@ -11,7 +12,7 @@ CS:APP3e.ch04
 - Pipelined systems divide tasks into discrete stages, allowing multiple tasks to be processed simultaneously.
 - Tasks progress through all stages in order, maintaining a consistent flow.
 - Pipelining boosts throughput (tasks completed per time unit) but may slightly increase latency (time for one task to finish), 
-  - as skipping stages isn’t typically allowed.
+  - as skipping stages isn't typically allowed.
 - A nonpipelined system might serve a single need faster, 
   - pipelining optimizes overall efficiency for multiple tasks.
 
@@ -35,7 +36,7 @@ CS:APP3e.ch04
 - Clock `rise loads` values; 
   - signals propagate through logic to next stage by $𝓁'$.
 - Too fast a clock risks invalid inputs; 
-  - slow doesn’t affect flow.
+  - slow doesn't affect flow.
 - Clocked registers between logic ensure `smooth, interference-free` instruction progression.
 
 ---
@@ -77,14 +78,61 @@ CS:APP3e.ch04
 - SEQ+ updates the PC at the start of the clock cycle for better pipelining. 
 - Uses state registers to hold prior cycle signals for smooth execution. 
   - SEQ+ computes the PC from stored state, not a dedicated register. 
-- Retains SEQ’s hardware but shifts PC logic to the cycle’s start. 
+- Retains SEQ's hardware but shifts PC logic to the cycle's start. 
   - Enables pipelining and out-of-order execution without strict state encoding.
 - Redistributes state elements without altering logic, balancing delays.  
   - Prepares for efficient pipelined instruction execution.
 
 ---
 
+## Inserting Pipeline Registers
 
+- PIPE-, a pipelined Y86-64 processor, `adds pipeline registers` between SEQ+ stages, tweaking signals for better flow.
+- PIPE- keeps SEQ's hardware, using pipeline registers F, D, E, M, and W to separate fetch, decode, execute, memory, and write-back stages.
+
+| Register | Purpose |  
+|----------|---------|  
+| **F** | Holds predicted PC value. |  
+| **D** | Stores fetched instruction for decoding. |  
+| **E** | Holds decoded instruction and register values for execution. |  
+| **M** | Stores execution results and branch info for memory stage. |  
+| **W** | Holds memory results for register write-back and PC updates. |
+
+- Instructions move through stages across clock cycles, 
+  - overlapping for efficiency with a bottom-to-top flow matching program listings.
+
+---
+
+## Rearranging and Relabeling Signals
+
+- In SEQ and SEQ+, signals like `valC, srcA, and valE` have single values per instruction, 
+  - but in the pipelined PIPE-, `multiple versions` exist for different instructions, requiring careful signal management.
+- PIPE- naming scheme: 
+  - `D_stat, E_stat`, etc. denote `status code fields` in pipeline registers
+  - `f_stat, m_stat`, etc. denote `status signals` generated in fetch, memory, or other stages.
+- Unlike SEQ+, where dstE and dstM directly connect to the register file, 
+  - PIPE- carries these signals through the pipeline, reaching the write-back stage to ensure data and address inputs match the same instruction.
+- A new `Select A` block in PIPE-'s decode stage merges valP and register file values into `valA`, 
+  - reducing pipeline register state compared to SEQ+, eliminating the `Data block`.
+- Pipeline registers in PIPE- include a `status code (stat)` per instruction,
+  - computed in fetch and updated in memory, 
+  - aiding systematic tracking of instruction progress and exceptions.
+
+---
+
+## Predicting Next PC
+
+- PIPE- aims to `issue one instruction per clock cycle` by predicting the next PC after fetching, 
+  - despite delays from `conditional branches` and `ret instructions`.
+- For most instructions (except conditional jumps and ret), 
+  - the next PC is reliably predicted as valC (for call/jump) or valP (for others) during fetch.
+- `Conditional` jumps use `branch prediction`, 
+  - assuming jumps are taken (PC = valC), with mispredictions handled later.
+- `ret` instructions stall further processing until write-back provides the return address, avoiding prediction.
+- PIPE-'s fetch stage predicts PC with `Predict PC` (valP or valC) stored in register F, 
+  - while S`elect PC` chooses between predicted PC, M_valA (not-taken branch), or W_valM (ret).
+
+---
 
 # References
 - [Intel® 64 and IA-32 Architectures Software Developer's Manual Combined Volumes](https://www.intel.com/content/www/us/en/content-details/782158/intel-64-and-ia-32-architectures-software-developer-s-manual-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4.html)
