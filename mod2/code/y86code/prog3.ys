@@ -1,4 +1,10 @@
 # prog3: Pad with 1 nop
+#  Let us the program registers initially all have value 0.
+# Pipelined execution of prog3 without special pipeline control. 
+# In cycle 5, the addq instruction reads its source operands from the register file. 
+# The pending write to register %rdx is still in the write-back stage, 
+# and the pending write to register %rax is still in the memory stage. 
+# Both operands valA and valB get incorrect values.
   irmovq $10,%rdx
   irmovq  $3,%rax
   nop

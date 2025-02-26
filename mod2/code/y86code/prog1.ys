@@ -1,4 +1,9 @@
 # prog1: Pad with 3 nop's
+#  Let us the program registers initially all have value 0.
+#  Pipelined execution of prog1 without special pipeline control. 
+# In cycle 6, the second irmovq writes its result to program register %rax. 
+# The addq instruction reads its source operands in cycle 7, 
+# so it gets correct values for both %rdx and %rax.
   irmovq $10,%rdx
   irmovq  $3,%rax
   nop

@@ -1,4 +1,9 @@
 # prog2: Pad with 2 nop's
+#  Let us the program registers initially all have value 0.
+# Pipelined execution of prog2 without special pipeline control. 
+# The write to program register %rax does not occur until the start of cycle 7, 
+# and so the addq instruction gets the incorrect value 
+# for this register in the decode stage
   irmovq $10,%rdx
   irmovq  $3,%rax
   nop

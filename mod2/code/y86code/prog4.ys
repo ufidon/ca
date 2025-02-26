@@ -1,4 +1,10 @@
 # prog4: No padding
+#  Let us the program registers initially all have value 0.
+#  Pipelined execution of prog4 without special pipeline control. 
+# In cycle 4, the addq instruction reads its source operands from the register file. 
+# The pending write to register %rdx is still in the memory stage, 
+# and the new value for register %rax is just being computed in the execute stage. 
+# Both operands valA and valB get incorrect values.
   irmovq $10,%rdx
   irmovq  $3,%rax
   addq %rdx,%rax

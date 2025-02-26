@@ -134,6 +134,29 @@ CS:APP3e.ch04
 
 ---
 
+## Pipeline Hazards
+
+- Introducing `feedback` into PIPE leads to issues due to `dependencies between instructions`.
+  - `data` dependencies: `results` used by following instructions 
+  - `control` dependencies: `instruction location` determined by prior instructions.
+- `Hazards` occur when dependencies risk incorrect pipeline computations
+  - divided into `data` hazards and `control` hazards.
+- 🛠️ [Prog1](./code/y86code/prog1.ys) shows correct execution with `three nop` instructions delaying data-dependent instructions, `avoiding hazards`.
+- 🛠️ [Prog2](./code/y86code/prog2.ys), with `two nop` instructions, results in a `data hazard` as the addq instruction reads an outdated %rax value in cycle 6.
+- 🛠️ [Prog3](./code/y86code/prog3.ys), with `one nop`, `fails` as addq reads incorrect values for both %rdx and %rax in cycle 5 due to pending writes.
+- 🛠️ [Prog4](./code/y86code/prog4.ys), with `no nops`, `worsens` the hazard, with addq in cycle 4 reading wrong values as %rdx and %rax updates are still in memory and execute stages.
+- `Data hazards` arise when an instruction’s operand is updated by any of the three prior instructions.
+  - Hazards occur because operands are read in the decode stage, but results are written `three cycles later` in the write-back stage.
+- Pipeline adjustments are needed to handle these hazards effectively.
+
+---
+
+## 
+
+
+---
+
+
 # References
 - [Intel® 64 and IA-32 Architectures Software Developer's Manual Combined Volumes](https://www.intel.com/content/www/us/en/content-details/782158/intel-64-and-ia-32-architectures-software-developer-s-manual-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4.html)
   - [x86-64 Instructions Set](https://linasm.sourceforge.net/docs/instructions/index.php)
