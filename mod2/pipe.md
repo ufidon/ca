@@ -48,7 +48,7 @@ CS:APP3e.ch04
 - Balancing stages is challenging as units like `ALUs or memories resist subdivision`, complicating uniform timing in hardware design.
 - `Diminishing returns` of deepening pipeline due to register delays.:
   - Throughput improvement has limit $`𝕀(m)=\dfrac{ℂ}{ℂ^p}=\dfrac{T_c+T_r}{\dfrac{T_c}{m}+T_r} \stackrel{m→∞}{→} \dfrac{T_c+T_r}{T_r}`$
-  - The improvement diminishes: $`\dfrac{∂𝕀(m)}{∂m}=\dfrac{(T_c+T_r)T_c}{(T_c+T_rm)^2}→0`$
+  - The improvement diminishes: $`\dfrac{∂𝕀(m)}{∂m}=\dfrac{(T_c+T_r)T_c}{(T_c+T_rm)^2} \stackrel{m→∞}{→} 0`$
 - `Deep` pipelines (15+ stages) aim for high clock rates, 
   - requiring simple steps, minimal register delays, and precise clock synchronization across the chip.
 
