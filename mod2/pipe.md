@@ -21,20 +21,20 @@ CS:APP3e.ch04
 ## Computational Pipelines
 
 - Computational pipelines process instructions in stages, unlike nonpipelined systems with one computing block $T_c$ and register $T_r$.
-- Nonpipelined throughput is $`\dfrac{1}{𝓁}`$ GIPS (Giga instructions per second), latency $`𝓁=T_c+T_r=𝒞`$, completing one instruction at a time.
+- Nonpipelined throughput is $`\dfrac{1}{ℓ}`$ GIPS (Giga instructions per second), latency $`ℓ=T_c+T_r=ℂ`$, completing one instruction at a time.
 - Pipelining divides computation into $m$ $`\dfrac{T_c}{m}`$ stages ($s_1,s_2,⋯,s_m$) each with registers $T_r$, overlapping instructions.
-- Pipelined throughput rises to $`\dfrac{1}{\dfrac{T_c}{m}+T_r}`$ GIPS ($`\dfrac{T_c}{m}+T_r=𝒞^p`$ per cycle), with all stages active in `steady` state.
-- Latency increases to  $`𝓁^p =T_c+mT_r`$, a $`\dfrac{𝓁^p -𝓁}{𝓁}=\dfrac{(m-1)T_r}{T_c+T_r}`$ rise due to register overhead.
-- Throughput improves $`\dfrac{𝒞}{𝒞^p}=\dfrac{T_c+T_r}{\dfrac{T_c}{m}+T_r}`$ times with `added hardware`, trading off `slight latency increase`.
+- Pipelined throughput rises to $`\dfrac{1}{\dfrac{T_c}{m}+T_r}`$ GIPS ($`\dfrac{T_c}{m}+T_r=ℂ^p`$ per cycle), with all stages active in `steady` state.
+- Latency increases to  $`ℓ^p =T_c+mT_r`$, a $`\dfrac{ℓ^p -ℓ}{ℓ}=\dfrac{(m-1)T_r}{T_c+T_r}`$ rise due to register overhead.
+- Throughput improves $`\dfrac{ℂ}{ℂ^p}=\dfrac{T_c+T_r}{\dfrac{T_c}{m}+T_r}`$ times with `added hardware`, trading off `slight latency increase`.
 
 ---
 
 ## Pipeline Operation
 
-- $m$-stage pipeline ($s_1,s_2,⋯,s_m$) moves instructions every $𝒞^p$ via `clock` signal.
-- From $(m-1)𝒞^p→m𝒞^p$, $I_1, I_2, ⋯ I_m$ shift through $s_m,s_{m-1},⋯,s_1$ as clock triggers register updates.
+- $m$-stage pipeline ($s_1,s_2,⋯,s_m$) moves instructions every $ℂ^p$ via `clock` signal.
+- From $(m-1)ℂ^p→mℂ^p$, $I_1, I_2, ⋯ I_m$ shift through $s_m,s_{m-1},⋯,s_1$ as clock triggers register updates.
 - Clock `rise loads` values; 
-  - signals propagate through logic to next stage by $𝓁^p $.
+  - signals propagate through logic to next stage by $ℓ^p $.
 - Too fast a clock risks invalid inputs; 
   - slow doesn't affect flow.
 - Clocked registers between logic ensure `smooth, interference-free` instruction progression.
@@ -47,8 +47,8 @@ CS:APP3e.ch04
 - In `nonuniform partitioning` of pipeline, the `clock rate` is limited by the delay of the `slowest` stage.
 - Balancing stages is challenging as units like `ALUs or memories resist subdivision`, complicating uniform timing in hardware design.
 - `Diminishing returns` of deepening pipeline due to register delays.:
-  - Throughput improvement has limit $`𝒮(m)=\dfrac{𝒞}{𝒞^p}=\dfrac{T_c+T_r}{\dfrac{T_c}{m}+T_r} \stackrel{m→∞}{→} \dfrac{T_c+T_r}{T_r}`$
-  - The improvement diminishes: $`𝒮'(m)=\dfrac{(T_c+T_r)T_c}{(T_c+T_rm)^2}→0`$
+  - Throughput improvement has limit $`𝕀(m)=\dfrac{ℂ}{ℂ^p}=\dfrac{T_c+T_r}{\dfrac{T_c}{m}+T_r} \stackrel{m→∞}{→} \dfrac{T_c+T_r}{T_r}`$
+  - The improvement diminishes: $`𝕀'(m)=\dfrac{(T_c+T_r)T_c}{(T_c+T_rm)^2}→0`$
 - `Deep` pipelines (15+ stages) aim for high clock rates, 
   - requiring simple steps, minimal register delays, and precise clock synchronization across the chip.
 
