@@ -1,4 +1,8 @@
-# prog5: Load/use hazard
+# prog5: Use before load hazard
+#  The addq instruction requires the value of register %rax 
+# during the decode stage in cycle 7. The preceding mrmovq reads a new
+# value for this register during the memory stage in cycle 8, 
+# which is too late for the addq instruction.
   irmovq $128,%rdx
   irmovq  $3,%rcx
   rmmovq %rcx, 0(%rdx)

@@ -1,4 +1,9 @@
 # Demonstration of return
+# The pipeline should stall while the ret passes through the decode, 
+# execute, and memory stages, injecting three bubbles in the process. 
+# The PC selection logic will choose the return address as 
+# the instruction fetch address once the ret reaches the write-back stage
+(cycle 7).
 # /* $begin prog6-ys */
 # prog6
    irmovq stack,%rsp  #   Initialize stack pointer

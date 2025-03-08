@@ -1,4 +1,11 @@
 # Demonstrate branch cancellation
+# The pipeline predicts branches will be taken and so starts 
+# fetching instructions at the jump target. Two instructions 
+# are fetched before the misprediction is detected in cycle 4 
+# when the jump instruction flows through the execute stage. 
+# In cycle 5, the pipeline cancels the two target instructions 
+# by injecting bubbles into the decode and execute stages, and 
+# it also fetches the instruction following the jump
 # /* $begin prog7-ys */
 # prog7
    xorq %rax,%rax 
