@@ -34,7 +34,7 @@ CS:APP3e.ch04
 - $m$-stage pipeline ($s_1,s_2,⋯,s_m$) moves instructions every $ℂ^p$ via `clock` signal.
 - From $(m-1)ℂ^p→mℂ^p$, $I_1, I_2, ⋯ I_m$ shift through $s_m,s_{m-1},⋯,s_1$ as clock triggers register updates.
 - Clock `rise loads` values; 
-  - signals propagate through logic to next stage by $ℓ^p $.
+  - signals propagate through logic to next stage by $`ℓ^p`$.
 - Too fast a clock risks invalid inputs; 
   - slow doesn't affect flow.
 - Clocked registers between logic ensure `smooth, interference-free` instruction progression.
@@ -48,7 +48,7 @@ CS:APP3e.ch04
 - Balancing stages is challenging as units like `ALUs or memories resist subdivision`, complicating uniform timing in hardware design.
 - `Diminishing returns` of deepening pipeline due to register delays.:
   - Throughput improvement has limit $`𝕀(m)=\dfrac{ℂ}{ℂ^p}=\dfrac{T_c+T_r}{\dfrac{T_c}{m}+T_r} \stackrel{m→∞}{→} \dfrac{T_c+T_r}{T_r}`$
-  - The improvement diminishes: $`𝕀'(m)=\dfrac{(T_c+T_r)T_c}{(T_c+T_rm)^2}→0`$
+  - The improvement diminishes: $`\dfrac{∂𝕀(m)}{∂m}=\dfrac{(T_c+T_r)T_c}{(T_c+T_rm)^2}→0`$
 - `Deep` pipelines (15+ stages) aim for high clock rates, 
   - requiring simple steps, minimal register delays, and precise clock synchronization across the chip.
 
