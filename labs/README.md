@@ -4,7 +4,7 @@
 - [Lab03: IEEE 754 Floating-Point Number Representation and Operations](./lab03/README.md)
 - [Lab04: Machine Code Implementation of C/C++ control structures](./lab04/README.md)
 - [Lab05: Machine Code Representation and Access of C Aggregate Types](./lab05/README.md)
-
+- [Lab06: Implementing Bubble Sort in Y86-64 Assembly](./lab06/README.md)
 
 
 # References
