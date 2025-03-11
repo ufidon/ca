@@ -5,6 +5,8 @@ The goal of this lab is to gain hands-on experience writing and testing assembly
 
 This lab will strengthen your understanding of assembly programming, memory manipulation, and performance optimization.
 
+⚠️ **To make the program easier, 8-bytes data type only, use int64, uint64, or long long instead of long in C below.**
+
 ---
 
 ## **Tasks**
@@ -48,14 +50,16 @@ void bubble_a(long array[], long size) {
 1. Improve `bubble_a` to stop sorting early when the array is already sorted.
 2. Implement `bubble_b` using pointer referencing based on array indexing below.
 3. Test the function and verify sorting correctness.
+4. Check the array content in memory before and after sorting.
 
 **Array Indexing Implementation:**
 ```c
 void bubble_b(long array[], long size) {
     long needNextPass = 1;  // 1 for true, 0 for false
-    for (long k = 1; k < size && needNextPass; k++) {
+    long i,k;
+    for (k = 1; k < size && needNextPass; k++) {
         needNextPass = 0;
-        for (long i = 0; i < size - k; i++) {
+        for (i = 0; i < size - k; i++) {
             if (array[i] > array[i + 1]) {
                 // Swap adjacent elements
                 long temp = array[i];
