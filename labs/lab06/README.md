@@ -5,7 +5,9 @@ The goal of this lab is to gain hands-on experience writing and testing assembly
 
 This lab will strengthen your understanding of assembly programming, memory manipulation, and performance optimization.
 
-⚠️ **To make the program easier, 8-bytes data type only, use int64, uint64, or long long instead of long in C below.**
+⚠️ **Warning:** The size of C `long` is 8 bytes on Linux 64 but 4 bytes on Windows 64, so please use `long long` in your C program since its size is 8 bytes on both OSes.
+
+👉 **Hint:** You may refer to this `selection sort` [pointer version](./ref/sel.c) and its [Y86-64 assembly](./ref/sel.ys).
 
 ---
 
@@ -20,13 +22,13 @@ This lab will strengthen your understanding of assembly programming, memory mani
 **Array Indexing Implementation:**
 ```c
 // A simple bubble sort function using array indexing
-void bubble_a(long array[], long size) {
-    long i, last;
+void bubble_a(long long array[], long long size) {
+    long long i, last,t;
     for (last = size - 1; last > 0; last--) {
         for (i = 0; i < last; i++) {
             if (array[i + 1] < array[i]) {
                 // Swap adjacent elements
-                long t = array[i + 1];
+                t = array[i + 1];
                 array[i + 1] = array[i];
                 array[i] = t;
             }
@@ -54,15 +56,15 @@ void bubble_a(long array[], long size) {
 
 **Array Indexing Implementation:**
 ```c
-void bubble_b(long array[], long size) {
-    long needNextPass = 1;  // 1 for true, 0 for false
-    long i,k;
+void bubble_b(long long array[], long long size) {
+    long long needNextPass = 1;  // 1 for true, 0 for false
+    long long i,k,temp;
     for (k = 1; k < size && needNextPass; k++) {
         needNextPass = 0;
         for (i = 0; i < size - k; i++) {
             if (array[i] > array[i + 1]) {
                 // Swap adjacent elements
-                long temp = array[i];
+                temp = array[i];
                 array[i] = array[i + 1];
                 array[i + 1] = temp;
                 needNextPass = 1;

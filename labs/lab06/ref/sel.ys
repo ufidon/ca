@@ -1,0 +1,86 @@
+# Execution begins at address 0
+.pos 0x0
+
+# Set up stack
+    irmovq Stack, %rsp      # Initialize stack pointer
+
+main:
+    irmovq arrA, %rdi       # First argument: pointer to arrA
+    irmovq 5, %rsi          # Second argument: size = 5
+    call selectionSort
+    
+    irmovq arrC, %rdi       # First argument: pointer to arrA
+    irmovq 5, %rsi          # Second argument: size = 5
+    call selectionSort    
+
+
+
+    xorq %rax, %rax         # Return 0
+    ret
+
+# Data arrays
+.align 8
+arrA:   .quad 5             # arrA[0]
+        .quad 4             # arrA[1]
+        .quad 3             # arrA[2]
+        .quad 2             # arrA[3]
+        .quad 1             # arrA[4]
+
+arrC:   .quad 0x55          # arrC[0]
+        .quad 0x44          # arrC[1]
+        .quad 0x33          # arrC[2]
+        .quad 0x22          # arrC[3]
+        .quad 0x11          # arrC[4]
+
+
+selectionSort:  # array in %rdi, size in %rsi
+    # During execution: p_end in %rsi, p in %rax, min_ptr in %rbx, q in %rcx, 8 in %r8
+    irmovq $8, %r8      # Constant 8 (size of long long)
+    addq %rsi, %rsi     # 2*size
+    addq %rsi, %rsi     # 4*size
+    addq %rsi, %rsi     # 8*size
+    addq %rdi, %rsi     # array + size (pointer offset)
+    subq %r8, %rsi      # p_end = array + size - 1
+    rrmovq %rdi, %rax   # p = array
+    jmp test_outer      # Goto outer loop test
+
+outer:
+    rrmovq %rax, %rbx   # min_ptr = p
+    rrmovq %rax, %rcx   # q = p
+    addq %r8, %rcx      # q = p + 1 (start of unsorted part)
+
+inner:
+    mrmovq (%rcx), %rdx # Load *q into %rdx
+    mrmovq (%rbx), %r9  # Load *min_ptr into %r9
+    subq %rdx, %r9      # *min_ptr - *q
+    jle skip_min        # If *q >= *min_ptr, skip
+    rrmovq %rcx, %rbx   # min_ptr = q (update min_ptr to q)
+skip_min:
+    addq %r8, %rcx      # q++
+
+test_inner:
+    rrmovq %rsi, %rdx   # p_end
+    subq %rcx, %rdx     # p_end - q
+    jge inner           # If q <= p_end, continue inner loop
+
+    # Swap *min_ptr with *p if min_ptr != p
+    rrmovq %rbx, %r10   # 
+    subq %rax, %r10     # min_ptr - p
+    je skip_swap        # If min_ptr == p, skip swap
+    mrmovq (%rbx), %rdx # temp = *min_ptr
+    mrmovq (%rax), %r9  # Load *p
+    rmmovq %r9, (%rbx)  # *min_ptr = *p
+    rmmovq %rdx, (%rax) # *p = temp
+skip_swap:
+    addq %r8, %rax      # p++
+
+test_outer:
+    rrmovq %rsi, %rdx   # p_end
+    subq %rax, %rdx     # p_end - p
+    jg outer            # If p < p_end, continue outer loop
+
+    ret                 # Return
+
+# Stack section
+.pos 0x400
+Stack:
