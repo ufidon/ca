@@ -9,7 +9,7 @@ main:
     irmovq 5, %rsi          # Second argument: size = 5
     call selectionSort
     
-    irmovq arrC, %rdi       # First argument: pointer to arrA
+    irmovq arrC, %rdi       # First argument: pointer to arrC
     irmovq 5, %rsi          # Second argument: size = 5
     call selectionSort    
 
