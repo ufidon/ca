@@ -256,6 +256,47 @@ int sumvec(int v[N]) {
 
 ---
 
+## Caching in the Memory Hierarchy
+
+- A `cache` is a small, fast storage device that temporarily `holds data` from a larger, slower device, a process called `caching`.
+- In a memory hierarchy, each `level k (faster, smaller) caches data for level k + 1 (slower, larger)`, from CPU registers down to remote disks.
+  - Data at level k + 1 is split into `blocks` (fixed or variable size), with level k caching a subset of these blocks.
+  - Data moves between levels in `block-size` units, with block sizes varying across hierarchy pairs—smaller near the CPU, larger lower down.
+  - Lower hierarchy levels have longer access times, using larger blocks to offset this delay.
+
+---
+
+## Cache Hits and Misses
+
+- When a program `finds needed data in level k’s cache`, it’s a `fast cache hit`.
+  - If data isn’t in level k, a `miss` occurs, prompting a fetch from level k + 1,
+    - possibly `evicting or replacing` a block.
+  - **Replacement Policy**: Evicted blocks (`victims`) are chosen by policies like `random` or `least recently used (LRU)`.
+  - **Cold Misses**: Misses in an `empty (cold) cache` are `compulsory`, often `transient` until the cache warms up.
+- **Placement Policy**: Hardware caches `restrict block placement` to balance speed and cost.
+  - **Conflict Misses**: Restrictive placement causes misses when `data maps to the same block`, despite cache size.
+- **Capacity Misses**: Occur when a `working set` exceeds cache size, overwhelming it during phases like loops.
+
+---
+
+## Cache Management
+
+- Each memory hierarchy level caches the next, managed by `hardware, software, or both`.
+  - 🍎 Compilers handle CPU registers, hardware manages L1-L3 caches, OS and CPU hardware manage DRAM, and [memcached](https://memcached.org/) manages memory objects across computers.
+  - Caches are `ubiquitous`, integral to CPU chips, OS, distributed file systems, and the web, using varied hardware/software combos.
+  - Caches typically operate `automatically`, requiring no explicit program action.
+- **Locality Benefits**: 
+  - `Temporal locality` enables fast hits after an initial miss; 
+  - `Spatial locality` amortizes block fetch costs across multiple data objects.
+- **Caching principle**: Caching works because slower storage is cheaper, and locality boosts performance.
+
+---
+
+# Cache Memories
+
+
+---
+
 
 # References
 - [RISC-V](https://riscv.org/)
