@@ -1,4 +1,4 @@
-# Running Programs on a System
+# Building the System to Run Programs
 - Processor architecture
   - [Y86-64 ISA and sequential implementation](./pa.md)
   - [Y86-64 pipeline implementation](./pipe.md)

@@ -289,14 +289,196 @@ int sumvec(int v[N]) {
   - `Temporal locality` enables fast hits after an initial miss; 
   - `Spatial locality` amortizes block fetch costs across multiple data objects.
 - **Caching principle**: Caching works because slower storage is cheaper, and locality boosts performance.
+- 🔭 The ubiquity of [caching](https://en.wikipedia.org/wiki/Cache_hierarchy) in modern computer systems
+
+| **Type**| **What Cached**    | **Where Cached**    | **Latency (cycles)** | **Managed By**    |
+|---|---------|----------|------|--------|
+| CPU registers| 4-byte or 8-byte words  | On-chip CPU registers    | 0| Compiler    |
+| TLB| Address translations    | On-chip TLB    | 0| Hardware MMU|
+| L1 cache| 64-byte blocks| On-chip L1 cache    | 4| Hardware    |
+| L2 cache| 64-byte blocks| On-chip L2 cache    | 10    | Hardware    |
+| L3 cache| 64-byte blocks| On-chip L3 cache    | 50    | Hardware    |
+| Virtual memory    | 4-KB pages    | Main memory    | 200   | Hardware + OS    |
+| Buffer cache | Parts of files| Main memory    | 200   | OS|
+| Disk cache   | Disk sectors  | Disk controller| 100,000    | Disk controller firmware   |
+| Network cache| Parts of files| Local disk| 10,000,000 | NFS client  |
+| Browser cache| Web pages| Local disk| 10,000,000 | Web browser |
+| Web cache    | Web pages| Remote server disks | 1,000,000,000   | Web proxy server |
 
 ---
 
-# Cache Memories
+## Generic Cache Memory Organization
 
+- Use $`S=2^s`$ `cache sets` to cache $`M=2^m`$ memory units (bytes by default)
+- Each `cache set` consists of $`E`$ `cache lines`
+- Each `cache line` = a `valid` bit ‖ $`t=m-(s+b)`$ `tag` bits ‖ a `data block` of $`B=2^b`$ bytes
+- then, a cache's organization is represented by the tuple $`(S,E,B,m)`$
+  - with `capacity` $`C=S×E×B`$ bytes and `overhead` $`S×(1+t)`$ bits
+  - $`t=m-(s+b) → m=t+s+b`$: the `m` bits memory address is partitioned into `t-bits tag ‖ s-bits set index ‖ b-bits block offset`
 
 ---
 
+## Direct-mapped Caches
+
+- A direct-mapped caches has exactly `one line per set`, i.e. $`E=1`$
+- **Cache Access Process: CPU ⇄ L1 Cache ⇄ Main memory**
+  - When the CPU requests a `memory` word at address `A`, the L1 cache checks if it's stored (`hit`) or must fetch it from main memory (`miss`), storing it for future accesses.  
+- **Set Selection:** 
+  - The `set index bits from the address` determine `which set` in the cache should be accessed.  
+- **Line Matching:** 
+  - The cache checks if the selected set contains the requested word by comparing the `tag` bits and verifying the `valid` bit.  
+- **Word Selection:** 
+  - If there's a cache `hit`, the `block offset bits` identify the `starting` position of the requested word within the block.  
+- **Line Replacement:** 
+  - On a cache `miss`, the `new block replaces the existing one` in the direct-mapped cache, as each set has only one line.  
+
+---
+
+## `Conflict Misses` in Direct-Mapped Caches
+
+- Occur when `arrays map to the same cache set`, as in a dot product function with vectors x and y.
+
+  ```c
+  float dotprod(float x[8], float y[8])
+  {
+      float sum = 0.0;
+      int i;
+      for (i = 0; i < 8; i++)
+          sum += x[i] * y[i];
+      return sum;
+  }
+  ```
+- With x and y (4-byte floats) in contiguous memory, a 32-byte cache with two sets maps x[i] and y[i] to the same set, causing repeated misses and `thrashing`.
+  - That a cache `repeatedly loads and evicts` the same sets of cache blocks in a short period is called `thrashing`.
+  - Thrashing leads to constant block evictions, slowing execution by a factor of 2 or 3 despite good spatial locality.
+- **Solution with Padding**: Adding padding (e.g., extending x from 8 to 12 elements) shifts y’s addresses, mapping x[i] and y[i] to different sets, eliminating conflict misses.
+
+---
+
+## Set Associative Caches
+ 
+- Unlike direct-mapped caches (E = 1), `set associative caches` (1 < E < C/B) allow each set to hold multiple lines, reducing conflict misses.
+  - often called `E-way` set associative cache.
+- **Set Selection**: 
+  - Identical to direct-mapped caches, using `set index bits` to identify the target set.
+- **Line Matching and Word Selection**: 
+  - Involves `checking tags and valid bits` across multiple lines in a set, 
+    - treating the set as an `associative memory` to find a matching block, 
+    - then using `block offset` for word selection.
+- **Line Replacement on Misses**: 
+  - the cache fetches the block and replaces a line
+    - preferably an `empty` one
+    - or uses policies like `random`, `least frequently used (LFU)`, or `least recently used (LRU)` to minimize future misses.
+
+---
+
+## Fully Associative Caches
+
+- Consist of `one set (E = C / B)` holding all cache lines.
+- **Set Selection**: 
+  - Trivial since there’s only one set; 
+  - addresses `lack set index bits`, containing just a `tag and block offset`.
+- **Line Matching and Word Selection**: 
+  - searches all lines in the single set for a matching `tag`, 
+  - then uses `block offset` to select the word.
+- **Limitations and Use**: 
+  - Expensive and complex due to parallel tag searches, 
+  - making fully associative caches suitable only for small, fast caches like `TLBs` in virtual memory systems.
+
+---
+
+## Issues with Writes
+
+- **Write Hits**: 
+  - `Write-through` updates the next level immediately, causing bus traffic;
+  - `write-back` defers updates until eviction, 
+    - reducing traffic but adding complexity with a dirty bit.
+- **Write Misses**: 
+  - `Write-allocate` fetches the block into the cache before updating; 
+    - typically used by `write-back`
+  - `no-write-allocate` writes directly to the next level, 
+    - typically used by `write-through`
+- **Write Optimization Complexity**: 
+  - Write strategies vary across systems, often proprietary; 
+  - `lower-level caches favor write-back` due to larger transfer times,
+    - a trend increasing with modern systems.
+- **Programmer Guidance**: 
+  - Assume `write-back, write-allocate caches` for cache-friendly coding, 
+  - as they exploit locality symmetrically to reads, aligning with current trends.
+
+---
+
+## Anatomy of a Real Cache Hierarchy
+
+- Modern processors use separate `i-caches` (instructions only) and `d-caches` (data only), 
+  - alongside `unified` caches (both instructions and data).
+- Separate i-caches and d-caches allow `simultaneous` instruction and data reads,
+  - reduce conflict misses, and enable tailored optimizations, 
+    - though capacity misses may increase.
+- **Core i7 Hierarchy**: 
+  - Each Core i7 CPU chip has four cores, 
+    - each with private L1 i-cache, L1 d-cache, and L2 unified cache, 
+    - plus a shared on-chip L3 unified cache, all using SRAM.
+  - ⚒️ Explore the CPU cache of your laptop with [CPU-Z](https://www.cpuid.com/softwares/cpu-z.html)
+
+---
+
+## Evaluating Cache Performance
+
+- **Miss Rate**: Fraction of memory references that miss, calculated as `#misses/#references`.
+  - **Miss Penalty**: Additional time due to a miss, 
+    - e.g., ~10 cycles from L2, ~50 cycles from L3, and ~200 cycles from main memory.
+- **Hit Rate**: Fraction of memory references that hit, computed as `1 - miss rate`.
+  - **Hit Time**: Time to deliver a cached word to the CPU, 
+    - including set selection, line identification, and word selection, 
+    - typically several clock cycles for L1 caches.
+- **Performance Trade-offs**: 
+  - Optimizing cache performance involves `complex cost-benefit analysis`, 
+  - typically assessed through `simulations on benchmark codes`.
+
+---
+
+## Performance Impact of Cache Parameters
+
+- **Cache Size**: Larger caches improve hit rates but increase hit times, so L1 < L2 < L3 in size.
+- **Block Size**: Larger blocks boost hit rates via spatial locality but may hurt temporal locality and raise miss penalties.
+  - e.g., 64 bytes in Core i7
+- **Associativity**: Higher associativity cuts conflict misses but raises complexity, hit time, and miss penalty.
+  - e.g., 8-way for L1/L2, 16-way for L3 in Core i7
+- **Write Strategy**: 
+  - Write-through lowers read miss costs but increases traffic; 
+  - write-back reduces transfers, suiting lower hierarchy levels.
+
+---
+
+## Writing Cache-Friendly Code
+
+- **Optimize Inner Loops:** 
+  - Focus on optimizing the `inner loops of frequently used` functions, 
+  - as reducing cache misses in these loops significantly improves performance.  
+- **Leverage Temporal Locality:** 
+  - `Repeatedly accessed local variables` are cache-friendly because they can be stored in registers or higher cache levels.  
+- **Utilize Spatial Locality:** 
+  - Accessing memory in a **stride-1** pattern (sequential access) improves cache efficiency since caches store data in `contiguous` blocks.  
+- **Beware of Column-Major Access:** 
+  - Scanning a 2D array **column-wise** instead of **row-wise** can drastically increase cache misses, leading to poor performance.
+
+---
+
+## The Memory Mountain
+
+- A `visualization` of a system’s memory performance of varying throughput based on cache hierarchy and access patterns, 
+  - with `peaks` at cache-`efficient` regions and `valleys` at `inefficient` ones.  
+- ⚒️ Generate the [memory mountain of your computer](./code/mh/mountain/)
+- ⚒️ [Rearranging loops](./code/mh/matmult/) to increase spatial locality
+
+---
 
 # References
+- *Cache simulators*
+  - [Fish and MIPS' Cache Simulator](https://dtv96calibre.github.io/cacheSim/)
+  - [ParaCache](https://www3.ntu.edu.sg/home/smitha/ParaCache/Paracache/dmc.html)
+  - [351 Cache Simulator](https://courses.cs.washington.edu/courses/cse351/cachesim/)
+  - [370 simulator](https://vhosts.eecs.umich.edu/370simulators/cache/simulator.html)
+  - [cs351 simulator](https://rivoire.cs.sonoma.edu/cs351/cachesim/)
 - [RISC-V](https://riscv.org/)
