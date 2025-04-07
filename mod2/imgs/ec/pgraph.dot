@@ -1,0 +1,36 @@
+digraph ProcessGraph {
+    rankdir=LR; // Left to right layout
+    node [shape=box]; // Box shape for statements
+
+    // Initial vertex (no in-edges)
+    S0 [label="Parent: x = 0\nprintf(\"Parent: Starting\")"];
+
+    // Fork point
+    S1 [label="fork()", shape=circle];
+    
+    // Parent path
+    P1 [label="Parent: x = 2"];
+    P2 [label="wait(NULL)"];
+    P3 [label="printf(\"Parent: x = 2\")"];
+
+    // Child path
+    C1 [label="Child: x = 1"];
+    C2 [label="printf(\"Child: x = 1\")"];
+    C3 [label="exit()", shape=circle];
+
+    // Edges (happens-before relationships)
+    S0 -> S1 [label="Start"];
+    S1 -> P1 [label="Parent (pid > 0)"];
+    S1 -> C1 [label="Child (pid = 0)"];
+    P1 -> P2;
+    P2 -> P3 [label="After child exits"];
+    C1 -> C2;
+    C2 -> C3;
+
+    // Dotted edge to show dependency due to wait()
+    C3 -> P2 [style=dotted, label="Child terminates"];
+
+    // Group parent and child nodes for clarity
+    {rank=same; P1; P2; P3;}
+    {rank=same; C1; C2; C3;}
+}

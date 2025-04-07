@@ -27,6 +27,7 @@ CS:APP3e.ch08
    - Key to understanding processes, I/O, and virtual memory.  
    - Essential for building systems software (e.g., shells, servers) and `handling real-world events` efficiently.
 
+
 ---
 
 # Exceptions
@@ -153,6 +154,8 @@ CS:APP3e.ch08
 | 61     | wait4   | Wait for a process to terminate       |
 | 62     | kill    | Send signal to a process              |
 
+- 💡 [syscall and exceptions](./code/ec/sysrwf.c)
+
 ---
 
 # Processes
@@ -182,6 +185,26 @@ CS:APP3e.ch08
 - **Performance Tradeoffs**  
     - Context switches enable multitasking but incur overhead  
     - Protection mechanisms add security at cost of complexity  
+
+---
+
+# 🛠️ Process Management
+
+| **Purpose**    | **Linux Command**    | **Windows Command**    | **PowerShell Cmdlet**    |
+|-----|------|--------|----------|
+| List running processes   | `ps aux`  | `tasklist`   | `Get-Process`  |
+| Show process details| `ps -p <PID>`  | `tasklist /FI "PID eq <PID>"` | `Get-Process -Id <PID>`  |
+| Kill/terminate process   | `kill <PID>`   | `taskkill /PID <PID>`  | `Stop-Process -Id <PID>` |
+| Force kill process  | `kill -9 <PID>`| `taskkill /PID <PID> /F`    | `Stop-Process -Id <PID> -Force` |
+| Start a process| `<command> &`  | `start <program>` | `Start-Process <program>`|
+| Show process CPU usage   | `top`| `tasklist /V`| `Get-Process \| Select-Object CPU` |
+| Show process memory usage| `top`| `tasklist /V`| `Get-Process \| Select-Object WS` |
+| List processes by name   | `ps aux \| grep <name>`  | `tasklist /FI "IMAGENAME eq <name>"` | `Get-Process <name>`   |
+| Suspend a process   | `kill -STOP <PID>`  | (No direct equivalent) | `Suspend-Process` (custom)    |
+| Resume a process    | `kill -CONT <PID>`  | (No direct equivalent) | `Resume-Process` (custom)|
+| Set process priority| `nice -n <value> <command>` | `start /<priority> <program>` | `Get-Process \| Set-ProcessPriority` |
+| Monitor processes   | `htop` (if installed)    | `perfmon`    | `Get-Process \| Format-Table` |
+| **Show process tree**    | `pstree`  | `wmic process get processid,parentprocessid,executablepath` | `Get-Process \| Select-Object Name,Id,Parent` |
 
 ---
 
@@ -250,6 +273,28 @@ CS:APP3e.ch08
    - Signals (SIGSTOP/SIGCONT/SIGTERM) for interrupts/process control  
    - Default signal handlers can be overridden  
    - Critical for robust programs (especially servers/shells)  
+
+---
+
+## Linux process API
+
+| **Function**  | **Usage**  |**Parameters**  |**Return Value**  |
+|---------|-----|----------|---------|
+| `fork()`      | Creates a new child process by duplicating the calling process | None   |In parent: PID of child (>0), In child: 0, On error: -1 |
+| `getpid()`    | Gets the process ID (PID) of the calling process | None   |PID of the calling process (pid_t) |
+| `getppid()`   | Gets the parent process ID (PPID) of the calling process | None   |PPID of the calling process (pid_t)|
+| `execve()`    | Replaces the current process image with a new one | `const char *pathname` (program path), `char *const argv[]` (arguments), `char *const envp[]` (environment) | On success: does not return, On error: -1   |
+| `wait()`      | Waits for any child process to terminate       | None   |PID of terminated child, On error: -1       |
+| `waitpid()`   | Waits for a specific child process to terminate | `pid_t pid` (child PID or group), `int *wstatus` (status info), `int options` (behavior flags) | PID of terminated child, 0 if waiting, On error: -1  |
+| `exit()`      | Terminates the calling process       | `int status` (exit status code)   |Does not return; process terminates|
+| `kill()`      | Sends a signal to a process | `pid_t pid` (target PID), `int sig` (signal number) | 0 on success, -1 on error |
+| `nice()`      | Changes process priority    | `int inc` (priority increment)    |New nice value on success, -1 on error      |
+| `sched_yield()` | Yields processor to other processes | None   |0 on success, -1 on error |
+
+- 🛠️ Practice
+  - [fork, execve, and wait](./code/ec/few.c)
+  - [process graph](./code/ec/pgragh.c)
+  - ![process graph](./imgs/ec/pgraph.png)
 
 ---
 
