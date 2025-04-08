@@ -164,6 +164,26 @@ System calls are **fundamental to Linux operations**, enabling secure and contro
 
 ---
 
+# Instruction [syscall](https://www.felixcloutier.com/x86/syscall) vs. [int 0x80](https://www.felixcloutier.com/x86/intn:into:int3:int1)
+
+| **Feature**   | **`syscall` (x86_64)** | **`int 0x80` (x86 32-bit)** |
+|------|----------|--------|
+| **Architecture**   | 64-bit (x86_64, AMD64) | 32-bit (x86)   |
+| **Purpose**    | Invoke system calls in 64-bit mode| Invoke system calls in 32-bit mode   |
+| **Introduced By**  | AMD (with AMD64 architecture)   | Intel (legacy x86 interrupt mechanism)   |
+| **Performance**| Faster (optimized for 64-bit, direct entry point) | Slower (uses interrupt handling, more overhead) |
+| **Calling Convention**    | Uses registers: `rax` (syscall number), `rdi`, `rsi`, `rdx`, `r10`, `r8`, `r9` for arguments | Uses registers: `eax` (syscall number), `ebx`, `ecx`, `edx`, `esi`, `edi` for arguments |
+| **Argument Passing** | 64-bit registers, up to 6 arguments directly | 32-bit registers, up to 6 arguments directly    |
+| **Return Value**   | Returned in `rax`| Returned in `eax`  |
+| **Stack Usage**| No implicit stack usage for arguments  | No implicit stack usage for arguments|
+| **Entry Point**| Kernel’s `syscall` handler (e.g., via MSRs on Linux) | Interrupt Descriptor Table (IDT) vector 0x80    |
+| **Compatibility**  | Native to 64-bit OS, not supported in 32-bit mode | Supported in 32-bit OS, works in 64-bit compat mode |
+| **Usage in Linux** | Default for 64-bit binaries | Legacy, used for 32-bit binaries (slower on x86_64) |
+| **Overhead**   | Low (direct jump to kernel via Model-Specific Registers) | Higher (interrupt handling adds cycles)  |
+| **Example**    | `mov rax, 1; mov rdi, 1; syscall` (write)  | `mov eax, 4; mov ebx, 1; int 0x80` (write) |
+
+---
+
 # 🔭 [Linux Syscall](https://filippo.io/linux-syscall-table/)
 
 | Number | Name    | Description                           |
@@ -426,4 +446,9 @@ System calls are **fundamental to Linux operations**, enabling secure and contro
 
 
 ---
+
+# References
+- [System calls on Windows x64](https://n4r1b.com/posts/2019/03/system-calls-on-windows-x64/)
+- [signal(7) — Linux manual page](https://man7.org/linux/man-pages/man7/signal.7.html)
+- [Open Computer Systems Fundamentals](https://w3.cs.jmu.edu/kirkpams/OpenCSF)
 
