@@ -273,6 +273,7 @@ CS:APP3e.ch08
    - Signals (SIGSTOP/SIGCONT/SIGTERM) for interrupts/process control  
    - Default signal handlers can be overridden  
    - Critical for robust programs (especially servers/shells)  
+- ⚒️ Practice [fork0 to fork11](./code/ec/forks/)
 
 ---
 
@@ -291,10 +292,18 @@ CS:APP3e.ch08
 | `nice()`      | Changes process priority    | `int inc` (priority increment)    |New nice value on success, -1 on error      |
 | `sched_yield()` | Yields processor to other processes | None   |0 on success, -1 on error |
 
-- 🛠️ Practice
+- 💡 Demo
   - [fork, execve, and wait](./code/ec/few.c)
   - [process graph](./code/ec/pgragh.c)
   - ![process graph](./imgs/ec/pgraph.png)
+
+- ⚒️ Practice: 
+  - predict the outputs and draw process graph
+    - [fork1](./code/ec/fork1.c)
+    - [forks](./code/ec/forks2.c)
+  - execute programs
+    - [execs](./code/ec/execs.c)
+    - [shellex](./code/ec/shellex.c)
 
 ---
 
@@ -324,6 +333,18 @@ CS:APP3e.ch08
   - Use dedicated signal threads in complex applications
   - Implement fallback timeouts for signal-based waits
   - Audit handlers for security vulnerabilities
+- ⚒️ Practice [fork12 to fork17](./code/ec/forks/)
+  - [waitforsignal](./code/ec/waitforsignal.c)
+  - [internal signal](./code/ec/internal.c)
+  - [sigint](./code/ec/sigint.c)
+  - [sigintsafe](./code/ec/sigintsafe.c)
+  - [sigsuspend](./code/ec/sigsuspend.c)
+  - [signaldeadlock](./code/ec/signaldeadlock.c)
+  - signal blocking
+    - [sigmask1](./code/ec/procmask1.c)
+    - [sigmask2](./code/ec/procmask2.c)
+    - [signal_block](./code/ec/signal_block.c)
+
 
 ---
 
@@ -351,6 +372,12 @@ CS:APP3e.ch08
   - Prefer modern alternatives (exceptions, state machines) where possible
   - Limit to well-defined error recovery paths
   - Avoid in complex multi-threaded applications
+- ⚒️ Practice 
+  - [setjmp](./code/ec/setjmp.c)
+  - [restart](./code/ec/restart.c)
+  - [longjmp2](./code/ec/longjmp2.c)
+  - [longjmp3](./code/ec/longjmp3.c)
+
 
 ---
 
@@ -366,7 +393,3 @@ CS:APP3e.ch08
 |  | | `cat /proc/<PID>/maps` |
 
 ---
-
-# ⚒️ [Practice](./code/ec/)
-- Create, monitor, and terminate processes
-- Handle signals
