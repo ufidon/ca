@@ -136,6 +136,34 @@ CS:APP3e.ch08
 
 ---
 
+# Linux System Calls
+System calls are **fundamental to Linux operations**, enabling secure and controlled access to kernel resources. 
+- What They Are  
+  - **Bridge between user and kernel space** – System calls (syscalls) allow user programs to request services from the Linux kernel (e.g., file operations, process control, networking).  
+  - **Examples**: `read()`, `write()`, `fork()`, `open()`, `kill()`.  
+- How They Work  
+  - **Triggered via software interrupt (`int 0x80` or `syscall` instruction)** – The CPU switches to kernel mode, executes the syscall, then returns to user mode.  
+  - **Defined in the kernel** – Each syscall has a unique number (e.g., `exit` = 60 on x86_64).  
+- Common Categories  
+  - **Process control** (`fork()`, `execve()`, `exit()`)  
+  - **File management** (`open()`, `read()`, `write()`)  
+  - **Device management** (`ioctl()`, `mmap()`)  
+  - **Communication** (`pipe()`, `shmget()`)  
+  - **System info** (`getpid()`, `time()`).  
+- Performance Impact  
+  - **Context switching is expensive** – Each syscall involves switching from user to kernel mode and back.  
+  - **Minimized via batching** (e.g., `readv()` instead of multiple `read()` calls).  
+- How to Trace Them  
+  - **`strace` command** – Shows syscalls made by a process:  
+    ```sh
+    strace ls -l
+    ```
+  - **In C**: Use `syscall(SYS_<name>, ...)` for direct invocation.  
+    - Fast Modern Syscalls
+    - **`syscall` (x86_64) is faster than `int 0x80`** – Newer CPUs optimize syscall entry/exit.  
+
+---
+
 # 🔭 [Linux Syscall](https://filippo.io/linux-syscall-table/)
 
 | Number | Name    | Description                           |
