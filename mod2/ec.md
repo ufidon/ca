@@ -133,7 +133,10 @@ CS:APP3e.ch08
    - All exceptions use jump tables (CPU exception table + OS syscall table)  
    - Hardware saves state before handler execution  
    - Sync (traps/faults) vs. async (interrupts) determine resumption behavior
-- 🔭 [Linux Syscall](https://filippo.io/linux-syscall-table/)
+
+---
+
+# 🔭 [Linux Syscall](https://filippo.io/linux-syscall-table/)
 
 | Number | Name    | Description                           |
 |--------|---------|---------------------------------------|
@@ -155,56 +158,6 @@ CS:APP3e.ch08
 | 62     | kill    | Send signal to a process              |
 
 - 💡 [syscall and exceptions](./code/ec/sysrwf.c)
-
----
-
-# Processes
-
-- Processes are `instance of executing program` with private state (memory, registers, files)  
-- **Execution Context**  
-   - Maintains code/data/stack segments, register states, and kernel structures  
-   - `User-space (application code)` and `kernel-space (OS services)` memory separation  
-- **Privilege Hierarchy**  
-   - Dual-mode operation: user mode (restricted) vs kernel mode (full access)  
-   - System calls (traps) enable controlled transitions to kernel mode
-- **Kernel Interfaces**  
-   - System calls provide controlled access to OS services  
-   - /proc filesystem exposes kernel data to user space 
-- **Address Space Protection**  
-   - Each process gets isolated virtual address space  
-   - Hardware prevents unauthorized memory access between processes 
-- **Context Switching**  
-   - Scheduler saves/restores process state (registers, PC, memory maps)  
-   - Triggered by system calls, interrupts, or scheduler timeouts   
-- **Scheduling Triggers**  
-   - Voluntary: Process blocks on I/O or sleep()  
-   - Involuntary: Timer interrupts force preemption  
-- **Concurrency Mechanisms**  
-   - Processes run `concurrently` via rapid `context switching`  
-   - `Parallelism` achieved when processes run on `multiple cores`  
-- **Performance Tradeoffs**  
-    - Context switches enable multitasking but incur overhead  
-    - Protection mechanisms add security at cost of complexity  
-
----
-
-# 🛠️ Process Management
-
-| **Purpose**    | **Linux Command**    | **Windows Command**    | **PowerShell Cmdlet**    |
-|-----|------|--------|----------|
-| List running processes   | `ps aux`  | `tasklist`   | `Get-Process`  |
-| Show process details| `ps -p <PID>`  | `tasklist /FI "PID eq <PID>"` | `Get-Process -Id <PID>`  |
-| Kill/terminate process   | `kill <PID>`   | `taskkill /PID <PID>`  | `Stop-Process -Id <PID>` |
-| Force kill process  | `kill -9 <PID>`| `taskkill /PID <PID> /F`    | `Stop-Process -Id <PID> -Force` |
-| Start a process| `<command> &`  | `start <program>` | `Start-Process <program>`|
-| Show process CPU usage   | `top`| `tasklist /V`| `Get-Process \| Select-Object CPU` |
-| Show process memory usage| `top`| `tasklist /V`| `Get-Process \| Select-Object WS` |
-| List processes by name   | `ps aux \| grep <name>`  | `tasklist /FI "IMAGENAME eq <name>"` | `Get-Process <name>`   |
-| Suspend a process   | `kill -STOP <PID>`  | (No direct equivalent) | `Suspend-Process` (custom)    |
-| Resume a process    | `kill -CONT <PID>`  | (No direct equivalent) | `Resume-Process` (custom)|
-| Set process priority| `nice -n <value> <command>` | `start /<priority> <program>` | `Get-Process \| Set-ProcessPriority` |
-| Monitor processes   | `htop` (if installed)    | `perfmon`    | `Get-Process \| Format-Table` |
-| **Show process tree**    | `pstree`  | `wmic process get processid,parentprocessid,executablepath` | `Get-Process \| Select-Object Name,Id,Parent` |
 
 ---
 
@@ -246,7 +199,72 @@ CS:APP3e.ch08
 
 ---
 
-# Process Control
+# Processes
+
+- Processes are `instance of executing program` with private state (memory, registers, files)  
+- **Execution Context**  
+   - Maintains code/data/stack segments, register states, and kernel structures  
+   - `User-space (application code)` and `kernel-space (OS services)` memory separation  
+- **Privilege Hierarchy**  
+   - Dual-mode operation: user mode (restricted) vs kernel mode (full access)  
+   - System calls (traps) enable controlled transitions to kernel mode
+- **Kernel Interfaces**  
+   - System calls provide controlled access to OS services  
+   - /proc filesystem exposes kernel data to user space 
+- **Address Space Protection**  
+   - Each process gets isolated virtual address space  
+   - Hardware prevents unauthorized memory access between processes 
+- **Context Switching**  
+   - Scheduler saves/restores process state (registers, PC, memory maps)  
+   - Triggered by system calls, interrupts, or scheduler timeouts   
+- **Scheduling Triggers**  
+   - Voluntary: Process blocks on I/O or sleep()  
+   - Involuntary: Timer interrupts force preemption  
+- **Concurrency Mechanisms**  
+   - Processes run `concurrently` via rapid `context switching`  
+   - `Parallelism` achieved when processes run on `multiple cores`  
+- **Performance Tradeoffs**  
+    - Context switches enable multitasking but incur overhead  
+    - Protection mechanisms add security at cost of complexity  
+
+
+---
+
+# Linux Commands for Manipulating Processes
+
+| Tool/Command | Description | Example Usage   |
+|---|---------|---|
+| `strace` | Traces system calls made by a process and its children| `strace -f ./myprogram`|
+| `ps`   | Lists all processes in the system (including zombies) | `ps aux` or `ps -ef` |
+| `top`  | Displays dynamic real-time view of system resource usage  | `top`|
+| `pmap` | Shows memory mapping of a process| `pmap -x <PID>`|
+| `/proc` filesystem | Virtual filesystem exposing kernel data structures in readable format | `cat /proc/loadavg`  |
+|  | | `cat /proc/<PID>/maps` |
+
+---
+
+# 🛠️ Process Management
+
+| **Purpose**    | **Linux Command**    | **Windows Command**    | **PowerShell Cmdlet**    |
+|-----|------|--------|----------|
+| List running processes   | `ps aux`  | `tasklist`   | `Get-Process`  |
+| Show process details| `ps -p <PID>`  | `tasklist /FI "PID eq <PID>"` | `Get-Process -Id <PID>`  |
+| Kill/terminate process   | `kill <PID>`   | `taskkill /PID <PID>`  | `Stop-Process -Id <PID>` |
+| Force kill process  | `kill -9 <PID>`| `taskkill /PID <PID> /F`    | `Stop-Process -Id <PID> -Force` |
+| Start a process| `<command> &`  | `start <program>` | `Start-Process <program>`|
+| Show process CPU usage   | `top`| `tasklist /V`| `Get-Process \| Select-Object CPU` |
+| Show process memory usage| `top`| `tasklist /V`| `Get-Process \| Select-Object WS` |
+| List processes by name   | `ps aux \| grep <name>`  | `tasklist /FI "IMAGENAME eq <name>"` | `Get-Process <name>`   |
+| Suspend a process   | `kill -STOP <PID>`  | (No direct equivalent) | `Suspend-Process` (custom)    |
+| Resume a process    | `kill -CONT <PID>`  | (No direct equivalent) | `Resume-Process` (custom)|
+| Set process priority| `nice -n <value> <command>` | `start /<priority> <program>` | `Get-Process \| Set-ProcessPriority` |
+| Monitor processes   | `htop` (if installed)    | `perfmon`    | `Get-Process \| Format-Table` |
+| **Show process tree**    | `pstree`  | `wmic process get processid,parentprocessid,executablepath` | `Get-Process \| Select-Object Name,Id,Parent` |
+
+---
+
+
+# Process Control API
 
 - **Process Lifecycle & States**
    - Created via `fork()` (copies parent's memory/descriptors, returns 0 in child/PID in parent)  
@@ -381,15 +399,3 @@ CS:APP3e.ch08
 
 ---
 
-# Tools for Manipulating Processes
-
-| Tool/Command | Description | Example Usage   |
-|---|---------|---|
-| `strace` | Traces system calls made by a process and its children| `strace -f ./myprogram`|
-| `ps`   | Lists all processes in the system (including zombies) | `ps aux` or `ps -ef` |
-| `top`  | Displays dynamic real-time view of system resource usage  | `top`|
-| `pmap` | Shows memory mapping of a process| `pmap -x <PID>`|
-| `/proc` filesystem | Virtual filesystem exposing kernel data structures in readable format | `cat /proc/loadavg`  |
-|  | | `cat /proc/<PID>/maps` |
-
----
