@@ -312,6 +312,8 @@ int sumvec(int v[N]) {
 - Use $`S=2^s`$ `cache sets` to cache $`M=2^m`$ memory units (bytes by default)
 - Each `cache set` consists of $`E`$ `cache lines`
 - Each `cache line` = a `valid` bit ‖ $`t=m-(s+b)`$ `tag` bits ‖ a `data block` of $`B=2^b`$ bytes
+  - Modern caches check the `valid bits and tags of all lines` within a set `simultaneously`
+    - implemented using Content-Addressable Memory (CAM) or parallel comparators
 - then, a cache's organization is represented by the tuple $`(S,E,B,m)`$
   - with `capacity` $`C=S×E×B`$ bytes and `overhead` $`S×(1+t)`$ bits
   - $`t=m-(s+b) → m=t+s+b`$: the `m` bits memory address is partitioned into `t-bits tag ‖ s-bits set index ‖ b-bits block offset`

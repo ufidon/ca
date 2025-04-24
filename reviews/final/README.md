@@ -47,7 +47,7 @@
     - 8-way set associativity cache: E=8, S=C/(E×B)
     - fully associative cache: S=1, E=C/B
 - Given an address A, how to find the data pointed by A in a cache?
-  - set index → valid bit → tag → block offset
+  - set index → valid bit ‖ tag → block offset
   - refer to [Generic Cache Memory Organization](https://github.com/ufidon/ca/blob/main/mod2/mh.md)
 
 ---
